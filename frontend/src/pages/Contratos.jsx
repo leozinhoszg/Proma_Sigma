@@ -521,10 +521,14 @@ export default function Contratos() {
           <FormRow>
             <FormField label="Número da Sequência" required>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
                 className="input input-bordered w-full"
                 value={sequenciaForm['num-seq-item']}
-                onChange={(e) => setSequenciaForm(prev => ({ ...prev, 'num-seq-item': e.target.value }))}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  setSequenciaForm(prev => ({ ...prev, 'num-seq-item': val }));
+                }}
                 placeholder="Ex: 1"
               />
             </FormField>
