@@ -503,7 +503,7 @@ export default function Contratos() {
         isOpen={isSequenciaModalOpen}
         onClose={() => setIsSequenciaModalOpen(false)}
         title={editingSequenciaId ? 'Editar Sequência' : 'Nova Sequência'}
-        size="sm"
+        size="md"
         actions={
           <>
             <button className="btn btn-ghost" onClick={() => setIsSequenciaModalOpen(false)} disabled={saving}>

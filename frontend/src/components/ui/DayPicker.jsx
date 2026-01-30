@@ -47,20 +47,15 @@ export default function DayPicker({ value, onChange, placeholder = 'Selecione o 
 
       {/* Dropdown com os dias */}
       {isOpen && (
-        <div className="absolute z-50 mt-2 w-full bg-base-100 border border-base-300 rounded-xl shadow-lg p-3 animate-fadeIn">
-          {/* Header */}
-          <div className="text-center text-sm font-semibold text-base-content/70 mb-3 pb-2 border-b border-base-200">
-            Selecione o dia do mês
-          </div>
-
+        <div className="absolute z-50 mt-1 left-0 bg-base-100 border border-base-300 rounded-lg shadow-lg p-2 animate-fadeIn">
           {/* Grid de dias */}
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-0.5">
             {DAYS.map((day) => (
               <button
                 key={day}
                 type="button"
                 className={`
-                  w-8 h-8 rounded-lg text-sm font-medium transition-all
+                  w-7 h-7 rounded text-xs font-medium transition-all
                   ${value === day
                     ? 'bg-primary text-primary-content'
                     : 'hover:bg-base-200 text-base-content'
@@ -72,17 +67,6 @@ export default function DayPicker({ value, onChange, placeholder = 'Selecione o 
               </button>
             ))}
           </div>
-
-          {/* Limpar seleção */}
-          {value && (
-            <button
-              type="button"
-              className="w-full mt-3 pt-2 border-t border-base-200 text-sm text-base-content/60 hover:text-error transition-colors"
-              onClick={() => handleDaySelect('')}
-            >
-              Limpar seleção
-            </button>
-          )}
         </div>
       )}
     </div>
