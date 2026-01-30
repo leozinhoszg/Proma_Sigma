@@ -12,12 +12,21 @@ export function useToast() {
     }, 3000);
   }, []);
 
+  const hideToast = useCallback((id) => {
+    if (id) {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    } else {
+      setToasts([]);
+    }
+  }, []);
+
   const success = useCallback((message) => showToast(message, 'success'), [showToast]);
   const error = useCallback((message) => showToast(message, 'error'), [showToast]);
   const warning = useCallback((message) => showToast(message, 'warning'), [showToast]);
   const info = useCallback((message) => showToast(message, 'info'), [showToast]);
 
-  return { toasts, showToast, success, error, warning, info };
+  // Compatibilidade: 'toast' é um alias para 'toasts'
+  return { toasts, toast: { toasts }, showToast, hideToast, success, error, warning, info };
 }
 
 export default useToast;

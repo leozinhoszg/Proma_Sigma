@@ -73,9 +73,15 @@ export default api;
 export const fornecedoresAPI = {
   getAll: () => api.get('/fornecedores'),
   getById: (id) => api.get(`/fornecedores/${id}`),
-  create: (nome) => api.post('/fornecedores', { nome }),
-  update: (id, nome) => api.put(`/fornecedores/${id}`, { nome }),
-  delete: (id) => api.delete(`/fornecedores/${id}`)
+  create: (data) => api.post('/fornecedores', typeof data === 'string' ? { nome: data } : data),
+  update: (id, data) => api.put(`/fornecedores/${id}`, typeof data === 'string' ? { nome: data } : data),
+  delete: (id) => api.delete(`/fornecedores/${id}`),
+  // Aliases em português
+  listar: () => api.get('/fornecedores'),
+  buscarPorId: (id) => api.get(`/fornecedores/${id}`),
+  criar: (data) => api.post('/fornecedores', typeof data === 'string' ? { nome: data } : data),
+  atualizar: (id, data) => api.put(`/fornecedores/${id}`, typeof data === 'string' ? { nome: data } : data),
+  excluir: (id) => api.delete(`/fornecedores/${id}`)
 };
 
 // ==================== CONTRATOS ====================
@@ -84,7 +90,13 @@ export const contratosAPI = {
   getById: (id) => api.get(`/contratos/${id}`),
   create: (data) => api.post('/contratos', data),
   update: (id, data) => api.put(`/contratos/${id}`, data),
-  delete: (id) => api.delete(`/contratos/${id}`)
+  delete: (id) => api.delete(`/contratos/${id}`),
+  // Aliases em português
+  listar: (fornecedorId) => api.get('/contratos', { params: fornecedorId ? { fornecedor: fornecedorId } : {} }),
+  buscarPorId: (id) => api.get(`/contratos/${id}`),
+  criar: (data) => api.post('/contratos', data),
+  atualizar: (id, data) => api.put(`/contratos/${id}`, data),
+  excluir: (id) => api.delete(`/contratos/${id}`)
 };
 
 // ==================== SEQUÊNCIAS ====================
@@ -94,14 +106,26 @@ export const sequenciasAPI = {
   create: (data) => api.post('/sequencias', data),
   update: (id, data) => api.put(`/sequencias/${id}`, data),
   updateStatus: (id, monthKey, status) => api.patch(`/sequencias/${id}/status`, { monthKey, status }),
-  delete: (id) => api.delete(`/sequencias/${id}`)
+  delete: (id) => api.delete(`/sequencias/${id}`),
+  // Aliases em português
+  listar: (contratoId) => api.get('/sequencias', { params: contratoId ? { contrato: contratoId } : {} }),
+  listarPorContrato: (contratoId) => api.get('/sequencias', { params: { contrato: contratoId } }),
+  buscarPorId: (id) => api.get(`/sequencias/${id}`),
+  criar: (data) => api.post('/sequencias', data),
+  atualizar: (id, data) => api.put(`/sequencias/${id}`, data),
+  atualizarStatus: (id, monthKey, status) => api.patch(`/sequencias/${id}/status`, { monthKey, status }),
+  excluir: (id) => api.delete(`/sequencias/${id}`)
 };
 
 // ==================== RELATÓRIO ====================
 export const relatorioAPI = {
   getTabela: () => api.get('/relatorio/tabela'),
   getResumo: () => api.get('/relatorio/resumo'),
-  loadSampleData: () => api.post('/relatorio/seed')
+  loadSampleData: () => api.post('/relatorio/seed'),
+  // Aliases em português - gerar retorna dados formatados para o relatório mensal
+  gerar: (mesAno) => api.get('/relatorio/tabela', { params: mesAno ? { mesAno } : {} }),
+  obterResumo: () => api.get('/relatorio/resumo'),
+  carregarDadosExemplo: () => api.post('/relatorio/seed')
 };
 
 // ==================== MEDIÇÕES ====================
@@ -112,5 +136,10 @@ export const medicoesAPI = {
   getStatus: (id) => api.get(`/medicoes/sequencia/${id}/status`),
   sincronizar: (id) => api.post(`/medicoes/sincronizar/${id}`),
   sincronizarTodas: () => api.post('/medicoes/sincronizar-todas'),
-  getAlertas: () => api.get('/medicoes/alertas')
+  getAlertas: () => api.get('/medicoes/alertas'),
+  // Aliases em português
+  listarPorSequencia: (id) => api.get(`/medicoes/sequencia/${id}`),
+  obterStatus: (id) => api.get(`/medicoes/sequencia/${id}/status`),
+  obterAlertas: () => api.get('/medicoes/alertas'),
+  atualizar: (id, data) => api.put(`/medicoes/${id}`, data)
 };

@@ -59,6 +59,7 @@ export function AuthProvider({ children }) {
 
   const value = {
     user,
+    usuario: user, // Alias para compatibilidade
     loading,
     login,
     logout,

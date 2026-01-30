@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { fornecedoresAPI, contratosAPI, relatorioAPI } from '../services/api';
+import { relatorioAPI } from '../services/api';
 import { formatCurrency, getStatusClass, getMonthKey } from '../utils/helpers';
 import Loading from '../components/ui/Loading';
 import EmptyState from '../components/ui/EmptyState';
@@ -26,49 +26,47 @@ export default function Dashboard() {
       setLoading(true);
       setError(null);
 
-      const [fornecedoresRes, contratosRes, relatorioRes] = await Promise.all([
-        fornecedoresAPI.listar(),
-        contratosAPI.listar(),
-        relatorioAPI.gerar(getMonthKey())
+      // Buscar dados do resumo e tabela
+      const [resumoRes, tabelaRes] = await Promise.all([
+        relatorioAPI.getResumo(),
+        relatorioAPI.getTabela()
       ]);
 
-      const fornecedores = fornecedoresRes.data || [];
-      const contratos = contratosRes.data || [];
-      const relatorio = relatorioRes.data || {};
+      const resumo = resumoRes.data || {};
+      const tabela = tabelaRes.data || [];
+
+      // Calcular atrasadas e pendentes a partir da tabela
+      const mesAtual = getMonthKey();
+      const hoje = new Date();
+      const diaAtual = hoje.getDate();
 
       const medicoesAtrasadas = [];
       const medicoesPendentes = [];
 
-      if (relatorio.fornecedores) {
-        relatorio.fornecedores.forEach(f => {
-          if (f.contratos) {
-            f.contratos.forEach(c => {
-              if (c.medicoes) {
-                c.medicoes.forEach(m => {
-                  const medicaoCompleta = {
-                    ...m,
-                    fornecedorNome: f.nome,
-                    contratoNumero: c.numero,
-                    contratoId: c._id
-                  };
+      tabela.forEach(row => {
+        const statusSalvo = row.statusMensal?.[mesAtual];
+        if (statusSalvo === 'ok') return;
 
-                  if (m.status === 'atrasada') {
-                    medicoesAtrasadas.push(medicaoCompleta);
-                  } else if (m.status === 'pendente') {
-                    medicoesPendentes.push(medicaoCompleta);
-                  }
-                });
-              }
-            });
-          }
-        });
-      }
+        const medicaoInfo = {
+          fornecedorNome: row.fornecedor,
+          contratoNumero: row.contrato,
+          sequencia: row.sequencia,
+          valor: row.valor,
+          diaEmissao: row.diaEmissao
+        };
+
+        if (diaAtual < row.diaEmissao) {
+          medicoesPendentes.push({ ...medicaoInfo, status: 'pendente' });
+        } else {
+          medicoesAtrasadas.push({ ...medicaoInfo, status: 'atrasada' });
+        }
+      });
 
       setStats({
-        totalFornecedores: fornecedores.length,
-        totalContratos: contratos.length,
-        pendentes: medicoesPendentes.length,
-        atrasadas: medicoesAtrasadas.length
+        totalFornecedores: resumo.fornecedores || 0,
+        totalContratos: resumo.contratos || 0,
+        pendentes: resumo.pendentes || medicoesPendentes.length,
+        atrasadas: resumo.atrasadas || medicoesAtrasadas.length
       });
 
       setAtrasadas(medicoesAtrasadas.slice(0, 5));

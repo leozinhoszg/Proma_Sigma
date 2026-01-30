@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { relatorioAPI, medicoesAPI } from '../services/api';
+import { relatorioAPI, sequenciasAPI } from '../services/api';
 import { formatCurrency, formatDate, getStatusClass, getMonthKey, getMonthName } from '../utils/helpers';
 import Loading from '../components/ui/Loading';
 import EmptyState from '../components/ui/EmptyState';
@@ -41,13 +41,71 @@ export default function RelatorioMensal() {
   const loadRelatorio = async () => {
     try {
       setLoading(true);
-      const response = await relatorioAPI.gerar(mesAno);
-      setRelatorio(response.data);
+      const response = await relatorioAPI.getTabela();
+      const tabela = response.data || [];
 
-      if (response.data?.fornecedores) {
-        const ids = new Set(response.data.fornecedores.map(f => f._id));
-        setExpandedFornecedores(ids);
-      }
+      // Transformar array plano em estrutura aninhada por fornecedor > contrato
+      const fornecedoresMap = new Map();
+      const hoje = new Date();
+      const diaAtual = hoje.getDate();
+
+      tabela.forEach(row => {
+        const fornecedorId = row.fornecedorId?._id || row.fornecedorId;
+        const contratoId = row.contratoId?._id || row.contratoId;
+
+        // Calcular status da sequência
+        const statusSalvo = row.statusMensal?.[mesAno];
+        let status = statusSalvo;
+        if (!status || status === 'pendente' || status === 'atrasada') {
+          if (diaAtual < row.diaEmissao) {
+            status = 'pendente';
+          } else if (!statusSalvo || statusSalvo !== 'ok') {
+            status = 'atrasada';
+          }
+        }
+
+        if (!fornecedoresMap.has(fornecedorId)) {
+          fornecedoresMap.set(fornecedorId, {
+            _id: fornecedorId,
+            nome: row.fornecedor,
+            contratos: new Map()
+          });
+        }
+
+        const fornecedor = fornecedoresMap.get(fornecedorId);
+        if (!fornecedor.contratos.has(contratoId)) {
+          fornecedor.contratos.set(contratoId, {
+            _id: contratoId,
+            numero: row.contrato,
+            estabelecimento: row.estabelecimento,
+            medicoes: []
+          });
+        }
+
+        const contrato = fornecedor.contratos.get(contratoId);
+        contrato.medicoes.push({
+          _id: row.sequenciaId,
+          sequencia: row.sequencia,
+          status: status,
+          valor: row.valor,
+          diaEmissao: row.diaEmissao,
+          dataMedicao: row.datMedicao,
+          nf: row.numeroNota,
+          observacoes: row.observacao
+        });
+      });
+
+      // Converter Maps para arrays
+      const fornecedoresArray = Array.from(fornecedoresMap.values()).map(f => ({
+        ...f,
+        contratos: Array.from(f.contratos.values())
+      }));
+
+      setRelatorio({ fornecedores: fornecedoresArray });
+
+      // Expandir todos os fornecedores por padrão
+      const ids = new Set(fornecedoresArray.map(f => f._id));
+      setExpandedFornecedores(ids);
     } catch (error) {
       console.error('Erro ao carregar relatório:', error);
       showToast('Erro ao carregar relatório', 'error');
@@ -115,24 +173,22 @@ export default function RelatorioMensal() {
 
     try {
       setSaving(true);
-      await medicoesAPI.atualizar(editingMedicao._id, {
-        ...editFormData,
-        valor: editFormData.valor ? parseFloat(editFormData.valor) : null
-      });
-      showToast('Medição atualizada com sucesso', 'success');
+      // Atualizar status da sequência usando a API de sequências
+      await sequenciasAPI.updateStatus(editingMedicao._id, mesAno, editFormData.status);
+      showToast('Status atualizado com sucesso', 'success');
       setIsEditModalOpen(false);
       loadRelatorio();
     } catch (error) {
-      console.error('Erro ao atualizar medição:', error);
-      showToast('Erro ao atualizar medição', 'error');
+      console.error('Erro ao atualizar status:', error);
+      showToast('Erro ao atualizar status', 'error');
     } finally {
       setSaving(false);
     }
   };
 
-  const handleQuickStatusChange = async (medicaoId, novoStatus) => {
+  const handleQuickStatusChange = async (sequenciaId, novoStatus) => {
     try {
-      await medicoesAPI.atualizar(medicaoId, { status: novoStatus });
+      await sequenciasAPI.updateStatus(sequenciaId, mesAno, novoStatus);
       showToast('Status atualizado', 'success');
       loadRelatorio();
     } catch (error) {

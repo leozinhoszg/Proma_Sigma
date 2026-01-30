@@ -34,14 +34,29 @@ export const maskCurrency = (value) => {
 const MONTH_NAMES = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
 const MONTH_FULL_NAMES = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
-export const getMonthName = (monthIndex) => MONTH_NAMES[monthIndex];
+// Obter nome do mês - aceita índice (0-11) ou chave do mês (ex: "2026-01")
+export const getMonthName = (monthIndexOrKey) => {
+  if (typeof monthIndexOrKey === 'string' && monthIndexOrKey.includes('-')) {
+    const [year, month] = monthIndexOrKey.split('-').map(Number);
+    return `${MONTH_FULL_NAMES[month - 1]} ${year}`;
+  }
+  return MONTH_NAMES[monthIndexOrKey];
+};
+
 export const getMonthFullName = (monthIndex) => MONTH_FULL_NAMES[monthIndex];
 
-// Gerar chave do mês
-export const getMonthKey = (year, month) => `${year}-${String(month + 1).padStart(2, '0')}`;
+// Gerar chave do mês - sem argumentos retorna o mês atual
+export const getMonthKey = (year, month) => {
+  if (year === undefined && month === undefined) {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  }
+  return `${year}-${String(month + 1).padStart(2, '0')}`;
+};
 
 // Parse de chave do mês
 export const parseMonthKey = (key) => {
+  if (!key) return { year: new Date().getFullYear(), month: new Date().getMonth() };
   const [year, month] = key.split('-').map(Number);
   return { year, month: month - 1 };
 };
