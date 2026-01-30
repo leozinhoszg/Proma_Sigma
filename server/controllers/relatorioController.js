@@ -1,4 +1,4 @@
-const { Fornecedor, Contrato, Sequencia } = require('../models');
+const { Fornecedor, Contrato, Sequencia, Medicao } = require('../models');
 
 // Dados completos para tabela mensal
 exports.getTabela = async (req, res) => {
@@ -9,21 +9,50 @@ exports.getTabela = async (req, res) => {
                 populate: { path: 'fornecedor', select: 'nome' }
             });
 
+        // Buscar a medição mais recente de cada sequência
+        const medicoesPorSequencia = {};
+        const medicoes = await Medicao.find()
+            .sort({ 'dat-medicao': -1 });
+
+        medicoes.forEach(med => {
+            const seqId = med.sequencia?.toString();
+            if (seqId && !medicoesPorSequencia[seqId]) {
+                medicoesPorSequencia[seqId] = {
+                    datMedicao: med['dat-medicao'],
+                    datPrevMedicao: med['dat-prev-medicao'],
+                    numeroNota: med['numero-nota'],
+                    valorMedicao: med['val-medicao'],
+                    statusRegistro: med.statusRegistro,
+                    responsavel: med['responsavel']
+                };
+            }
+        });
+
         const rows = sequencias
             .filter(seq => seq.contrato && seq.contrato.fornecedor)
-            .map(seq => ({
-                sequenciaId: seq._id,
-                fornecedor: seq.contrato.fornecedor.nome,
-                fornecedorId: seq.contrato.fornecedor._id,
-                contrato: seq.contrato['nr-contrato'] || seq.contrato.numero,
-                contratoId: seq.contrato._id,
-                estabelecimento: seq.contrato['cod-estabel'] || seq.contrato.estabelecimento || '01',
-                sequencia: seq['num-seq-item'] || seq.numero,
-                diaEmissao: seq.diaEmissao,
-                valor: seq.valor,
-                statusMensal: Object.fromEntries(seq.statusMensal || new Map()),
-                observacao: seq.contrato.observacao
-            }))
+            .map(seq => {
+                const medicaoRecente = medicoesPorSequencia[seq._id.toString()];
+                return {
+                    sequenciaId: seq._id,
+                    fornecedor: seq.contrato.fornecedor.nome,
+                    fornecedorId: seq.contrato.fornecedor._id,
+                    contrato: seq.contrato['nr-contrato'] || seq.contrato.numero,
+                    contratoId: seq.contrato._id,
+                    estabelecimento: seq.contrato['cod-estabel'] || seq.contrato.estabelecimento || '01',
+                    sequencia: seq['num-seq-item'] || seq.numero,
+                    diaEmissao: seq.diaEmissao,
+                    valor: seq.valor,
+                    statusMensal: Object.fromEntries(seq.statusMensal || new Map()),
+                    observacao: seq.contrato.observacao,
+                    // Dados da medição mais recente
+                    datMedicao: medicaoRecente?.datMedicao || null,
+                    datPrevMedicao: medicaoRecente?.datPrevMedicao || null,
+                    numeroNota: medicaoRecente?.numeroNota || null,
+                    valorMedicao: medicaoRecente?.valorMedicao || null,
+                    statusRegistro: medicaoRecente?.statusRegistro || null,
+                    responsavel: medicaoRecente?.responsavel || null
+                };
+            })
             .sort((a, b) => {
                 if (a.fornecedor !== b.fornecedor) return a.fornecedor.localeCompare(b.fornecedor);
                 if (a.contrato !== b.contrato) return a.contrato - b.contrato;

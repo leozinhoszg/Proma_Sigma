@@ -26,7 +26,10 @@ async function buscarMedicoesERP(nrContrato, codEstabel, numSeqItem) {
     console.log('Body:', JSON.stringify(requestBody, null, 2));
 
     try {
-        const response = await axios.post(ERP_API_URL, requestBody, {
+        // GET com body JSON (não é padrão HTTP, mas APIs TOTVS/Progress usam)
+        const response = await axios.request({
+            method: 'GET',
+            url: ERP_API_URL,
             timeout: 30000,
             headers: {
                 'Content-Type': 'application/json'
@@ -34,7 +37,8 @@ async function buscarMedicoesERP(nrContrato, codEstabel, numSeqItem) {
             auth: {
                 username: ERP_USERNAME,
                 password: ERP_PASSWORD
-            }
+            },
+            data: requestBody
         });
 
         console.log('=== Resposta API ERP ===');

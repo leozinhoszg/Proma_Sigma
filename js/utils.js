@@ -1,6 +1,28 @@
 // Utilitários do Sistema de Controle de Contratos
 
 const Utils = {
+    // ==================== TEMA ====================
+
+    // Inicializar tema (chamar no carregamento da página)
+    initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    },
+
+    // Alternar entre temas
+    toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    },
+
+    // Obter tema atual
+    getCurrentTheme() {
+        return document.documentElement.getAttribute('data-theme') || 'dark';
+    },
+
     // Gerar ID único
     generateId() {
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -12,6 +34,14 @@ const Utils = {
             style: 'currency',
             currency: 'BRL'
         }).format(value);
+    },
+
+    // Formatar data no padrão brasileiro (DD/MM/YYYY)
+    formatDate(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return '-';
+        return date.toLocaleDateString('pt-BR');
     },
 
     // Parse de valor monetário string para número
@@ -107,7 +137,8 @@ const Utils = {
             'atualizar_contrato': 'status-atualizar',
             'futuro': 'status-futuro',
             'registrada': 'status-registrada',
-            'nao_registrada': 'status-nao-registrada'
+            'nao_registrada': 'status-nao-registrada',
+            'nao_encontrado': 'status-nao-encontrado'
         };
         return classes[status] || '';
     },
@@ -121,7 +152,8 @@ const Utils = {
             'atualizar_contrato': 'ATUALIZAR',
             'futuro': '-',
             'registrada': 'REGISTRADA',
-            'nao_registrada': 'NÃO REG.'
+            'nao_registrada': 'NÃO REG.',
+            'nao_encontrado': 'N/A'
         };
         return texts[status] || status;
     },

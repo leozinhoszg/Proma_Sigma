@@ -10,6 +10,9 @@ const App = {
 
     // Inicializacao
     async init() {
+        // Inicializar tema
+        Utils.initTheme();
+
         // Verificar se API esta disponivel
         await DataManager.checkAPI();
 
@@ -513,6 +516,9 @@ const App = {
                     <th class="col-seq">Seq.</th>
                     <th class="col-emissao">Recebimento</th>
                     <th class="col-valor">Custo</th>
+                    <th class="col-data">Dt. Emissão</th>
+                    <th class="col-data">Dt. Medição</th>
+                    <th class="col-responsavel">Responsável</th>
                     ${months.map(m => `<th class="col-mes">${m.name}</th>`).join('')}
                 </tr>
             `;
@@ -521,7 +527,7 @@ const App = {
             if (filteredData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="${7 + months.length}" style="text-align: center; padding: 2rem;">
+                        <td colspan="${10 + months.length}" style="text-align: center; padding: 2rem;">
                             Nenhum dado encontrado
                         </td>
                     </tr>
@@ -542,14 +548,16 @@ const App = {
 
                     return `
                         <td class="col-mes">
-                            <span class="status-cell ${statusClass}"
-                                  onclick="App.toggleStatus('${seqId}', '${month.key}')"
-                                  title="Clique para alterar">
+                            <span class="status-cell ${statusClass}">
                                 ${statusText}
                             </span>
                         </td>
                     `;
                 }).join('');
+
+                const datEmissao = row.datPrevMedicao ? Utils.formatDate(row.datPrevMedicao) : '-';
+                const datMedicao = row.datMedicao ? Utils.formatDate(row.datMedicao) : '-';
+                const responsavel = row.responsavel || '-';
 
                 return `
                     <tr>
@@ -566,6 +574,9 @@ const App = {
                         <td class="col-seq">${row.sequencia}</td>
                         <td class="col-emissao">Dia ${row.diaEmissao}</td>
                         <td class="col-valor">${Utils.formatCurrency(row.valor)}</td>
+                        <td class="col-data">${datEmissao}</td>
+                        <td class="col-data">${datMedicao}</td>
+                        <td class="col-responsavel">${responsavel}</td>
                         ${monthCells}
                     </tr>
                 `;
