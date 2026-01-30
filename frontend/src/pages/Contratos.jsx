@@ -11,8 +11,7 @@ import Toast from '../components/ui/Toast';
 // Estabelecimentos disponíveis
 const ESTABELECIMENTOS = [
   { value: '01', label: '01 - PROMA CONTAGEM' },
-  { value: '02', label: '02 - PROMA BETIM' },
-  { value: '03', label: '03 - PROMA BH' }
+  { value: '02', label: '02 - PROMA JUATUBA' }
 ];
 
 const initialContratoForm = {
