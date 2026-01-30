@@ -50,8 +50,8 @@ refreshTokenSchema.virtual('isActive').get(function() {
 });
 
 // Indices para performance e limpeza
+// Nota: indice para token ja e criado automaticamente devido a unique: true
 refreshTokenSchema.index({ user: 1 });
 refreshTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-refreshTokenSchema.index({ token: 1 });
 
 module.exports = mongoose.model('RefreshToken', refreshTokenSchema);

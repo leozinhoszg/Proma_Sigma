@@ -9,9 +9,7 @@ const loginLimiter = rateLimit({
     },
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req) => {
-        return req.ip || req.connection.remoteAddress;
-    }
+    validate: { xForwardedForHeader: false }
 });
 
 // Rate limiter para registro

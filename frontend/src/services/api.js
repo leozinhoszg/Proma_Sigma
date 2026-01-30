@@ -1,0 +1,116 @@
+import axios from 'axios';
+
+// Usa variável de ambiente em produção, proxy em desenvolvimento
+const baseURL = import.meta.env.VITE_API_URL || '/api';
+const timeout = parseInt(import.meta.env.VITE_API_TIMEOUT) || 30000;
+
+const api = axios.create({
+  baseURL,
+  timeout,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Interceptor para adicionar token em todas as requisições
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Interceptor para lidar com erros de autenticação
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Se token expirou e não é uma retry
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      const refreshToken = localStorage.getItem('refreshToken') || sessionStorage.getItem('refreshToken');
+
+      if (refreshToken) {
+        try {
+          const response = await axios.post('/api/auth/refresh-token', { refreshToken });
+          const { accessToken, refreshToken: newRefreshToken } = response.data;
+
+          // Atualizar tokens
+          const storage = localStorage.getItem('accessToken') ? localStorage : sessionStorage;
+          storage.setItem('accessToken', accessToken);
+          storage.setItem('refreshToken', newRefreshToken);
+
+          // Refazer requisição original
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          return api(originalRequest);
+        } catch (refreshError) {
+          // Limpar auth e redirecionar para login
+          localStorage.removeItem('accessToken');
+          localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
+          sessionStorage.removeItem('accessToken');
+          sessionStorage.removeItem('refreshToken');
+          sessionStorage.removeItem('user');
+          window.location.href = '/login';
+          return Promise.reject(refreshError);
+        }
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+
+// ==================== FORNECEDORES ====================
+export const fornecedoresAPI = {
+  getAll: () => api.get('/fornecedores'),
+  getById: (id) => api.get(`/fornecedores/${id}`),
+  create: (nome) => api.post('/fornecedores', { nome }),
+  update: (id, nome) => api.put(`/fornecedores/${id}`, { nome }),
+  delete: (id) => api.delete(`/fornecedores/${id}`)
+};
+
+// ==================== CONTRATOS ====================
+export const contratosAPI = {
+  getAll: (fornecedorId) => api.get('/contratos', { params: fornecedorId ? { fornecedor: fornecedorId } : {} }),
+  getById: (id) => api.get(`/contratos/${id}`),
+  create: (data) => api.post('/contratos', data),
+  update: (id, data) => api.put(`/contratos/${id}`, data),
+  delete: (id) => api.delete(`/contratos/${id}`)
+};
+
+// ==================== SEQUÊNCIAS ====================
+export const sequenciasAPI = {
+  getAll: (contratoId) => api.get('/sequencias', { params: contratoId ? { contrato: contratoId } : {} }),
+  getById: (id) => api.get(`/sequencias/${id}`),
+  create: (data) => api.post('/sequencias', data),
+  update: (id, data) => api.put(`/sequencias/${id}`, data),
+  updateStatus: (id, monthKey, status) => api.patch(`/sequencias/${id}/status`, { monthKey, status }),
+  delete: (id) => api.delete(`/sequencias/${id}`)
+};
+
+// ==================== RELATÓRIO ====================
+export const relatorioAPI = {
+  getTabela: () => api.get('/relatorio/tabela'),
+  getResumo: () => api.get('/relatorio/resumo'),
+  loadSampleData: () => api.post('/relatorio/seed')
+};
+
+// ==================== MEDIÇÕES ====================
+export const medicoesAPI = {
+  getBySequencia: (id) => api.get(`/medicoes/sequencia/${id}`),
+  buscar: (contrato, estabelecimento, sequencia) =>
+    api.get('/medicoes/buscar', { params: { contrato, estabelecimento, sequencia } }),
+  getStatus: (id) => api.get(`/medicoes/sequencia/${id}/status`),
+  sincronizar: (id) => api.post(`/medicoes/sincronizar/${id}`),
+  sincronizarTodas: () => api.post('/medicoes/sincronizar-todas'),
+  getAlertas: () => api.get('/medicoes/alertas')
+};

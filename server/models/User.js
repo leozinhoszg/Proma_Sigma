@@ -110,8 +110,7 @@ userSchema.methods.gerarTokenResetSenha = function() {
     return token;
 };
 
-// Indices para buscas
-userSchema.index({ email: 1 });
-userSchema.index({ usuario: 1 });
+// Nota: indices para email e usuario ja sao criados automaticamente
+// devido a propriedade unique: true no schema
 
 module.exports = mongoose.model('User', userSchema);

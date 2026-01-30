@@ -12,15 +12,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Servir arquivos estaticos do frontend
-app.use(express.static(path.join(__dirname, '..')));
-
 // Rotas da API
 app.use('/api', routes);
 
-// Rota para o frontend (SPA)
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
+// Servir arquivos estaticos do frontend (build do Vite)
+const frontendPath = path.join(__dirname, '..', 'frontend', 'dist');
+app.use(express.static(frontendPath));
+
+// Rota para o frontend (SPA) - todas as rotas não-API retornam o index.html
+app.get('*', (req, res, next) => {
+    // Se a rota começa com /api, passa para o próximo handler
+    if (req.path.startsWith('/api')) {
+        return next();
+    }
+    res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // Tratamento de erros
@@ -49,6 +54,17 @@ const startServer = async () => {
   API:      http://localhost:${PORT}/api
 
   Endpoints disponiveis:
+
+  Auth:
+  - POST           /api/auth/register
+  - POST           /api/auth/login
+  - POST           /api/auth/logout
+  - POST           /api/auth/refresh-token
+  - GET            /api/auth/me
+  - POST           /api/auth/forgot-password
+  - POST           /api/auth/reset-password/:token
+
+  Recursos:
   - GET/POST       /api/fornecedores
   - GET/PUT/DELETE /api/fornecedores/:id
   - GET/POST       /api/contratos
