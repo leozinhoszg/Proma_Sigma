@@ -105,7 +105,9 @@ const Utils = {
             'pendente': 'status-pendente',
             'atrasada': 'status-atrasada',
             'atualizar_contrato': 'status-atualizar',
-            'futuro': 'status-futuro'
+            'futuro': 'status-futuro',
+            'registrada': 'status-registrada',
+            'nao_registrada': 'status-nao-registrada'
         };
         return classes[status] || '';
     },
@@ -114,10 +116,12 @@ const Utils = {
     getStatusText(status) {
         const texts = {
             'ok': 'OK',
-            'pendente': 'Pendente',
-            'atrasada': 'Atrasada',
-            'atualizar_contrato': 'Atualizar Contrato',
-            'futuro': '-'
+            'pendente': 'PENDENTE',
+            'atrasada': 'ATRASADA',
+            'atualizar_contrato': 'ATUALIZAR',
+            'futuro': '-',
+            'registrada': 'REGISTRADA',
+            'nao_registrada': 'NÃO REG.'
         };
         return texts[status] || status;
     },

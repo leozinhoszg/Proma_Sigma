@@ -6,6 +6,7 @@ const App = {
     currentContratoId: null,
     filterFornecedor: '',
     filterStatus: '',
+    selectedSequencias: new Set(),
 
     // Inicializacao
     async init() {
@@ -503,11 +504,14 @@ const App = {
             // Header
             thead.innerHTML = `
                 <tr>
+                    <th class="col-check" style="width: 40px; text-align: center;">
+                        <input type="checkbox" id="check-all" onchange="App.toggleSelectAll(this.checked)" title="Selecionar todas">
+                    </th>
                     <th class="col-fornecedor">Fornecedor</th>
                     <th class="col-contrato">Contrato</th>
                     <th class="col-estab">Estab.</th>
                     <th class="col-seq">Seq.</th>
-                    <th class="col-emissao">Emissao</th>
+                    <th class="col-emissao">Recebimento</th>
                     <th class="col-valor">Custo</th>
                     ${months.map(m => `<th class="col-mes">${m.name}</th>`).join('')}
                 </tr>
@@ -517,16 +521,18 @@ const App = {
             if (filteredData.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="${6 + months.length}" style="text-align: center; padding: 2rem;">
+                        <td colspan="${7 + months.length}" style="text-align: center; padding: 2rem;">
                             Nenhum dado encontrado
                         </td>
                     </tr>
                 `;
+                this.updateSyncCount();
                 return;
             }
 
             tbody.innerHTML = filteredData.map(row => {
                 const seqId = row.sequenciaId?._id || row.sequenciaId;
+                const isChecked = this.selectedSequencias.has(seqId);
                 const monthCells = months.map(month => {
                     const savedStatus = row.statusMensal[month.key];
                     const calculatedStatus = Utils.calculateStatus(row.diaEmissao, month.key, savedStatus === 'ok');
@@ -547,6 +553,13 @@ const App = {
 
                 return `
                     <tr>
+                        <td class="col-check" style="text-align: center;">
+                            <input type="checkbox"
+                                   class="seq-checkbox"
+                                   data-seq-id="${seqId}"
+                                   ${isChecked ? 'checked' : ''}
+                                   onchange="App.toggleSequenciaSelection('${seqId}', this.checked)">
+                        </td>
                         <td class="col-fornecedor">${row.fornecedor}</td>
                         <td class="col-contrato">${row.contrato}</td>
                         <td class="col-estab">${row.estabelecimento}</td>
@@ -557,6 +570,8 @@ const App = {
                     </tr>
                 `;
             }).join('');
+
+            this.updateSyncCount();
         } catch (error) {
             console.error('Erro ao renderizar relatorio:', error);
             Utils.showToast('Erro ao carregar relatorio', 'error');
@@ -573,8 +588,8 @@ const App = {
             const currentStatus = statusMensal[monthKey] ||
                                  Utils.calculateStatus(sequencia.diaEmissao, monthKey);
 
-            // Ciclar entre status: pendente -> ok -> atrasada -> pendente
-            const statusOrder = ['pendente', 'ok', 'atrasada', 'atualizar_contrato'];
+            // Ciclar entre status: pendente -> ok -> atrasada -> atualizar_contrato -> registrada -> nao_registrada -> pendente
+            const statusOrder = ['pendente', 'ok', 'atrasada', 'atualizar_contrato', 'registrada', 'nao_registrada'];
             const currentIndex = statusOrder.indexOf(currentStatus);
             const nextStatus = statusOrder[(currentIndex + 1) % statusOrder.length];
 
@@ -589,6 +604,134 @@ const App = {
     async applyFilter() {
         this.filterFornecedor = document.getElementById('filter-fornecedor').value;
         await this.renderRelatorio();
+    },
+
+    async sincronizarMedicoes() {
+        const btn = document.getElementById('btn-sincronizar');
+        const textoOriginal = btn.textContent;
+
+        try {
+            btn.textContent = 'Sincronizando...';
+            btn.disabled = true;
+
+            const resultado = await DataManager.sincronizarTodasMedicoes();
+
+            if (resultado.sucessos !== undefined) {
+                Utils.showToast(`Sincronizado: ${resultado.sucessos} sequencias com sucesso`, 'success');
+                if (resultado.erros > 0) {
+                    Utils.showToast(`${resultado.erros} sequencias com erro`, 'warning');
+                }
+            } else {
+                Utils.showToast(resultado.message || 'Sincronizacao concluida', 'info');
+            }
+
+            await this.renderRelatorio();
+        } catch (error) {
+            console.error('Erro ao sincronizar:', error);
+            Utils.showToast('Erro ao sincronizar com ERP', 'error');
+        } finally {
+            btn.textContent = textoOriginal;
+            btn.disabled = false;
+        }
+    },
+
+    // Selecionar/desselecionar uma sequência
+    toggleSequenciaSelection(seqId, isSelected) {
+        if (isSelected) {
+            this.selectedSequencias.add(seqId);
+        } else {
+            this.selectedSequencias.delete(seqId);
+        }
+        this.updateSyncCount();
+        this.updateCheckAllState();
+    },
+
+    // Selecionar/desselecionar todas
+    toggleSelectAll(isSelected) {
+        const checkboxes = document.querySelectorAll('.seq-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = isSelected;
+            const seqId = cb.dataset.seqId;
+            if (isSelected) {
+                this.selectedSequencias.add(seqId);
+            } else {
+                this.selectedSequencias.delete(seqId);
+            }
+        });
+        this.updateSyncCount();
+    },
+
+    // Atualizar estado do checkbox "selecionar todas"
+    updateCheckAllState() {
+        const checkAll = document.getElementById('check-all');
+        const checkboxes = document.querySelectorAll('.seq-checkbox');
+        if (checkAll && checkboxes.length > 0) {
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            const someChecked = Array.from(checkboxes).some(cb => cb.checked);
+            checkAll.checked = allChecked;
+            checkAll.indeterminate = someChecked && !allChecked;
+        }
+    },
+
+    // Atualizar contador de selecionadas
+    updateSyncCount() {
+        const count = this.selectedSequencias.size;
+        const countEl = document.getElementById('sync-count');
+        const btnSync = document.getElementById('btn-sincronizar-selecionadas');
+
+        if (countEl) {
+            countEl.textContent = `${count} selecionada${count !== 1 ? 's' : ''}`;
+        }
+        if (btnSync) {
+            btnSync.disabled = count === 0;
+        }
+    },
+
+    // Sincronizar apenas as sequências selecionadas
+    async sincronizarSelecionadas() {
+        if (this.selectedSequencias.size === 0) {
+            Utils.showToast('Selecione ao menos uma sequencia', 'warning');
+            return;
+        }
+
+        const btn = document.getElementById('btn-sincronizar-selecionadas');
+        const textoOriginal = btn.textContent;
+
+        try {
+            btn.textContent = 'Sincronizando...';
+            btn.disabled = true;
+
+            let sucessos = 0;
+            let erros = 0;
+            const total = this.selectedSequencias.size;
+
+            for (const seqId of this.selectedSequencias) {
+                try {
+                    await DataManager.sincronizarMedicoes(seqId);
+                    sucessos++;
+                } catch (err) {
+                    console.error(`Erro ao sincronizar ${seqId}:`, err);
+                    erros++;
+                }
+            }
+
+            if (sucessos > 0) {
+                Utils.showToast(`Sincronizado: ${sucessos}/${total} sequencias`, 'success');
+            }
+            if (erros > 0) {
+                Utils.showToast(`${erros} sequencias com erro`, 'warning');
+            }
+
+            // Limpar seleção após sincronizar
+            this.selectedSequencias.clear();
+            await this.renderRelatorio();
+        } catch (error) {
+            console.error('Erro ao sincronizar selecionadas:', error);
+            Utils.showToast('Erro ao sincronizar com ERP', 'error');
+        } finally {
+            btn.textContent = textoOriginal;
+            this.updateSyncCount();
+        }
     },
 
     // ==================== MODAIS ====================

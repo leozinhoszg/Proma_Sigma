@@ -3,11 +3,13 @@ const contratoController = require('./contratoController');
 const sequenciaController = require('./sequenciaController');
 const relatorioController = require('./relatorioController');
 const webhookController = require('./webhookController');
+const medicaoController = require('./medicaoController');
 
 module.exports = {
     fornecedorController,
     contratoController,
     sequenciaController,
     relatorioController,
-    webhookController
+    webhookController,
+    medicaoController
 };

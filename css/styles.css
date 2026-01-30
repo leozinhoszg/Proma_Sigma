@@ -24,6 +24,10 @@
     --status-atualizar-bg: #ffedd5;
     --status-futuro: #94a3b8;
     --status-futuro-bg: #f1f5f9;
+    --status-registrada: #059669;
+    --status-registrada-bg: #d1fae5;
+    --status-nao-registrada: #7c3aed;
+    --status-nao-registrada-bg: #ede9fe;
 
     /* Neutros */
     --bg: #f8fafc;
@@ -276,6 +280,25 @@ body {
     padding: var(--spacing-xs);
 }
 
+.table .col-check {
+    width: 40px;
+    text-align: center;
+}
+
+.table .col-check input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+/* Botões de sincronização */
+.sync-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
 /* Células de status mensal */
 .status-cell {
     padding: 4px 8px;
@@ -317,6 +340,16 @@ body {
 .status-futuro {
     background: var(--status-futuro-bg);
     color: var(--status-futuro);
+}
+
+.status-registrada {
+    background: var(--status-registrada-bg);
+    color: var(--status-registrada);
+}
+
+.status-nao-registrada {
+    background: var(--status-nao-registrada-bg);
+    color: var(--status-nao-registrada);
 }
 
 /* ==================== BOTÕES ==================== */

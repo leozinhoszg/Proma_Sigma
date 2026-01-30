@@ -68,6 +68,14 @@ const startServer = async () => {
   - POST           /api/webhooks/verificar-atrasadas
   - POST           /api/webhooks/enviar-resumo
 
+  Medicoes (API ERP):
+  - GET            /api/medicoes/buscar?contrato=&estabelecimento=&sequencia=
+  - GET            /api/medicoes/alertas
+  - GET            /api/medicoes/sequencia/:id
+  - GET            /api/medicoes/sequencia/:id/status
+  - POST           /api/medicoes/sincronizar/:sequenciaId
+  - POST           /api/medicoes/sincronizar-todas
+
 ========================================
             `);
         });

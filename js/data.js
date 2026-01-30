@@ -539,6 +539,43 @@ const DataManager = {
             return true;
         }
         return false;
+    },
+
+    // ==================== MEDIÇÕES (API ERP) ====================
+
+    async getMedicoes(sequenciaId) {
+        if (this.useAPI) {
+            return await API.getMedicoes(sequenciaId);
+        }
+        return [];
+    },
+
+    async sincronizarMedicoes(sequenciaId) {
+        if (this.useAPI) {
+            return await API.sincronizarMedicoes(sequenciaId);
+        }
+        return { message: 'Sincronização disponível apenas no modo API' };
+    },
+
+    async sincronizarTodasMedicoes() {
+        if (this.useAPI) {
+            return await API.sincronizarTodasMedicoes();
+        }
+        return { message: 'Sincronização disponível apenas no modo API' };
+    },
+
+    async getStatusConsolidado(sequenciaId) {
+        if (this.useAPI) {
+            return await API.getStatusConsolidado(sequenciaId);
+        }
+        return null;
+    },
+
+    async getAlertasMedicoes() {
+        if (this.useAPI) {
+            return await API.getAlertasMedicoes();
+        }
+        return [];
     }
 };
 

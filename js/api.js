@@ -147,6 +147,36 @@ const API = {
         });
     },
 
+    // ==================== MEDIÇÕES (API ERP) ====================
+
+    async getMedicoes(sequenciaId) {
+        return this.request(`/medicoes/sequencia/${sequenciaId}`);
+    },
+
+    async getMedicoesBuscar(contrato, estabelecimento, sequencia) {
+        return this.request(`/medicoes/buscar?contrato=${contrato}&estabelecimento=${estabelecimento}&sequencia=${sequencia}`);
+    },
+
+    async getStatusConsolidado(sequenciaId) {
+        return this.request(`/medicoes/sequencia/${sequenciaId}/status`);
+    },
+
+    async sincronizarMedicoes(sequenciaId) {
+        return this.request(`/medicoes/sincronizar/${sequenciaId}`, {
+            method: 'POST'
+        });
+    },
+
+    async sincronizarTodasMedicoes() {
+        return this.request('/medicoes/sincronizar-todas', {
+            method: 'POST'
+        });
+    },
+
+    async getAlertasMedicoes() {
+        return this.request('/medicoes/alertas');
+    },
+
     // ==================== HEALTH CHECK ====================
 
     async isAvailable() {

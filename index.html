@@ -114,13 +114,22 @@
             <section id="section-relatorio" class="section">
                 <div class="section-header">
                     <h1 class="section-title">Relat&oacute;rio Mensal</h1>
+                    <div class="sync-actions">
+                        <span id="sync-count" style="color: var(--text-secondary); font-size: 13px; margin-right: 1rem;">0 selecionadas</span>
+                        <button class="btn btn-secondary" onclick="App.sincronizarSelecionadas()" id="btn-sincronizar-selecionadas" disabled>
+                            Sincronizar Selecionadas
+                        </button>
+                        <button class="btn btn-primary" onclick="App.sincronizarMedicoes()" id="btn-sincronizar">
+                            Sincronizar Todas
+                        </button>
+                    </div>
                 </div>
 
                 <div class="filters">
                     <div class="filter-group">
                         <label class="filter-label">Fornecedor:</label>
                         <select class="form-select" id="filter-fornecedor" onchange="App.applyFilter()" style="width: 200px;">
-                            <option value="">Todos</option>
+                            <option value="">Todos os fornecedores</option>
                         </select>
                     </div>
                 </div>
@@ -137,7 +146,7 @@
                 </div>
 
                 <p style="margin-top: 1rem; color: var(--text-secondary); font-size: 12px;">
-                    Clique nas c&eacute;lulas de status para alternar entre: Pendente &rarr; OK &rarr; Atrasada &rarr; Atualizar Contrato
+                    Clique nas c&eacute;lulas de status para alternar entre: Pendente &rarr; OK &rarr; Atrasada &rarr; Atualizar Contrato &rarr; Registrada &rarr; N&atilde;o Registrada
                 </p>
             </section>
         </main>

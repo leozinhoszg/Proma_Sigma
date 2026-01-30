@@ -25,7 +25,7 @@ const sequenciaSchema = new mongoose.Schema({
         type: Map,
         of: {
             type: String,
-            enum: ['ok', 'pendente', 'atrasada', 'atualizar_contrato', 'futuro']
+            enum: ['ok', 'pendente', 'atrasada', 'atualizar_contrato', 'futuro', 'registrada', 'nao_registrada']
         },
         default: {}
     }
