@@ -119,7 +119,7 @@ export const sequenciasAPI = {
 
 // ==================== RELATÓRIO ====================
 export const relatorioAPI = {
-  getTabela: () => api.get('/relatorio/tabela'),
+  getTabela: (ano) => api.get('/relatorio/tabela', { params: ano ? { ano } : {} }),
   getResumo: () => api.get('/relatorio/resumo'),
   loadSampleData: () => api.post('/relatorio/seed'),
   // Aliases em português - gerar retorna dados formatados para o relatório mensal

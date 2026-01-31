@@ -56,7 +56,7 @@ export default function RelatorioMensal() {
   const loadRelatorio = async () => {
     try {
       setLoading(true);
-      const response = await relatorioAPI.getTabela();
+      const response = await relatorioAPI.getTabela(anoAtual);
       const tabela = response.data || [];
       setRelatorio(tabela);
 

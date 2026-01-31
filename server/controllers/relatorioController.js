@@ -3,16 +3,23 @@ const { Fornecedor, Contrato, Sequencia, Medicao } = require('../models');
 // Dados completos para tabela mensal
 exports.getTabela = async (req, res) => {
     try {
+        const { ano } = req.query;
+        const anoFiltro = ano ? parseInt(ano) : new Date().getFullYear();
+
         const sequencias = await Sequencia.find()
             .populate({
                 path: 'contrato',
                 populate: { path: 'fornecedor', select: 'nome' }
             });
 
-        // Buscar a medição mais recente de cada sequência
+        // Buscar medições do ano selecionado
+        const inicioAno = new Date(anoFiltro, 0, 1);
+        const fimAno = new Date(anoFiltro, 11, 31, 23, 59, 59);
+
         const medicoesPorSequencia = {};
-        const medicoes = await Medicao.find()
-            .sort({ 'dat-medicao': -1 });
+        const medicoes = await Medicao.find({
+            'dat-medicao': { $gte: inicioAno, $lte: fimAno }
+        }).sort({ 'dat-medicao': -1 });
 
         medicoes.forEach(med => {
             const seqId = med.sequencia?.toString();
