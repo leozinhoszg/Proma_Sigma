@@ -10,9 +10,7 @@ const allNavItems = [
   { path: '/', label: 'Dashboard', permissao: 'dashboard' },
   { path: '/fornecedores', label: 'Fornecedores', permissao: 'fornecedores' },
   { path: '/contratos', label: 'Contratos', permissao: 'contratos' },
-  { path: '/relatorio', label: 'Relatório', permissao: 'relatorio' },
-  { path: '/usuarios', label: 'Usuários', permissao: 'usuarios' },
-  { path: '/perfis', label: 'Perfis', permissao: 'perfis' }
+  { path: '/relatorio', label: 'Relatório', permissao: 'relatorio' }
 ];
 
 export default function MainLayout() {
@@ -39,6 +37,15 @@ export default function MainLayout() {
     // Filtrar baseado nas permissões do perfil
     const permissoes = perfil.permissoes || [];
     return allNavItems.filter(item => permissoes.includes(item.permissao));
+  }, [usuario?.perfil]);
+
+  // Verificar se tem acesso às configurações (usuários ou perfis)
+  const temAcessoConfiguracoes = useMemo(() => {
+    const perfil = usuario?.perfil;
+    if (!perfil) return false;
+    if (perfil.isAdmin) return true;
+    const permissoes = perfil.permissoes || [];
+    return permissoes.includes('usuarios') || permissoes.includes('perfis');
   }, [usuario?.perfil]);
 
   const handleLogout = () => {
@@ -127,6 +134,19 @@ export default function MainLayout() {
                         <p className="text-sm font-medium text-base-content">{usuario?.usuario || 'Usuário'}</p>
                         <p className="text-xs text-base-content/60 capitalize">{usuario?.perfil?.nome || 'Sem perfil'}</p>
                       </div>
+                      {temAcessoConfiguracoes && (
+                        <Link
+                          to="/configuracoes"
+                          onClick={() => setUserMenuOpen(false)}
+                          className="w-full px-4 py-2 text-left text-sm text-base-content hover:bg-base-200 transition-colors flex items-center gap-2"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          Configuracoes
+                        </Link>
+                      )}
                       <button
                         onClick={handleLogout}
                         className="w-full px-4 py-2 text-left text-sm text-error hover:bg-error/10 transition-colors flex items-center gap-2"
