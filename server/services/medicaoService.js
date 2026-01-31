@@ -2,9 +2,9 @@ const axios = require('axios');
 const { Medicao, Sequencia, Contrato } = require('../models');
 
 // Configuração da API do ERP
-const ERP_API_URL = process.env.ERP_API_URL || 'http://192.168.69.213:8080/api/cnp/v1/medicoes';
-const ERP_USERNAME = process.env.ERP_USERNAME || 'lguimaraes@prmbrz';
-const ERP_PASSWORD = process.env.ERP_PASSWORD || 'Peltre-13@';
+const ERP_API_URL = process.env.ERP_API_URL;
+const ERP_USERNAME = process.env.ERP_USERNAME;
+const ERP_PASSWORD = process.env.ERP_PASSWORD;
 
 /**
  * Busca medições da API do ERP

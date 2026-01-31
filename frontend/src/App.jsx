@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedPermission from './components/ProtectedPermission';
 import MainLayout from './components/layout/MainLayout';
 
 // Pages - Auth
@@ -43,10 +44,26 @@ function App() {
             }
           >
             <Route path="/" element={<Dashboard />} />
-            <Route path="/fornecedores" element={<Fornecedores />} />
-            <Route path="/contratos" element={<Contratos />} />
-            <Route path="/relatorio" element={<RelatorioMensal />} />
-            <Route path="/configuracoes" element={<Configuracoes />} />
+            <Route path="/fornecedores" element={
+              <ProtectedPermission permissao="fornecedores">
+                <Fornecedores />
+              </ProtectedPermission>
+            } />
+            <Route path="/contratos" element={
+              <ProtectedPermission permissao="contratos">
+                <Contratos />
+              </ProtectedPermission>
+            } />
+            <Route path="/relatorio" element={
+              <ProtectedPermission permissao="relatorio">
+                <RelatorioMensal />
+              </ProtectedPermission>
+            } />
+            <Route path="/configuracoes" element={
+              <ProtectedPermission permissao={['usuarios', 'perfis']}>
+                <Configuracoes />
+              </ProtectedPermission>
+            } />
           </Route>
 
           {/* Redirecionar rotas desconhecidas */}
