@@ -17,6 +17,10 @@ router.post('/resend-verification', authController.resendVerification);
 router.post('/forgot-password', forgotPasswordLimiter, authController.forgotPassword);
 router.post('/reset-password/:token', authController.resetPassword);
 
+// Rotas OTP para redefinicao de senha
+router.post('/solicitar-otp-reset', forgotPasswordLimiter, authController.solicitarOtpResetSenha);
+router.post('/verificar-otp-reset', authController.verificarOtpResetSenha);
+
 // Rotas protegidas
 router.post('/logout', autenticar, authController.logout);
 router.post('/logout-all', autenticar, authController.logoutAll);

@@ -1,4 +1,5 @@
 const { User, Perfil } = require('../models');
+const emailService = require('../services/emailService');
 
 // Listar todos os usuarios
 exports.getAll = async (req, res) => {
@@ -56,7 +57,7 @@ exports.getById = async (req, res) => {
 // Criar novo usuario
 exports.create = async (req, res) => {
     try {
-        const { usuario, email, senha, perfil, ativo } = req.body;
+        const { usuario, email, senha, perfil, ativo, enviarEmail } = req.body;
 
         // Verificar se usuario ou email ja existem
         const usuarioExistente = await User.findOne({
@@ -82,6 +83,9 @@ exports.create = async (req, res) => {
             }
         }
 
+        // Guardar senha original para envio por email
+        const senhaOriginal = senha;
+
         // Criar usuario
         const novoUsuario = new User({
             usuario,
@@ -94,6 +98,18 @@ exports.create = async (req, res) => {
 
         await novoUsuario.save();
 
+        // Enviar email de boas-vindas com credenciais (se habilitado)
+        let emailEnviado = false;
+        if (enviarEmail !== false) {
+            try {
+                await emailService.enviarEmailNovoUsuario(novoUsuario, senhaOriginal);
+                emailEnviado = true;
+            } catch (emailError) {
+                console.error('Erro ao enviar email de boas-vindas:', emailError);
+                // Nao falha a criacao se o email falhar
+            }
+        }
+
         // Retornar com perfil populado
         const usuarioResponse = await User.findById(novoUsuario._id)
             .select('-tokenVerificacaoEmail -tokenVerificacaoExpira -tokenResetSenha -tokenResetExpira -tentativasLogin -bloqueadoAte')
@@ -101,7 +117,8 @@ exports.create = async (req, res) => {
 
         res.status(201).json({
             message: 'Usuario criado com sucesso',
-            usuario: usuarioResponse
+            usuario: usuarioResponse,
+            emailEnviado
         });
     } catch (error) {
         res.status(400).json({ message: error.message });

@@ -54,6 +54,14 @@ const userSchema = new mongoose.Schema({
         type: Date,
         select: false
     },
+    otpCode: {
+        type: String,
+        select: false
+    },
+    otpExpira: {
+        type: Date,
+        select: false
+    },
     ultimoLogin: {
         type: Date
     },
@@ -108,6 +116,40 @@ userSchema.methods.gerarTokenResetSenha = function() {
     this.tokenResetExpira = Date.now() + 60 * 60 * 1000; // 1 hora
 
     return token;
+};
+
+// Metodo para gerar codigo OTP de 6 digitos
+userSchema.methods.gerarCodigoOtp = function() {
+    // Gera codigo numerico de 6 digitos
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // Armazena hash do OTP por seguranca
+    this.otpCode = crypto
+        .createHash('sha256')
+        .update(otp)
+        .digest('hex');
+
+    this.otpExpira = Date.now() + 15 * 60 * 1000; // 15 minutos
+
+    return otp;
+};
+
+// Metodo para verificar codigo OTP
+userSchema.methods.verificarOtp = function(otpInformado) {
+    if (!this.otpCode || !this.otpExpira) {
+        return false;
+    }
+
+    if (Date.now() > this.otpExpira) {
+        return false;
+    }
+
+    const hashOtpInformado = crypto
+        .createHash('sha256')
+        .update(otpInformado)
+        .digest('hex');
+
+    return this.otpCode === hashOtpInformado;
 };
 
 // Nota: indices para email e usuario ja sao criados automaticamente

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
+import ThemeToggle from '../components/ui/ThemeToggle';
+import loginBg from '../assets/login.png';
 import logo from '../assets/PROMA 6.2.png';
 
 export default function ResetPassword() {
@@ -25,9 +27,9 @@ export default function ResetPassword() {
     if (/[0-9]/.test(password)) strength++;
     if (/[^A-Za-z0-9]/.test(password)) strength++;
 
-    if (strength <= 2) return { class: 'progress-error', width: 33, label: 'Fraca' };
-    if (strength <= 3) return { class: 'progress-warning', width: 66, label: 'Média' };
-    return { class: 'progress-success', width: 100, label: 'Forte' };
+    if (strength <= 2) return { class: 'progress-error', width: 33, label: 'Fraca', textClass: 'text-error' };
+    if (strength <= 3) return { class: 'progress-warning', width: 66, label: 'Média', textClass: 'text-warning' };
+    return { class: 'progress-success', width: 100, label: 'Forte', textClass: 'text-success' };
   };
 
   const handleSubmit = async (e) => {
@@ -68,24 +70,69 @@ export default function ResetPassword() {
   // Token inválido
   if (invalidToken) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
-        <div className="card w-full max-w-md bg-base-100 shadow-xl">
-          <div className="card-body text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-full bg-error/20 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+      <div className="min-h-screen flex bg-base-100">
+        {/* Theme Toggle */}
+        <div className="fixed top-6 right-6 z-50">
+          <ThemeToggle className="btn-circle glass-card shadow-lg" />
+        </div>
+
+        {/* Left Side - Image Background */}
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+          <img
+            src={loginBg}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
+            <div className="max-w-md text-center">
+              <div className="flex items-center justify-center gap-4 mb-8">
+                <img src={logo} alt="PROMA" className="h-24" />
+                <span className="text-5xl font-bold tracking-tight drop-shadow-lg">PROMA SIGMA</span>
               </div>
+              <p className="text-white/80 text-lg leading-relaxed drop-shadow">
+                Sistema de gestão e monitoramento de contratos com fornecedores
+              </p>
             </div>
-            <h2 className="text-xl font-bold text-error mb-2">Link inválido ou expirado</h2>
-            <p className="text-base-content/60 mb-6">
+          </div>
+        </div>
+
+        {/* Right Side - Error */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-base-100 border-l-4 border-primary/20">
+          <div className="w-full max-w-md animate-fadeInUp text-center">
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+              <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center">
+                <img src={logo} alt="PROMA" className="h-9" />
+              </div>
+              <span className="text-2xl font-bold text-primary">PROMA SIGMA</span>
+            </div>
+
+            {/* Error Icon */}
+            <div className="w-20 h-20 mx-auto rounded-full bg-error/10 flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+
+            <h2 className="text-2xl font-bold text-error mb-3">Link inválido ou expirado</h2>
+            <p className="text-base-content/60 mb-8 leading-relaxed">
               O link de redefinição de senha é inválido ou já expirou.
-              Solicite um novo link.
+              Solicite um novo link para recuperar sua senha.
             </p>
-            <Link to="/esqueci-senha" className="btn btn-primary">
+
+            <Link
+              to="/esqueci-senha"
+              className="btn btn-primary w-full h-12 text-base font-medium rounded-xl"
+            >
               Solicitar novo link
             </Link>
+
+            <p className="text-center text-sm text-base-content/60 mt-8">
+              <Link to="/login" className="font-medium text-primary hover:underline">
+                Voltar ao login
+              </Link>
+            </p>
           </div>
         </div>
       </div>
@@ -95,21 +142,57 @@ export default function ResetPassword() {
   // Sucesso
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
-        <div className="card w-full max-w-md bg-base-100 shadow-xl">
-          <div className="card-body text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+      <div className="min-h-screen flex bg-base-100">
+        {/* Theme Toggle */}
+        <div className="fixed top-6 right-6 z-50">
+          <ThemeToggle className="btn-circle glass-card shadow-lg" />
+        </div>
+
+        {/* Left Side - Image Background */}
+        <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+          <img
+            src={loginBg}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
+            <div className="max-w-md text-center">
+              <div className="flex items-center justify-center gap-4 mb-8">
+                <img src={logo} alt="PROMA" className="h-24" />
+                <span className="text-5xl font-bold tracking-tight drop-shadow-lg">PROMA SIGMA</span>
               </div>
+              <p className="text-white/80 text-lg leading-relaxed drop-shadow">
+                Sistema de gestão e monitoramento de contratos com fornecedores
+              </p>
             </div>
-            <h2 className="text-xl font-bold text-success mb-2">Senha alterada!</h2>
-            <p className="text-base-content/60">
-              Sua senha foi alterada com sucesso. Redirecionando para o login...
+          </div>
+        </div>
+
+        {/* Right Side - Success */}
+        <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-base-100 border-l-4 border-primary/20">
+          <div className="w-full max-w-md animate-fadeInUp text-center">
+            {/* Mobile Logo */}
+            <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+              <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center">
+                <img src={logo} alt="PROMA" className="h-9" />
+              </div>
+              <span className="text-2xl font-bold text-primary">PROMA SIGMA</span>
+            </div>
+
+            {/* Success Icon */}
+            <div className="w-20 h-20 mx-auto rounded-full bg-success/10 flex items-center justify-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+
+            <h2 className="text-2xl font-bold text-success mb-3">Senha alterada com sucesso!</h2>
+            <p className="text-base-content/60 mb-6 leading-relaxed">
+              Sua senha foi redefinida. Você será redirecionado para a página de login.
             </p>
-            <span className="loading loading-dots loading-md mt-4"></span>
+
+            <span className="loading loading-dots loading-lg text-primary"></span>
           </div>
         </div>
       </div>
@@ -118,40 +201,115 @@ export default function ResetPassword() {
 
   // Formulário
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
-      <div className="card w-full max-w-md bg-base-100 shadow-xl">
-        <div className="card-body">
-          {/* Header */}
-          <div className="text-center mb-6">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
-                <img src={logo} alt="PROMA" className="h-10" />
+    <div className="min-h-screen flex bg-base-100">
+      {/* Theme Toggle */}
+      <div className="fixed top-6 right-6 z-50">
+        <ThemeToggle className="btn-circle glass-card shadow-lg" />
+      </div>
+
+      {/* Left Side - Image Background */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        {/* Background Image */}
+        <img
+          src={loginBg}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/20"></div>
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
+          <div className="max-w-md text-center">
+            {/* Logo */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <img src={logo} alt="PROMA" className="h-24" />
+              <span className="text-5xl font-bold tracking-tight drop-shadow-lg">PROMA SIGMA</span>
+            </div>
+            <p className="text-white/80 text-lg leading-relaxed drop-shadow">
+              Crie uma nova senha segura para proteger sua conta
+            </p>
+
+            {/* Security Tips */}
+            <div className="mt-12 space-y-4 text-left">
+              <div className="flex items-center gap-4 p-3 rounded-lg bg-white/10 backdrop-blur-sm">
+                <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                </div>
+                <span className="text-sm">Use no mínimo 6 caracteres</span>
+              </div>
+              <div className="flex items-center gap-4 p-3 rounded-lg bg-white/10 backdrop-blur-sm">
+                <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <span className="text-sm">Combine letras, números e símbolos</span>
+              </div>
+              <div className="flex items-center gap-4 p-3 rounded-lg bg-white/10 backdrop-blur-sm">
+                <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                </div>
+                <span className="text-sm">Evite senhas óbvias ou repetidas</span>
               </div>
             </div>
-            <h1 className="text-2xl font-bold">Redefinir senha</h1>
-            <p className="text-base-content/60 mt-1">PROMA SIGMA - Digite sua nova senha abaixo</p>
           </div>
+        </div>
+      </div>
+
+      {/* Right Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-base-100 border-l-4 border-primary/20">
+        <div className="w-full max-w-md animate-fadeInUp">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
+            <div className="w-14 h-14 bg-primary rounded-xl flex items-center justify-center">
+              <img src={logo} alt="PROMA" className="h-9" />
+            </div>
+            <span className="text-2xl font-bold text-primary">PROMA SIGMA</span>
+          </div>
+
+          {/* Back Link */}
+          <Link
+            to="/login"
+            className="inline-flex items-center gap-2 text-base-content/60 hover:text-base-content transition-colors mb-6 group"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Voltar ao login
+          </Link>
+
+          {/* Title */}
+          <h1 className="text-3xl font-bold text-base-content mb-2">Redefinir Senha</h1>
+          <p className="text-base-content/60 mb-8">
+            Digite sua nova senha abaixo
+          </p>
 
           {/* Erro */}
           {error && (
-            <div className="alert alert-error mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div className="mb-6 p-4 rounded-xl bg-error/10 border border-error/20 flex items-center gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-error shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              <span>{error}</span>
+              <span className="text-sm text-error">{error}</span>
             </div>
           )}
 
           {/* Formulário */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Nova senha</span>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-base-content mb-2">
+                Nova senha
               </label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  className="input input-bordered w-full pr-12"
+                  className="input input-bordered w-full pr-12 h-12 bg-base-100 border-base-300 focus:border-primary focus:outline-none"
                   placeholder="Digite sua nova senha"
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
@@ -161,7 +319,7 @@ export default function ResetPassword() {
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 btn btn-ghost btn-sm btn-circle"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-base-content/40 hover:text-base-content transition-colors"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
@@ -179,23 +337,24 @@ export default function ResetPassword() {
 
               {/* Barra de força da senha */}
               {senha && (
-                <div className="mt-2">
-                  <progress className={`progress ${strength.class} w-full h-1`} value={strength.width} max="100"></progress>
-                  <p className="text-xs text-base-content/60 mt-1">
-                    Força: <span className={strength.class.replace('progress-', 'text-')}>{strength.label}</span>
-                  </p>
+                <div className="mt-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs text-base-content/60">Força da senha:</span>
+                    <span className={`text-xs font-medium ${strength.textClass}`}>{strength.label}</span>
+                  </div>
+                  <progress className={`progress ${strength.class} w-full h-2`} value={strength.width} max="100"></progress>
                 </div>
               )}
-              <p className="text-xs text-base-content/60 mt-1">Mínimo de 6 caracteres</p>
+              <p className="text-xs text-base-content/50 mt-2">Mínimo de 6 caracteres</p>
             </div>
 
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text">Confirmar nova senha</span>
+            <div>
+              <label className="block text-sm font-medium text-base-content mb-2">
+                Confirmar nova senha
               </label>
               <input
                 type={showPassword ? 'text' : 'password'}
-                className="input input-bordered"
+                className="input input-bordered w-full h-12 bg-base-100 border-base-300 focus:border-primary focus:outline-none"
                 placeholder="Confirme sua nova senha"
                 value={confirmarSenha}
                 onChange={(e) => setConfirmarSenha(e.target.value)}
@@ -203,16 +362,36 @@ export default function ResetPassword() {
                 autoComplete="new-password"
                 required
               />
+              {confirmarSenha && senha !== confirmarSenha && (
+                <p className="text-xs text-error mt-2">As senhas não conferem</p>
+              )}
+              {confirmarSenha && senha === confirmarSenha && (
+                <p className="text-xs text-success mt-2 flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Senhas conferem
+                </p>
+              )}
             </div>
 
             <button
               type="submit"
-              className={`btn btn-primary w-full ${loading ? 'loading' : ''}`}
-              disabled={loading}
+              className="btn btn-primary w-full h-12 text-base font-medium rounded-xl"
+              disabled={loading || senha !== confirmarSenha}
             >
-              {loading ? '' : 'Redefinir senha'}
+              {loading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : (
+                'Redefinir senha'
+              )}
             </button>
           </form>
+
+          {/* Footer */}
+          <p className="text-center text-sm text-base-content/60 mt-8">
+            PROMA SIGMA &copy; {new Date().getFullYear()}
+          </p>
         </div>
       </div>
     </div>

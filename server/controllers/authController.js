@@ -243,7 +243,7 @@ exports.resendVerification = async (req, res) => {
     }
 };
 
-// Forgot Password
+// Forgot Password (link tradicional)
 exports.forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -263,6 +263,108 @@ exports.forgotPassword = async (req, res) => {
         await emailService.enviarEmailResetSenha(user, tokenReset);
 
         res.json({ message: 'Email de recuperacao enviado' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Solicitar OTP para redefinicao de senha
+exports.solicitarOtpResetSenha = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email e obrigatorio' });
+        }
+
+        const user = await User.findOne({ email });
+
+        // Por seguranca, sempre retorna sucesso mesmo se email nao existe
+        if (!user) {
+            return res.json({
+                message: 'Se o email estiver cadastrado, voce recebera um codigo de verificacao.'
+            });
+        }
+
+        // Verificar se usuario esta ativo
+        if (!user.ativo) {
+            return res.json({
+                message: 'Se o email estiver cadastrado, voce recebera um codigo de verificacao.'
+            });
+        }
+
+        // Gerar codigo OTP
+        const codigoOtp = user.gerarCodigoOtp();
+        await user.save();
+
+        // Enviar email com codigo OTP
+        try {
+            await emailService.enviarOtpResetSenha(user, codigoOtp);
+        } catch (emailError) {
+            console.error('Erro ao enviar email OTP:', emailError);
+            return res.status(500).json({ message: 'Erro ao enviar email. Tente novamente.' });
+        }
+
+        res.json({
+            message: 'Codigo de verificacao enviado para seu email.',
+            expiresIn: '15 minutos'
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Verificar OTP e redefinir senha
+exports.verificarOtpResetSenha = async (req, res) => {
+    try {
+        const { email, otp, novaSenha } = req.body;
+
+        if (!email || !otp || !novaSenha) {
+            return res.status(400).json({
+                message: 'Email, codigo OTP e nova senha sao obrigatorios'
+            });
+        }
+
+        if (novaSenha.length < 6) {
+            return res.status(400).json({
+                message: 'A nova senha deve ter no minimo 6 caracteres'
+            });
+        }
+
+        // Buscar usuario com campos OTP
+        const user = await User.findOne({ email }).select('+otpCode +otpExpira');
+
+        if (!user) {
+            return res.status(400).json({ message: 'Codigo invalido ou expirado' });
+        }
+
+        // Verificar OTP
+        const otpValido = user.verificarOtp(otp);
+
+        if (!otpValido) {
+            return res.status(400).json({ message: 'Codigo invalido ou expirado' });
+        }
+
+        // Atualizar senha
+        user.senha = novaSenha;
+        user.otpCode = undefined;
+        user.otpExpira = undefined;
+        user.tentativasLogin = 0;
+        user.bloqueadoAte = null;
+        await user.save();
+
+        // Revogar todos os refresh tokens por seguranca
+        const ipAddress = req.ip || req.connection.remoteAddress;
+        await authService.revogarTodosTokens(user._id, ipAddress);
+
+        // Enviar email de confirmacao
+        try {
+            await emailService.enviarConfirmacaoSenhaAlterada(user);
+        } catch (emailError) {
+            console.error('Erro ao enviar confirmacao:', emailError);
+        }
+
+        res.json({ message: 'Senha alterada com sucesso!' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
