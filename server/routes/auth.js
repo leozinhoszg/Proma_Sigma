@@ -16,6 +16,7 @@ router.get('/verify-email/:token', authController.verifyEmail);
 router.post('/resend-verification', authController.resendVerification);
 router.post('/forgot-password', forgotPasswordLimiter, authController.forgotPassword);
 router.post('/reset-password/:token', authController.resetPassword);
+router.post('/ativar-conta/:token', authController.ativarConta);
 
 // Rotas OTP para redefinicao de senha
 router.post('/solicitar-otp-reset', forgotPasswordLimiter, authController.solicitarOtpResetSenha);

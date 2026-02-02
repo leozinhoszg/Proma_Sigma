@@ -501,6 +501,61 @@ Apos a verificacao, seu email estara confirmado e voce tera acesso completo ao s
 };
 
 /**
+ * Template para ativacao de conta (novo usuario criado pelo admin)
+ */
+const templateAtivacaoConta = (nomeUsuario, email, urlAtivacao) => {
+    const content = `
+<h2 style="margin:0 0 20px 0;color:${PRIMARY_COLOR};font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Bem-vindo ao ${APP_NAME}!
+</h2>
+
+<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Ola <strong>${nomeUsuario}</strong>,
+</p>
+
+<p style="margin:0 0 25px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Uma conta foi criada para voce no sistema ${APP_NAME} - Sistema de Gestao de Contratos.
+Para ativar sua conta e comecar a usar o sistema, clique no botao abaixo para definir sua senha:
+</p>
+
+${credentialsBox([
+    { label: 'Usuario', value: nomeUsuario },
+    { label: 'Email', value: email }
+])}
+
+<!-- Botao de ativacao -->
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:30px 0;">
+<tr>
+<td align="center">
+${bulletproofButton(urlAtivacao, 'Definir Minha Senha', '#059669')}
+</td>
+</tr>
+</table>
+
+<p style="margin:20px 0;color:#64748b;font-size:13px;text-align:center;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Ou copie e cole o link abaixo no seu navegador:
+</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 25px 0;">
+<tr>
+<td align="center" style="padding:12px 16px;background-color:#f1f5f9;word-break:break-all;">
+<a href="${urlAtivacao}" style="color:#3b82f6;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;text-decoration:none;">
+${urlAtivacao}
+</a>
+</td>
+</tr>
+</table>
+
+${infoBox('#fef3c7', '#f59e0b', '#92400e', '<strong>Importante:</strong> Este link expira em <strong>72 horas</strong>. Apos esse periodo, solicite ao administrador o reenvio do convite.')}
+
+<p style="margin:25px 0 0 0;color:#64748b;font-size:14px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Em caso de duvidas, entre em contato com o administrador do sistema.
+</p>
+    `;
+
+    return baseLayout(content);
+};
+
+/**
  * Template para confirmacao de alteracao de senha
  */
 const templateSenhaAlterada = (nomeUsuario) => {
@@ -534,5 +589,6 @@ module.exports = {
     templateAlertaLogin,
     templateSenhaAlterada,
     templateResetSenhaLink,
+    templateAtivacaoConta,
     APP_NAME
 };
