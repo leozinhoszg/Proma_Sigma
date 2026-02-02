@@ -78,7 +78,7 @@ export default function Login() {
           <div className="absolute inset-0 login-grid-pattern opacity-10"></div>
 
           {/* Gradient overlays */}
-          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/5 to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-br from-transparent via-white/5 to-transparent"></div>
         </div>
 
         {/* Content */}
@@ -92,7 +92,7 @@ export default function Login() {
               <h1 className="text-4xl font-bold tracking-tight mb-2 logo-font">
                 PROMA <span className="text-sky-400">SIGMA</span>
               </h1>
-              <div className="h-1 w-20 mx-auto bg-gradient-to-r from-sky-500 to-blue-400 rounded-full"></div>
+              <div className="h-1 w-20 mx-auto bg-linear-to-r from-sky-500 to-blue-400 rounded-full"></div>
             </div>
 
             <p className="text-white/70 text-lg leading-relaxed mb-12">
@@ -166,7 +166,7 @@ export default function Login() {
           <div className="w-full max-w-md login-form-container">
             {/* Mobile Logo */}
             <div className="lg:hidden flex flex-col items-center mb-10">
-              <div className="inline-flex items-center justify-center p-3 bg-gradient-to-br from-navy-600 to-navy-800 rounded-xl shadow-lg mb-4">
+              <div className="inline-flex items-center justify-center p-3 bg-linear-to-br from-navy-600 to-navy-800 rounded-xl shadow-lg mb-4">
                 <img src={logo} alt="PROMA" className="h-10" />
               </div>
               <h1 className="text-2xl font-bold text-navy-900 dark:text-white logo-font">

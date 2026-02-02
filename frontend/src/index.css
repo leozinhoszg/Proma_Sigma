@@ -1,6 +1,6 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
 @import url('https://db.onlinewebfonts.com/c/54deb902459692001bafddf102d8235a?family=Stereo+Gothic+W01+850');
+@import "tailwindcss";
 @plugin "daisyui";
 
 /* Custom Font - Stereo Gothic */
@@ -816,36 +816,21 @@ body {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
-/* Theme toggle transition */
-html {
-  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
+/* Theme toggle transition - otimizado para performance */
 html.theme-transitioning,
-html.theme-transitioning *,
-html.theme-transitioning *::before,
-html.theme-transitioning *::after {
+html.theme-transitioning *:not(svg):not(path):not(circle) {
   transition:
-    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    fill 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    stroke 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background-color 0.25s ease-out,
+    border-color 0.25s ease-out,
+    color 0.2s ease-out !important;
 }
 
-/* Previne piscadas durante a transição */
-html.theme-transitioning {
-  pointer-events: none;
-}
-
-/* Transição suave para o gradiente de fundo */
+/* Gradiente de fundo com transição */
 body {
-  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.3s ease-out;
 }
 
-/* Elementos glass com transição mais suave */
+/* Elementos glass - transição apenas em cores, NÃO em backdrop-filter */
 .glass,
 .glass-card,
 .glass-sidebar,
@@ -855,10 +840,9 @@ body {
 .stat-card-glass,
 .table-glass {
   transition:
-    background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color 0.25s ease-out,
+    border-color 0.25s ease-out,
+    box-shadow 0.25s ease-out;
 }
 
 /* ==================== MELHORIAS VISUAIS LOGIN - v2 ==================== */

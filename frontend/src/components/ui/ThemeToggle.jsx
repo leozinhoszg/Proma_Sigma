@@ -22,16 +22,19 @@ export default function ThemeToggle({ className = '' }) {
     setIsTransitioning(true);
     document.documentElement.classList.add('theme-transitioning');
 
-    // Aplica o novo tema
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    setTheme(newTheme);
+    // Pequeno delay para garantir que a classe foi aplicada antes da mudança
+    requestAnimationFrame(() => {
+      // Aplica o novo tema
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      setTheme(newTheme);
+    });
 
     // Remove a classe de transição após a animação
     setTimeout(() => {
       document.documentElement.classList.remove('theme-transitioning');
       setIsTransitioning(false);
-    }, 450);
+    }, 300);
   }, [theme]);
 
   return (
