@@ -103,6 +103,14 @@ exports.login = async (req, res) => {
             });
         }
 
+        // Verificar se usuario tem senha definida
+        if (!user.senha) {
+            return res.status(403).json({
+                message: 'Conta nao ativada. Verifique seu email para definir sua senha.',
+                code: 'CONTA_NAO_ATIVADA'
+            });
+        }
+
         // Verificar senha
         const senhaCorreta = await user.compararSenha(senha);
 
@@ -136,6 +144,14 @@ exports.login = async (req, res) => {
         // Verificar se usuario esta ativo
         if (!user.ativo) {
             return res.status(403).json({ message: 'Conta desativada. Contate o administrador.' });
+        }
+
+        // Verificar se conta foi ativada (usuario definiu senha)
+        if (!user.contaAtivada && !user.senha) {
+            return res.status(403).json({
+                message: 'Conta nao ativada. Verifique seu email para definir sua senha.',
+                code: 'CONTA_NAO_ATIVADA'
+            });
         }
 
         // Verificar se email foi verificado (opcional - pode ser configuravel)
@@ -435,6 +451,50 @@ exports.verificarOtpResetSenha = async (req, res) => {
         });
 
         res.json({ message: 'Senha alterada com sucesso!' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Ativar conta e definir senha (novo usuario criado pelo admin)
+exports.ativarConta = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { senha } = req.body;
+
+        if (!senha || senha.length < 6) {
+            return res.status(400).json({ message: 'Senha deve ter no minimo 6 caracteres' });
+        }
+
+        const hashedToken = crypto
+            .createHash('sha256')
+            .update(token)
+            .digest('hex');
+
+        const user = await User.findOne({
+            tokenAtivacaoConta: hashedToken,
+            tokenAtivacaoExpira: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Link invalido ou expirado' });
+        }
+
+        // Definir senha e ativar conta
+        user.senha = senha;
+        user.contaAtivada = true;
+        user.emailVerificado = true; // Email foi verificado ao clicar no link
+        user.tokenAtivacaoConta = undefined;
+        user.tokenAtivacaoExpira = undefined;
+        await user.save();
+
+        // Log de auditoria
+        await auditService.logAuth(req, 'CONTA_ATIVADA', `Conta ativada: ${user.usuario}`, {
+            usuarioId: user._id,
+            usuarioNome: user.usuario
+        });
+
+        res.json({ message: 'Conta ativada com sucesso! Voce ja pode fazer login.' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

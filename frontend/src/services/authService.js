@@ -38,6 +38,11 @@ export const authService = {
     return response.data;
   },
 
+  async ativarConta(token, senha) {
+    const response = await api.post(`/auth/ativar-conta/${token}`, { senha });
+    return response.data;
+  },
+
   async verifyEmail(token) {
     const response = await api.get(`/auth/verify-email/${token}`);
     return response.data;

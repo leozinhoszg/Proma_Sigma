@@ -58,7 +58,7 @@ exports.getById = async (req, res) => {
 // Criar novo usuario
 exports.create = async (req, res) => {
     try {
-        const { usuario, email, senha, perfil, ativo, enviarEmail } = req.body;
+        const { usuario, email, perfil, ativo, enviarEmail } = req.body;
 
         // Verificar se usuario ou email ja existem
         const usuarioExistente = await User.findOne({
@@ -84,36 +84,35 @@ exports.create = async (req, res) => {
             }
         }
 
-        // Guardar senha original para envio por email
-        const senhaOriginal = senha;
-
-        // Criar usuario
+        // Criar usuario sem senha - usuario vai definir ao ativar a conta
         const novoUsuario = new User({
             usuario,
             email,
-            senha,
             perfil: perfil || null,
             ativo: ativo !== undefined ? ativo : true,
-            emailVerificado: false // Usuario deve verificar email apos primeiro login
+            contaAtivada: false, // Conta nao ativada ate usuario definir senha
+            emailVerificado: false
         });
 
+        // Gerar token de ativacao de conta
+        const tokenAtivacao = novoUsuario.gerarTokenAtivacaoConta();
         await novoUsuario.save();
 
-        // Enviar email de boas-vindas com credenciais (se habilitado)
+        // Enviar email com link para definir senha (se habilitado)
         let emailEnviado = false;
         if (enviarEmail !== false) {
             try {
-                await emailService.enviarEmailNovoUsuario(novoUsuario, senhaOriginal);
+                await emailService.enviarEmailAtivacaoConta(novoUsuario, tokenAtivacao);
                 emailEnviado = true;
             } catch (emailError) {
-                console.error('Erro ao enviar email de boas-vindas:', emailError);
+                console.error('Erro ao enviar email de ativacao:', emailError);
                 // Nao falha a criacao se o email falhar
             }
         }
 
         // Retornar com perfil populado
         const usuarioResponse = await User.findById(novoUsuario._id)
-            .select('-tokenVerificacaoEmail -tokenVerificacaoExpira -tokenResetSenha -tokenResetExpira -tentativasLogin -bloqueadoAte')
+            .select('-tokenVerificacaoEmail -tokenVerificacaoExpira -tokenResetSenha -tokenResetExpira -tentativasLogin -bloqueadoAte -tokenAtivacaoConta -tokenAtivacaoExpira')
             .populate('perfil', 'nome permissoes isAdmin');
 
         // Buscar nome do perfil para auditoria
@@ -137,7 +136,7 @@ exports.create = async (req, res) => {
         });
 
         res.status(201).json({
-            message: 'Usuario criado com sucesso',
+            message: 'Usuario criado com sucesso. Um email foi enviado para definir a senha.',
             usuario: usuarioResponse,
             emailEnviado
         });

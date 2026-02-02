@@ -30,9 +30,21 @@ const userSchema = new mongoose.Schema({
     },
     senha: {
         type: String,
-        required: [true, 'Senha e obrigatoria'],
+        required: false, // Senha nao e obrigatoria na criacao pelo admin
         minlength: [6, 'Senha deve ter no minimo 6 caracteres'],
         select: false // Nao retorna senha por padrao nas queries
+    },
+    contaAtivada: {
+        type: Boolean,
+        default: false // Usuario criado pelo admin precisa ativar a conta definindo senha
+    },
+    tokenAtivacaoConta: {
+        type: String,
+        select: false
+    },
+    tokenAtivacaoExpira: {
+        type: Date,
+        select: false
     },
     perfil: {
         type: mongoose.Schema.Types.ObjectId,
@@ -123,6 +135,20 @@ userSchema.methods.gerarTokenResetSenha = function() {
         .digest('hex');
 
     this.tokenResetExpira = Date.now() + 60 * 60 * 1000; // 1 hora
+
+    return token;
+};
+
+// Metodo para gerar token de ativacao de conta (novo usuario criado pelo admin)
+userSchema.methods.gerarTokenAtivacaoConta = function() {
+    const token = crypto.randomBytes(32).toString('hex');
+
+    this.tokenAtivacaoConta = crypto
+        .createHash('sha256')
+        .update(token)
+        .digest('hex');
+
+    this.tokenAtivacaoExpira = Date.now() + 72 * 60 * 60 * 1000; // 72 horas (3 dias)
 
     return token;
 };

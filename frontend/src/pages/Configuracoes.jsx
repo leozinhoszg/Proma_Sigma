@@ -115,7 +115,6 @@ function UsuariosTab({ showToast }) {
   const [formData, setFormData] = useState({
     usuario: '',
     email: '',
-    senha: '',
     perfil: '',
     ativo: true
   });
@@ -143,7 +142,7 @@ function UsuariosTab({ showToast }) {
   };
 
   const openCreateModal = () => {
-    setFormData({ usuario: '', email: '', senha: '', perfil: '', ativo: true });
+    setFormData({ usuario: '', email: '', perfil: '', ativo: true });
     setEditingId(null);
     setIsModalOpen(true);
   };
@@ -152,7 +151,6 @@ function UsuariosTab({ showToast }) {
     setFormData({
       usuario: usuario.usuario || '',
       email: usuario.email || '',
-      senha: '',
       perfil: usuario.perfil?._id || '',
       ativo: usuario.ativo
     });
@@ -180,10 +178,6 @@ function UsuariosTab({ showToast }) {
       showToast('Email e obrigatorio', 'warning');
       return;
     }
-    if (!editingId && !formData.senha) {
-      showToast('Senha e obrigatoria para novos usuarios', 'warning');
-      return;
-    }
 
     try {
       setSaving(true);
@@ -193,14 +187,13 @@ function UsuariosTab({ showToast }) {
         perfil: formData.perfil || null,
         ativo: formData.ativo
       };
-      if (!editingId) dados.senha = formData.senha;
 
       if (editingId) {
         await usuariosAPI.atualizar(editingId, dados);
         showToast('Usuario atualizado com sucesso', 'success');
       } else {
         await usuariosAPI.criar(dados);
-        showToast('Usuario criado com sucesso', 'success');
+        showToast('Usuario criado! Um email foi enviado para definir a senha.', 'success');
       }
 
       setIsModalOpen(false);
@@ -373,9 +366,10 @@ function UsuariosTab({ showToast }) {
             <input type="email" className="input input-bordered w-full" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="Ex: joao@empresa.com" />
           </FormField>
           {!editingId && (
-            <FormField label="Senha" required>
-              <input type="password" className="input input-bordered w-full" value={formData.senha} onChange={(e) => setFormData({ ...formData, senha: e.target.value })} placeholder="Minimo 6 caracteres" />
-            </FormField>
+            <div className="alert alert-info text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span>O usuario recebera um email para definir sua propria senha.</span>
+            </div>
           )}
           <FormField label="Perfil">
             <select className="select select-bordered w-full" value={formData.perfil} onChange={(e) => setFormData({ ...formData, perfil: e.target.value })}>

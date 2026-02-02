@@ -7,6 +7,7 @@ const {
     templateAlertaLogin,
     templateSenhaAlterada,
     templateResetSenhaLink,
+    templateAtivacaoConta,
     APP_NAME
 } = require('./emailTemplates');
 const auditService = require('./auditService');
@@ -190,6 +191,7 @@ const emailService = {
      * Envia email de boas-vindas para novo usuario criado pelo admin
      * @param {Object} user - Usuario com email e nome
      * @param {string} senhaTemporaria - Senha temporaria gerada
+     * @deprecated Use enviarEmailAtivacaoConta em vez desta funcao
      */
     async enviarEmailNovoUsuario(user, senhaTemporaria) {
         const html = templateNovoUsuario(user.usuario, user.email, senhaTemporaria);
@@ -200,6 +202,25 @@ const emailService = {
             return true;
         } catch (error) {
             console.error('Erro ao enviar email de boas-vindas:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Envia email de ativacao de conta para novo usuario criado pelo admin
+     * @param {Object} user - Usuario com email e nome
+     * @param {string} token - Token de ativacao de conta
+     */
+    async enviarEmailAtivacaoConta(user, token) {
+        const urlAtivacao = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/ativar-conta/${token}`;
+        const html = templateAtivacaoConta(user.usuario, user.email, urlAtivacao);
+
+        try {
+            await enviarEmail(user.email, 'Ative sua Conta', html, 'ATIVACAO_CONTA', user);
+            console.log(`Email de ativacao de conta enviado para: ${user.email}`);
+            return true;
+        } catch (error) {
+            console.error('Erro ao enviar email de ativacao:', error);
             throw error;
         }
     },

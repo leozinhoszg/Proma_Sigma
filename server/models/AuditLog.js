@@ -28,6 +28,7 @@ const auditLogSchema = new mongoose.Schema({
             'LOGOUT',
             'LOGOUT_TODOS',
             'REGISTRO',
+            'CONTA_ATIVADA',
             'SENHA_ALTERADA',
             'SENHA_RESET',
             'SENHA_RESET_SOLICITADO',

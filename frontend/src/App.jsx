@@ -9,6 +9,7 @@ import MainLayout from './components/layout/MainLayout';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import AtivarConta from './pages/AtivarConta';
 
 // Pages - Main
 import Dashboard from './pages/Dashboard';
@@ -35,6 +36,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/esqueci-senha" element={<ForgotPassword />} />
           <Route path="/reset-senha/:token" element={<ResetPassword />} />
+          <Route path="/ativar-conta/:token" element={<AtivarConta />} />
 
           {/* Rotas protegidas com layout */}
           <Route
