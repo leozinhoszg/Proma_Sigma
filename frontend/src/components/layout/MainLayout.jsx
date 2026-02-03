@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import ThemeToggle from "../ui/ThemeToggle";
-import navBg from "../../assets/nav.png";
 import logo from "../../assets/PROMA 6.2.png";
 
 // Itens de navegação com suas permissões necessárias
@@ -59,22 +58,15 @@ export default function MainLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen app-bg">
       {/* Navbar */}
-      <nav className="relative">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img src={navBg} alt="" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-black/10"></div>
-        </div>
-
-        {/* Navbar Content */}
-        <div className="relative z-10 px-4 lg:px-8">
+      <nav className="navbar-header">
+        <div className="px-4 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3">
               <img src={logo} alt="PROMA" className="h-10 w-auto" />
-              <span className="text-white font-bold text-xl tracking-wide logo-font">
+              <span className="navbar-brand font-bold text-xl tracking-wide logo-font">
                 PROMA SIGMA
               </span>
             </Link>
@@ -87,8 +79,8 @@ export default function MainLayout() {
                   to={item.path}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     isActive(item.path)
-                      ? "bg-white/20 text-white"
-                      : "text-white/80 hover:text-white hover:bg-white/10"
+                      ? "navbar-link-active"
+                      : "navbar-link"
                   }`}
                 >
                   {item.label}
@@ -99,33 +91,33 @@ export default function MainLayout() {
             {/* Right Side */}
             <div className="flex items-center gap-3">
               {/* Theme Toggle */}
-              <ThemeToggle className="text-white/80 hover:text-white hover:bg-white/10" />
+              <ThemeToggle className="navbar-link" />
 
               {/* User Menu */}
               <div className="relative">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg navbar-link transition-colors"
                 >
                   {usuario?.fotoPerfil ? (
                     <img
                       src={usuario.fotoPerfil}
                       alt="Foto de perfil"
-                      className="w-8 h-8 rounded-full object-cover border border-white/30"
+                      className="w-8 h-8 rounded-full object-cover border navbar-avatar-border"
                     />
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center border border-white/30">
-                      <span className="text-sm font-semibold text-white">
+                    <div className="w-8 h-8 rounded-full navbar-avatar flex items-center justify-center">
+                      <span className="text-sm font-semibold navbar-brand">
                         {usuario?.usuario?.charAt(0).toUpperCase() || "U"}
                       </span>
                     </div>
                   )}
-                  <span className="text-white text-sm font-medium hidden sm:block">
+                  <span className="navbar-brand text-sm font-medium hidden sm:block">
                     {usuario?.nome || usuario?.usuario || "Usuário"}
                   </span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4 text-white/70"
+                    className="h-4 w-4 opacity-70"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -233,7 +225,7 @@ export default function MainLayout() {
               {/* Mobile Menu Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/10"
+                className="md:hidden p-2 rounded-lg navbar-link"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -273,8 +265,8 @@ export default function MainLayout() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                       isActive(item.path)
-                        ? "bg-white/20 text-white"
-                        : "text-white/80 hover:text-white hover:bg-white/10"
+                        ? "navbar-link-active"
+                        : "navbar-link"
                     }`}
                   >
                     {item.label}

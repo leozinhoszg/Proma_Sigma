@@ -1,6 +1,6 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap");
 @import url("https://db.onlinewebfonts.com/c/54deb902459692001bafddf102d8235a?family=Stereo+Gothic+W01+850");
+@import "tailwindcss";
 @plugin "daisyui";
 
 /* Custom Font - Stereo Gothic */
@@ -136,14 +136,14 @@
   --status-futuro: oklch(55% 0.046 257.417);
   --status-futuro-bg: oklch(35% 0.02 257);
 
-  /* Glassmorphism - Dark */
-  --glass-bg: rgba(55, 65, 81, 0.7);
-  --glass-bg-solid: rgba(55, 65, 81, 0.85);
-  --glass-border: rgba(75, 85, 99, 0.4);
-  --glass-border-strong: rgba(100, 116, 139, 0.5);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  /* Glassmorphism - Dark (tons navy para consistência com fundo) */
+  --glass-bg: rgba(20, 36, 64, 0.55);
+  --glass-bg-solid: rgba(22, 40, 72, 0.85);
+  --glass-border: rgba(42, 64, 96, 0.4);
+  --glass-border-strong: rgba(60, 85, 120, 0.45);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   --glass-blur: 20px;
-  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --glass-inset: inset 0 1px 0 rgba(125, 211, 252, 0.06);
 
   /* Background gradient */
   --bg-gradient: linear-gradient(
@@ -259,6 +259,19 @@ body {
   background: var(--glass-bg-solid) !important;
   border-color: oklch(var(--p)) !important;
   box-shadow: 0 0 0 3px rgba(var(--p), 0.15) !important;
+}
+
+[data-theme="dark"] .glass-input,
+[data-theme="dracula"] .glass-input {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .glass-input:focus,
+[data-theme="dracula"] .glass-input:focus {
+  background: #1e293b !important;
+  border-color: #0284c7 !important;
+  box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.2) !important;
 }
 
 /* ==================== ESTILOS DE STATUS ==================== */
@@ -909,23 +922,73 @@ body {
   );
 }
 
-/* ==================== UTILITÁRIOS ==================== */
-.text-gradient {
-  background: linear-gradient(135deg, oklch(55% 0.2 255), oklch(60% 0.15 280));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* ==================== NAVBAR ==================== */
+
+.navbar-header {
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 50%, var(--navy-950) 100%);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-[data-theme="dark"] .text-gradient {
+.navbar-brand {
+  color: #f1f5f9;
+}
+
+.navbar-link {
+  color: rgba(241, 245, 249, 0.75);
+}
+
+.navbar-link:hover {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-link-active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.navbar-avatar {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.navbar-avatar-border {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ==================== APP BACKGROUND ==================== */
+/* Light: usa a mesma cor base-100 */
+.app-bg {
+  background-color: oklch(98% 0.005 250);
+}
+
+/* Dark: gradiente navy (mesma cor do painel esquerdo do login) */
+[data-theme="dark"] .app-bg,
+[data-theme="dracula"] .app-bg {
   background: linear-gradient(
     135deg,
-    oklch(70% 0.165 254.624),
-    oklch(65% 0.241 354.308)
+    var(--navy-900) 0%,
+    var(--navy-800) 40%,
+    var(--navy-950) 100%
   );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+}
+
+/* ==================== UTILITÁRIOS ==================== */
+.text-gradient {
+  color: var(--navy-900);
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+}
+
+[data-theme="dark"] .text-gradient,
+[data-theme="dracula"] .text-gradient {
+  color: #38bdf8;
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
 }
 
 .shadow-soft {
@@ -938,6 +1001,115 @@ body {
 
 .shadow-strong {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* ==================== CAMPOS DE FORMULÁRIO - DARK MODE ==================== */
+
+[data-theme="dark"] .input,
+[data-theme="dracula"] .input,
+[data-theme="dark"] .select,
+[data-theme="dracula"] .select,
+[data-theme="dark"] .textarea,
+[data-theme="dracula"] .textarea {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .input::placeholder,
+[data-theme="dracula"] .input::placeholder,
+[data-theme="dark"] .textarea::placeholder,
+[data-theme="dracula"] .textarea::placeholder {
+  color: #64748b;
+}
+
+[data-theme="dark"] .input:hover,
+[data-theme="dracula"] .input:hover,
+[data-theme="dark"] .select:hover,
+[data-theme="dracula"] .select:hover,
+[data-theme="dark"] .textarea:hover,
+[data-theme="dracula"] .textarea:hover {
+  border-color: #475569 !important;
+  background-color: #283548 !important;
+}
+
+[data-theme="dark"] .input:focus,
+[data-theme="dracula"] .input:focus,
+[data-theme="dark"] .select:focus,
+[data-theme="dracula"] .select:focus,
+[data-theme="dark"] .textarea:focus,
+[data-theme="dracula"] .textarea:focus {
+  border-color: #0284c7 !important;
+  background-color: #1e293b !important;
+  box-shadow: 0 0 0 3px rgba(3, 105, 161, 0.2);
+  outline: none;
+}
+
+/* ==================== BOTÕES PRIMÁRIOS (Navy - mesmo estilo do login) ==================== */
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--navy-600) 0%, var(--navy-800) 50%, var(--navy-950) 100%) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(5, 11, 20, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(5, 11, 20, 0.45);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary.btn-outline {
+  background: transparent !important;
+  border: 1px solid var(--navy-600) !important;
+  color: var(--navy-700) !important;
+  box-shadow: none;
+}
+
+.btn-primary.btn-outline:hover {
+  background: linear-gradient(135deg, var(--navy-600) 0%, var(--navy-800) 50%, var(--navy-950) 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(5, 11, 20, 0.3);
+}
+
+/* Dark theme - botões primários com tom azul mais vibrante */
+[data-theme="dark"] .btn-primary,
+[data-theme="dracula"] .btn-primary {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 50%, #0c4a6e 100%) !important;
+  box-shadow: 0 4px 15px rgba(3, 105, 161, 0.35);
+}
+
+[data-theme="dark"] .btn-primary:hover,
+[data-theme="dracula"] .btn-primary:hover {
+  box-shadow: 0 6px 25px rgba(3, 105, 161, 0.5);
+}
+
+[data-theme="dark"] .btn-primary.btn-outline,
+[data-theme="dracula"] .btn-primary.btn-outline {
+  background: transparent !important;
+  border: 1px solid #0284c7 !important;
+  color: #38bdf8 !important;
+  box-shadow: none;
+}
+
+[data-theme="dark"] .btn-primary.btn-outline:hover,
+[data-theme="dracula"] .btn-primary.btn-outline:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 50%, #0c4a6e 100%) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(3, 105, 161, 0.35);
 }
 
 /* Theme toggle transition */
