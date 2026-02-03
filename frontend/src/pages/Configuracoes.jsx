@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { usuariosAPI, perfisAPI, auditoriaAPI } from '../services/api';
+import { usuariosAPI, perfisAPI, auditoriaAPI, empresasAPI, estabelecimentosAPI } from '../services/api';
 import Modal, { FormField } from '../components/ui/Modal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import Loading from '../components/ui/Loading';
@@ -17,13 +17,14 @@ export default function Configuracoes() {
   // Verificar permissões
   const permissoes = useMemo(() => {
     const perfil = usuarioLogado?.perfil;
-    if (!perfil) return { usuarios: false, perfis: false, auditoria: false };
-    if (perfil.isAdmin) return { usuarios: true, perfis: true, auditoria: true };
+    if (!perfil) return { usuarios: false, perfis: false, auditoria: false, empresas: false };
+    if (perfil.isAdmin) return { usuarios: true, perfis: true, auditoria: true, empresas: true };
     const perms = perfil.permissoes || [];
     return {
       usuarios: perms.includes('usuarios'),
       perfis: perms.includes('perfis'),
-      auditoria: perms.includes('auditoria')
+      auditoria: perms.includes('auditoria'),
+      empresas: perms.includes('empresas') || perms.includes('estabelecimentos')
     };
   }, [usuarioLogado?.perfil]);
 
@@ -33,6 +34,8 @@ export default function Configuracoes() {
       setActiveTab('perfis');
     } else if (!permissoes.usuarios && !permissoes.perfis && permissoes.auditoria) {
       setActiveTab('auditoria');
+    } else if (!permissoes.usuarios && !permissoes.perfis && !permissoes.auditoria && permissoes.empresas) {
+      setActiveTab('empresas');
     }
   }, [permissoes]);
 
@@ -81,6 +84,17 @@ export default function Configuracoes() {
             Auditoria
           </button>
         )}
+        {permissoes.empresas && (
+          <button
+            className={`tab ${activeTab === 'empresas' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('empresas')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            Empresas
+          </button>
+        )}
       </div>
 
       {/* Conteudo das Tabs */}
@@ -92,6 +106,9 @@ export default function Configuracoes() {
       )}
       {activeTab === 'auditoria' && permissoes.auditoria && (
         <AuditoriaTab showToast={showToast} />
+      )}
+      {activeTab === 'empresas' && permissoes.empresas && (
+        <EmpresasTab showToast={showToast} />
       )}
     </div>
   );
@@ -1185,6 +1202,428 @@ function AuditoriaTab({ showToast }) {
           </div>
         )}
       </Modal>
+    </>
+  );
+}
+
+// ==================== TAB DE EMPRESAS ====================
+function EmpresasTab({ showToast }) {
+  const [empresas, setEmpresas] = useState([]);
+  const [estabelecimentos, setEstabelecimentos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [subTab, setSubTab] = useState('empresas');
+
+  // Modal de empresa
+  const [isEmpresaModalOpen, setIsEmpresaModalOpen] = useState(false);
+  const [editingEmpresaId, setEditingEmpresaId] = useState(null);
+  const [empresaForm, setEmpresaForm] = useState({ codEmpresa: '', nome: '' });
+
+  // Modal de estabelecimento
+  const [isEstabelecimentoModalOpen, setIsEstabelecimentoModalOpen] = useState(false);
+  const [editingEstabelecimentoId, setEditingEstabelecimentoId] = useState(null);
+  const [estabelecimentoForm, setEstabelecimentoForm] = useState({ empresa: '', codEstabel: '', nome: '' });
+
+  // Delete dialogs
+  const [isDeleteEmpresaDialogOpen, setIsDeleteEmpresaDialogOpen] = useState(false);
+  const [isDeleteEstabelecimentoDialogOpen, setIsDeleteEstabelecimentoDialogOpen] = useState(false);
+  const [deletingEmpresaId, setDeletingEmpresaId] = useState(null);
+  const [deletingEstabelecimentoId, setDeletingEstabelecimentoId] = useState(null);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [empresasRes, estabelecimentosRes] = await Promise.all([
+        empresasAPI.listar(),
+        estabelecimentosAPI.listar()
+      ]);
+      setEmpresas(empresasRes.data || []);
+      setEstabelecimentos(estabelecimentosRes.data || []);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+      showToast('Erro ao carregar dados', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getEstabelecimentoCount = (empresaId) => {
+    return estabelecimentos.filter(e => {
+      const eId = e.empresa?._id || e.empresa;
+      return eId === empresaId;
+    }).length;
+  };
+
+  // ========== EMPRESA ==========
+  const openCreateEmpresaModal = () => {
+    setEmpresaForm({ codEmpresa: '', nome: '' });
+    setEditingEmpresaId(null);
+    setIsEmpresaModalOpen(true);
+  };
+
+  const openEditEmpresaModal = (empresa) => {
+    setEmpresaForm({ codEmpresa: empresa.codEmpresa || '', nome: empresa.nome || '' });
+    setEditingEmpresaId(empresa._id);
+    setIsEmpresaModalOpen(true);
+  };
+
+  const handleEmpresaSubmit = async () => {
+    if (!empresaForm.codEmpresa.trim() || !empresaForm.nome.trim()) {
+      showToast('Codigo e nome sao obrigatorios', 'warning');
+      return;
+    }
+    try {
+      setSaving(true);
+      if (editingEmpresaId) {
+        await empresasAPI.atualizar(editingEmpresaId, empresaForm);
+        showToast('Empresa atualizada com sucesso', 'success');
+      } else {
+        await empresasAPI.criar(empresaForm);
+        showToast('Empresa criada com sucesso', 'success');
+      }
+      setIsEmpresaModalOpen(false);
+      loadData();
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Erro ao salvar empresa', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteEmpresa = async () => {
+    try {
+      await empresasAPI.excluir(deletingEmpresaId);
+      showToast('Empresa excluida com sucesso', 'success');
+      loadData();
+    } catch (error) {
+      showToast('Erro ao excluir empresa', 'error');
+    }
+  };
+
+  // ========== ESTABELECIMENTO ==========
+  const openCreateEstabelecimentoModal = () => {
+    setEstabelecimentoForm({ empresa: empresas[0]?._id || '', codEstabel: '', nome: '' });
+    setEditingEstabelecimentoId(null);
+    setIsEstabelecimentoModalOpen(true);
+  };
+
+  const openEditEstabelecimentoModal = (estabelecimento) => {
+    setEstabelecimentoForm({
+      empresa: estabelecimento.empresa?._id || estabelecimento.empresa || '',
+      codEstabel: estabelecimento.codEstabel || '',
+      nome: estabelecimento.nome || ''
+    });
+    setEditingEstabelecimentoId(estabelecimento._id);
+    setIsEstabelecimentoModalOpen(true);
+  };
+
+  const handleEstabelecimentoSubmit = async () => {
+    if (!estabelecimentoForm.empresa || !estabelecimentoForm.codEstabel.trim() || !estabelecimentoForm.nome.trim()) {
+      showToast('Empresa, codigo e nome sao obrigatorios', 'warning');
+      return;
+    }
+    try {
+      setSaving(true);
+      if (editingEstabelecimentoId) {
+        await estabelecimentosAPI.atualizar(editingEstabelecimentoId, estabelecimentoForm);
+        showToast('Estabelecimento atualizado com sucesso', 'success');
+      } else {
+        await estabelecimentosAPI.criar(estabelecimentoForm);
+        showToast('Estabelecimento criado com sucesso', 'success');
+      }
+      setIsEstabelecimentoModalOpen(false);
+      loadData();
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Erro ao salvar estabelecimento', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteEstabelecimento = async () => {
+    try {
+      await estabelecimentosAPI.excluir(deletingEstabelecimentoId);
+      showToast('Estabelecimento excluido com sucesso', 'success');
+      loadData();
+    } catch (error) {
+      showToast('Erro ao excluir estabelecimento', 'error');
+    }
+  };
+
+  const filteredEmpresas = empresas.filter(e =>
+    e.nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.codEmpresa?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredEstabelecimentos = estabelecimentos.filter(e =>
+    e.nome?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.codEstabel?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    e.empresa?.nome?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) return <Loading text="Carregando empresas..." />;
+
+  return (
+    <>
+      {/* Sub-tabs */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-4">
+        <div className="tabs tabs-boxed bg-base-200/50 p-1">
+          <button
+            className={`tab ${subTab === 'empresas' ? 'tab-active' : ''}`}
+            onClick={() => setSubTab('empresas')}
+          >
+            Empresas ({empresas.length})
+          </button>
+          <button
+            className={`tab ${subTab === 'estabelecimentos' ? 'tab-active' : ''}`}
+            onClick={() => setSubTab('estabelecimentos')}
+          >
+            Estabelecimentos ({estabelecimentos.length})
+          </button>
+        </div>
+        <button
+          className="btn btn-primary shadow-soft ml-auto"
+          onClick={subTab === 'empresas' ? openCreateEmpresaModal : openCreateEstabelecimentoModal}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          {subTab === 'empresas' ? 'Nova Empresa' : 'Novo Estabelecimento'}
+        </button>
+      </div>
+
+      {/* Busca */}
+      <div className="glass-card p-3 mb-4">
+        <div className="flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder={`Buscar ${subTab === 'empresas' ? 'empresa' : 'estabelecimento'}...`}
+            className="input input-ghost flex-1 glass-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Lista de Empresas */}
+      {subTab === 'empresas' && (
+        <>
+          {filteredEmpresas.length === 0 ? (
+            <div className="glass-card p-8">
+              <EmptyState
+                title={searchTerm ? "Nenhum resultado" : "Nenhuma empresa"}
+                description={searchTerm ? "Tente outro termo" : "Clique em 'Nova Empresa'"}
+                icon="🏢"
+              />
+            </div>
+          ) : (
+            <div className="glass-card overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="table">
+                  <thead className="bg-base-200/30">
+                    <tr className="text-base-content/60 uppercase text-xs">
+                      <th>Codigo</th>
+                      <th>Nome</th>
+                      <th className="text-center">Estabelecimentos</th>
+                      <th className="text-center">Status</th>
+                      <th className="text-right">Acoes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredEmpresas.map((empresa) => (
+                      <tr key={empresa._id} className="hover:bg-base-200/20 transition-colors">
+                        <td className="font-mono font-semibold">{empresa.codEmpresa}</td>
+                        <td className="font-semibold">{empresa.nome}</td>
+                        <td className="text-center">
+                          <span className={`badge ${getEstabelecimentoCount(empresa._id) > 0 ? 'badge-primary' : 'badge-ghost'}`}>
+                            {getEstabelecimentoCount(empresa._id)}
+                          </span>
+                        </td>
+                        <td className="text-center">
+                          <span className={`badge ${empresa.ativo !== false ? 'badge-success' : 'badge-error'}`}>
+                            {empresa.ativo !== false ? 'Ativo' : 'Inativo'}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="flex justify-end gap-1">
+                            <button className="btn btn-ghost btn-sm btn-square" onClick={() => openEditEmpresaModal(empresa)} title="Editar">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                            <button className="btn btn-ghost btn-sm btn-square text-error hover:bg-error/10" onClick={() => { setDeletingEmpresaId(empresa._id); setIsDeleteEmpresaDialogOpen(true); }} title="Excluir">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="p-4 border-t border-base-200/30 bg-base-200/10">
+                <p className="text-sm text-base-content/50">{filteredEmpresas.length} empresa(s)</p>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Lista de Estabelecimentos */}
+      {subTab === 'estabelecimentos' && (
+        <>
+          {filteredEstabelecimentos.length === 0 ? (
+            <div className="glass-card p-8">
+              <EmptyState
+                title={searchTerm ? "Nenhum resultado" : "Nenhum estabelecimento"}
+                description={searchTerm ? "Tente outro termo" : "Clique em 'Novo Estabelecimento'"}
+                icon="🏭"
+              />
+            </div>
+          ) : (
+            <div className="glass-card overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="table">
+                  <thead className="bg-base-200/30">
+                    <tr className="text-base-content/60 uppercase text-xs">
+                      <th>Codigo</th>
+                      <th>Nome</th>
+                      <th>Empresa</th>
+                      <th className="text-center">Status</th>
+                      <th className="text-right">Acoes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredEstabelecimentos.map((estabelecimento) => (
+                      <tr key={estabelecimento._id} className="hover:bg-base-200/20 transition-colors">
+                        <td className="font-mono font-semibold">{estabelecimento.codEstabel}</td>
+                        <td className="font-semibold">{estabelecimento.nome}</td>
+                        <td>
+                          <span className="badge badge-outline">
+                            {estabelecimento.empresa?.codEmpresa} - {estabelecimento.empresa?.nome}
+                          </span>
+                        </td>
+                        <td className="text-center">
+                          <span className={`badge ${estabelecimento.ativo !== false ? 'badge-success' : 'badge-error'}`}>
+                            {estabelecimento.ativo !== false ? 'Ativo' : 'Inativo'}
+                          </span>
+                        </td>
+                        <td>
+                          <div className="flex justify-end gap-1">
+                            <button className="btn btn-ghost btn-sm btn-square" onClick={() => openEditEstabelecimentoModal(estabelecimento)} title="Editar">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                            <button className="btn btn-ghost btn-sm btn-square text-error hover:bg-error/10" onClick={() => { setDeletingEstabelecimentoId(estabelecimento._id); setIsDeleteEstabelecimentoDialogOpen(true); }} title="Excluir">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="p-4 border-t border-base-200/30 bg-base-200/10">
+                <p className="text-sm text-base-content/50">{filteredEstabelecimentos.length} estabelecimento(s)</p>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Modal Empresa */}
+      <Modal
+        isOpen={isEmpresaModalOpen}
+        onClose={() => setIsEmpresaModalOpen(false)}
+        title={editingEmpresaId ? 'Editar Empresa' : 'Nova Empresa'}
+        size="sm"
+        actions={
+          <>
+            <button className="btn btn-ghost" onClick={() => setIsEmpresaModalOpen(false)} disabled={saving}>Cancelar</button>
+            <button className="btn btn-primary" onClick={handleEmpresaSubmit} disabled={saving}>
+              {saving ? <span className="loading loading-spinner loading-sm"></span> : 'Salvar'}
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <FormField label="Codigo da Empresa" required>
+            <input type="text" className="input input-bordered w-full" value={empresaForm.codEmpresa} onChange={(e) => setEmpresaForm({ ...empresaForm, codEmpresa: e.target.value })} placeholder="Ex: 01" autoFocus />
+          </FormField>
+          <FormField label="Nome da Empresa" required>
+            <input type="text" className="input input-bordered w-full" value={empresaForm.nome} onChange={(e) => setEmpresaForm({ ...empresaForm, nome: e.target.value })} placeholder="Ex: PROMA BRASIL" />
+          </FormField>
+        </div>
+      </Modal>
+
+      {/* Modal Estabelecimento */}
+      <Modal
+        isOpen={isEstabelecimentoModalOpen}
+        onClose={() => setIsEstabelecimentoModalOpen(false)}
+        title={editingEstabelecimentoId ? 'Editar Estabelecimento' : 'Novo Estabelecimento'}
+        size="sm"
+        actions={
+          <>
+            <button className="btn btn-ghost" onClick={() => setIsEstabelecimentoModalOpen(false)} disabled={saving}>Cancelar</button>
+            <button className="btn btn-primary" onClick={handleEstabelecimentoSubmit} disabled={saving}>
+              {saving ? <span className="loading loading-spinner loading-sm"></span> : 'Salvar'}
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <FormField label="Empresa" required>
+            <select className="select select-bordered w-full" value={estabelecimentoForm.empresa} onChange={(e) => setEstabelecimentoForm({ ...estabelecimentoForm, empresa: e.target.value })}>
+              <option value="">Selecione uma empresa</option>
+              {empresas.map((empresa) => (
+                <option key={empresa._id} value={empresa._id}>{empresa.codEmpresa} - {empresa.nome}</option>
+              ))}
+            </select>
+          </FormField>
+          <FormField label="Codigo do Estabelecimento" required>
+            <input type="text" className="input input-bordered w-full" value={estabelecimentoForm.codEstabel} onChange={(e) => setEstabelecimentoForm({ ...estabelecimentoForm, codEstabel: e.target.value })} placeholder="Ex: 01" />
+          </FormField>
+          <FormField label="Nome do Estabelecimento" required>
+            <input type="text" className="input input-bordered w-full" value={estabelecimentoForm.nome} onChange={(e) => setEstabelecimentoForm({ ...estabelecimentoForm, nome: e.target.value })} placeholder="Ex: PROMA CONTAGEM" />
+          </FormField>
+        </div>
+      </Modal>
+
+      {/* Confirmacao Exclusao Empresa */}
+      <ConfirmDialog
+        isOpen={isDeleteEmpresaDialogOpen}
+        onClose={() => setIsDeleteEmpresaDialogOpen(false)}
+        onConfirm={handleDeleteEmpresa}
+        title="Excluir Empresa"
+        message="Tem certeza que deseja excluir esta empresa? Todos os estabelecimentos vinculados tambem serao excluidos."
+        confirmText="Excluir"
+        variant="error"
+      />
+
+      {/* Confirmacao Exclusao Estabelecimento */}
+      <ConfirmDialog
+        isOpen={isDeleteEstabelecimentoDialogOpen}
+        onClose={() => setIsDeleteEstabelecimentoDialogOpen(false)}
+        onConfirm={handleDeleteEstabelecimento}
+        title="Excluir Estabelecimento"
+        message="Tem certeza que deseja excluir este estabelecimento?"
+        confirmText="Excluir"
+        variant="error"
+      />
     </>
   );
 }

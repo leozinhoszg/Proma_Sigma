@@ -11,6 +11,8 @@ const authRoutes = require('./auth');
 const usuariosRoutes = require('./usuarios');
 const perfisRoutes = require('./perfis');
 const auditoriaRoutes = require('./auditoria');
+const empresasRoutes = require('./empresas');
+const estabelecimentosRoutes = require('./estabelecimentos');
 
 // Rotas de autenticacao
 router.use('/auth', authRoutes);
@@ -25,5 +27,7 @@ router.use('/medicoes', medicoesRoutes);
 router.use('/usuarios', usuariosRoutes);
 router.use('/perfis', perfisRoutes);
 router.use('/auditoria', auditoriaRoutes);
+router.use('/empresas', empresasRoutes);
+router.use('/estabelecimentos', estabelecimentosRoutes);
 
 module.exports = router;

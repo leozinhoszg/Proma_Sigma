@@ -9,7 +9,14 @@ exports.getTabela = async (req, res) => {
         const sequencias = await Sequencia.find()
             .populate({
                 path: 'contrato',
-                populate: { path: 'fornecedor', select: 'nome' }
+                populate: [
+                    { path: 'fornecedor', select: 'nome' },
+                    {
+                        path: 'estabelecimento',
+                        select: 'codEstabel nome empresa',
+                        populate: { path: 'empresa', select: 'codEmpresa nome' }
+                    }
+                ]
             });
 
         // Buscar medições do ano selecionado
@@ -40,30 +47,23 @@ exports.getTabela = async (req, res) => {
 
         const rows = sequencias
             .filter(seq => {
+                // Filtrar apenas sequências com contrato e fornecedor válidos
                 if (!seq.contrato || !seq.contrato.fornecedor) return false;
-
-                // Verificar se tem medição no ano selecionado
-                if (sequenciasComMedicao.has(seq._id.toString())) return true;
-
-                // Verificar se tem statusMensal no ano selecionado
-                if (seq.statusMensal) {
-                    const statusMap = seq.statusMensal instanceof Map ? seq.statusMensal : new Map(Object.entries(seq.statusMensal));
-                    for (const key of statusMap.keys()) {
-                        if (key.startsWith(anoFiltro.toString())) return true;
-                    }
-                }
-
-                return false;
+                return true;
             })
             .map(seq => {
                 const medicaoRecente = medicoesPorSequencia[seq._id.toString()];
+                const estab = seq.contrato.estabelecimento;
                 return {
                     sequenciaId: seq._id,
                     fornecedor: seq.contrato.fornecedor.nome,
                     fornecedorId: seq.contrato.fornecedor._id,
                     contrato: seq.contrato['nr-contrato'] || seq.contrato.numero,
                     contratoId: seq.contrato._id,
-                    estabelecimento: seq.contrato['cod-estabel'] || seq.contrato.estabelecimento || '01',
+                    codEstabel: seq.contrato['cod-estabel'] || estab?.codEstabel || '01',
+                    estabelecimento: estab?.codEstabel || seq.contrato['cod-estabel'] || '01',
+                    estabelecimentoNome: estab?.nome || null,
+                    empresa: estab?.empresa?.nome || null,
                     sequencia: seq['num-seq-item'] || seq.numero,
                     diaEmissao: seq.diaEmissao,
                     valor: seq.valor,
@@ -98,7 +98,14 @@ exports.getResumo = async (req, res) => {
             Contrato.countDocuments(),
             Sequencia.find().populate({
                 path: 'contrato',
-                populate: { path: 'fornecedor', select: 'nome' }
+                populate: [
+                    { path: 'fornecedor', select: 'nome' },
+                    {
+                        path: 'estabelecimento',
+                        select: 'codEstabel nome empresa',
+                        populate: { path: 'empresa', select: 'codEmpresa nome' }
+                    }
+                ]
             })
         ]);
 

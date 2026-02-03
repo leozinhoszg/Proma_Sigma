@@ -211,3 +211,33 @@ export const auditoriaAPI = {
   // Exportar logs
   exportar: (params) => api.get('/auditoria/exportar', { params, responseType: params.formato === 'csv' ? 'blob' : 'json' })
 };
+
+// ==================== EMPRESAS ====================
+export const empresasAPI = {
+  getAll: () => api.get('/empresas'),
+  getById: (id) => api.get(`/empresas/${id}`),
+  create: (data) => api.post('/empresas', data),
+  update: (id, data) => api.put(`/empresas/${id}`, data),
+  delete: (id) => api.delete(`/empresas/${id}`),
+  // Aliases em português
+  listar: () => api.get('/empresas'),
+  buscarPorId: (id) => api.get(`/empresas/${id}`),
+  criar: (data) => api.post('/empresas', data),
+  atualizar: (id, data) => api.put(`/empresas/${id}`, data),
+  excluir: (id) => api.delete(`/empresas/${id}`)
+};
+
+// ==================== ESTABELECIMENTOS ====================
+export const estabelecimentosAPI = {
+  getAll: (empresaId) => api.get('/estabelecimentos', { params: empresaId ? { empresa: empresaId } : {} }),
+  getById: (id) => api.get(`/estabelecimentos/${id}`),
+  create: (data) => api.post('/estabelecimentos', data),
+  update: (id, data) => api.put(`/estabelecimentos/${id}`, data),
+  delete: (id) => api.delete(`/estabelecimentos/${id}`),
+  // Aliases em português
+  listar: (empresaId) => api.get('/estabelecimentos', { params: empresaId ? { empresa: empresaId } : {} }),
+  buscarPorId: (id) => api.get(`/estabelecimentos/${id}`),
+  criar: (data) => api.post('/estabelecimentos', data),
+  atualizar: (id, data) => api.put(`/estabelecimentos/${id}`, data),
+  excluir: (id) => api.delete(`/estabelecimentos/${id}`)
+};

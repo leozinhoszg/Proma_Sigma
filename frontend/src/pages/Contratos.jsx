@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
-import { contratosAPI, fornecedoresAPI, sequenciasAPI } from '../services/api';
+import { contratosAPI, fornecedoresAPI, sequenciasAPI, estabelecimentosAPI } from '../services/api';
 import { formatCurrency } from '../utils/helpers';
-import Modal, { FormSection, FormRow, FormField } from '../components/ui/Modal';
+import Modal, { FormRow, FormField } from '../components/ui/Modal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import Loading from '../components/ui/Loading';
 import EmptyState from '../components/ui/EmptyState';
@@ -9,16 +9,10 @@ import DayPicker from '../components/ui/DayPicker';
 import { useToast } from '../hooks/useToast';
 import Toast from '../components/ui/Toast';
 
-// Estabelecimentos disponíveis
-const ESTABELECIMENTOS = [
-  { value: '01', label: '01 - PROMA CONTAGEM' },
-  { value: '02', label: '02 - PROMA JUATUBA' }
-];
-
 const initialContratoForm = {
   fornecedor: '',
   'nr-contrato': '',
-  'cod-estabel': '01',
+  estabelecimento: '',
   observacao: ''
 };
 
@@ -31,6 +25,7 @@ const initialSequenciaForm = {
 export default function Contratos() {
   const [contratos, setContratos] = useState([]);
   const [fornecedores, setFornecedores] = useState([]);
+  const [estabelecimentos, setEstabelecimentos] = useState([]);
   const [sequenciasPorContrato, setSequenciasPorContrato] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -64,12 +59,14 @@ export default function Contratos() {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [contratosRes, fornecedoresRes] = await Promise.all([
+      const [contratosRes, fornecedoresRes, estabelecimentosRes] = await Promise.all([
         contratosAPI.listar(),
-        fornecedoresAPI.listar()
+        fornecedoresAPI.listar(),
+        estabelecimentosAPI.listar()
       ]);
       setContratos(contratosRes.data || []);
       setFornecedores(fornecedoresRes.data || []);
+      setEstabelecimentos(estabelecimentosRes.data || []);
 
       // Carregar sequências para cada contrato
       const sequenciasMap = {};
@@ -137,7 +134,7 @@ export default function Contratos() {
     setContratoForm({
       fornecedor: contrato.fornecedor?._id || contrato.fornecedor || '',
       'nr-contrato': contrato['nr-contrato'] || '',
-      'cod-estabel': contrato['cod-estabel'] || '01',
+      estabelecimento: contrato.estabelecimento?._id || contrato.estabelecimento || '',
       observacao: contrato.observacao || ''
     });
     setEditingContratoId(contrato._id);
@@ -158,6 +155,10 @@ export default function Contratos() {
       showToast('Número do contrato é obrigatório', 'warning');
       return;
     }
+    if (!contratoForm.estabelecimento) {
+      showToast('Selecione um estabelecimento', 'warning');
+      return;
+    }
 
     try {
       setSaving(true);
@@ -165,7 +166,7 @@ export default function Contratos() {
       const dados = {
         fornecedor: contratoForm.fornecedor,
         'nr-contrato': parseInt(contratoForm['nr-contrato']),
-        'cod-estabel': contratoForm['cod-estabel'],
+        estabelecimento: contratoForm.estabelecimento,
         observacao: contratoForm.observacao
       };
 
@@ -276,11 +277,19 @@ export default function Contratos() {
     }
   };
 
-  // Obter nome do estabelecimento
-  const getEstabelecimentoLabel = (cod) => {
-    const estab = ESTABELECIMENTOS.find(e => e.value === cod);
-    return estab ? estab.label : cod;
-  };
+  // Agrupar estabelecimentos por empresa
+  const estabelecimentosPorEmpresa = useMemo(() => {
+    const map = new Map();
+    estabelecimentos.forEach(estab => {
+      const empresaId = estab.empresa?._id || 'sem-empresa';
+      const empresaNome = estab.empresa?.nome || 'Sem Empresa';
+      if (!map.has(empresaId)) {
+        map.set(empresaId, { nome: empresaNome, estabelecimentos: [] });
+      }
+      map.get(empresaId).estabelecimentos.push(estab);
+    });
+    return Array.from(map.values());
+  }, [estabelecimentos]);
 
   if (loading) {
     return <Loading text="Carregando contratos..." />;
@@ -349,10 +358,13 @@ export default function Contratos() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                           <div>
-                            <span className="font-semibold">Contrato {contrato['nr-contrato']} - {contrato['cod-estabel']}</span>
+                            <span className="font-semibold">Contrato {contrato['nr-contrato']}</span>
                             <p className="text-sm text-base-content/50">
-                              {sequencias.length} sequência(s) | {contrato.observacao || 'Sem observação'}
+                              {contrato.estabelecimento?.empresa?.nome} - {contrato.estabelecimento?.nome} ({contrato['cod-estabel']}) | {sequencias.length} sequência(s)
                             </p>
+                            {contrato.observacao && (
+                              <p className="text-xs text-base-content/40">{contrato.observacao}</p>
+                            )}
                           </div>
                         </div>
 
@@ -434,7 +446,7 @@ export default function Contratos() {
         isOpen={isContratoModalOpen}
         onClose={() => setIsContratoModalOpen(false)}
         title={editingContratoId ? 'Editar Contrato' : 'Novo Contrato'}
-        size="sm"
+        size="md"
         actions={
           <>
             <button className="btn btn-ghost" onClick={() => setIsContratoModalOpen(false)} disabled={saving}>
@@ -448,21 +460,21 @@ export default function Contratos() {
           </>
         }
       >
-        <div className="space-y-4">
-          <FormField label="Fornecedor" required>
-            <select
-              className="select select-bordered w-full"
-              value={contratoForm.fornecedor}
-              onChange={(e) => setContratoForm(prev => ({ ...prev, fornecedor: e.target.value }))}
-            >
-              <option value="">Selecione um fornecedor</option>
-              {fornecedores.map(f => (
-                <option key={f._id} value={f._id}>{f.nome}</option>
-              ))}
-            </select>
-          </FormField>
-
+        <div className="space-y-5">
           <FormRow>
+            <FormField label="Fornecedor" required>
+              <select
+                className="select select-bordered w-full"
+                value={contratoForm.fornecedor}
+                onChange={(e) => setContratoForm(prev => ({ ...prev, fornecedor: e.target.value }))}
+              >
+                <option value="">Selecione um fornecedor</option>
+                {fornecedores.map(f => (
+                  <option key={f._id} value={f._id}>{f.nome}</option>
+                ))}
+              </select>
+            </FormField>
+
             <FormField label="Número do Contrato" required>
               <input
                 type="number"
@@ -472,19 +484,26 @@ export default function Contratos() {
                 placeholder="Ex: 757"
               />
             </FormField>
-
-            <FormField label="Estabelecimento">
-              <select
-                className="select select-bordered w-full"
-                value={contratoForm['cod-estabel']}
-                onChange={(e) => setContratoForm(prev => ({ ...prev, 'cod-estabel': e.target.value }))}
-              >
-                {ESTABELECIMENTOS.map(e => (
-                  <option key={e.value} value={e.value}>{e.label}</option>
-                ))}
-              </select>
-            </FormField>
           </FormRow>
+
+          <FormField label="Estabelecimento" required>
+            <select
+              className="select select-bordered w-full"
+              value={contratoForm.estabelecimento}
+              onChange={(e) => setContratoForm(prev => ({ ...prev, estabelecimento: e.target.value }))}
+            >
+              <option value="">Selecione um estabelecimento</option>
+              {estabelecimentosPorEmpresa.map(grupo => (
+                <optgroup key={grupo.nome} label={grupo.nome}>
+                  {grupo.estabelecimentos.map(estab => (
+                    <option key={estab._id} value={estab._id}>
+                      {estab.codEstabel} - {estab.nome}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </FormField>
 
           <FormField label="Observação">
             <input

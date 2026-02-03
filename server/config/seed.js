@@ -1,4 +1,4 @@
-const { Fornecedor, Contrato, Sequencia } = require('../models');
+const { Fornecedor, Contrato, Sequencia, Empresa, Estabelecimento } = require('../models');
 
 const seedData = async () => {
     try {
@@ -10,6 +10,25 @@ const seedData = async () => {
         }
 
         console.log('Iniciando seed do banco de dados...');
+
+        // Criar empresas
+        const empresas = await Empresa.insertMany([
+            { codEmpresa: '01', nome: 'PROMA BRASIL' },
+            { codEmpresa: '02', nome: 'PMC' }
+        ]);
+
+        console.log(`${empresas.length} empresas criadas`);
+
+        const [promaBrasil, pmc] = empresas;
+
+        // Criar estabelecimentos
+        const estabelecimentos = await Estabelecimento.insertMany([
+            { empresa: promaBrasil._id, codEstabel: '01', nome: 'PROMA CONTAGEM' },
+            { empresa: promaBrasil._id, codEstabel: '02', nome: 'PROMA JUATUBA' },
+            { empresa: pmc._id, codEstabel: '101', nome: 'PMC GOIANA' }
+        ]);
+
+        console.log(`${estabelecimentos.length} estabelecimentos criados`);
 
         // Criar fornecedores
         const fornecedores = await Fornecedor.insertMany([

@@ -7,6 +7,8 @@ const User = require('./User');
 const RefreshToken = require('./RefreshToken');
 const Perfil = require('./Perfil');
 const AuditLog = require('./AuditLog');
+const Empresa = require('./Empresa');
+const Estabelecimento = require('./Estabelecimento');
 
 module.exports = {
     Fornecedor,
@@ -17,5 +19,7 @@ module.exports = {
     User,
     RefreshToken,
     Perfil,
-    AuditLog
+    AuditLog,
+    Empresa,
+    Estabelecimento
 };

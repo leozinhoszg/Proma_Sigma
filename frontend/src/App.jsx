@@ -64,7 +64,7 @@ function App() {
               </ProtectedPermission>
             } />
             <Route path="/configuracoes" element={
-              <ProtectedPermission permissao={['usuarios', 'perfis']}>
+              <ProtectedPermission permissao={['usuarios', 'perfis', 'auditoria', 'empresas', 'estabelecimentos']}>
                 <Configuracoes />
               </ProtectedPermission>
             } />

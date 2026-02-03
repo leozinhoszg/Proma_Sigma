@@ -63,7 +63,7 @@ const auditLogSchema = new mongoose.Schema({
     categoria: {
         type: String,
         required: true,
-        enum: ['AUTH', 'USUARIO', 'PERFIL', 'FORNECEDOR', 'CONTRATO', 'SEQUENCIA', 'MEDICAO', 'SISTEMA', 'EMAIL']
+        enum: ['AUTH', 'USUARIO', 'PERFIL', 'FORNECEDOR', 'CONTRATO', 'SEQUENCIA', 'MEDICAO', 'SISTEMA', 'EMAIL', 'EMPRESA', 'ESTABELECIMENTO']
     },
 
     // Nivel de criticidade

@@ -22,7 +22,9 @@ const perfilSchema = new mongoose.Schema({
             'relatorio',
             'usuarios',
             'perfis',
-            'auditoria'
+            'auditoria',
+            'empresas',
+            'estabelecimentos'
         ]
     }],
     isAdmin: {

@@ -1,17 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
-@import url('https://db.onlinewebfonts.com/c/54deb902459692001bafddf102d8235a?family=Stereo+Gothic+W01+850');
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap");
+@import url("https://db.onlinewebfonts.com/c/54deb902459692001bafddf102d8235a?family=Stereo+Gothic+W01+850");
 @plugin "daisyui";
 
 /* Custom Font - Stereo Gothic */
 @font-face {
   font-family: "Stereo Gothic W01 850";
   src: url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.eot");
-  src: url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.eot?#iefix") format("embedded-opentype"),
-       url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.woff2") format("woff2"),
-       url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.woff") format("woff"),
-       url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.ttf") format("truetype"),
-       url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.svg#Stereo Gothic W01 850") format("svg");
+  src: url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.eot?#iefix")
+      format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.woff2")
+      format("woff2"),
+    url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.woff")
+      format("woff"),
+    url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.ttf")
+      format("truetype"),
+    url("https://db.onlinewebfonts.com/t/54deb902459692001bafddf102d8235a.svg#Stereo Gothic W01 850")
+      format("svg");
   font-display: swap;
 }
 
@@ -141,29 +146,56 @@
   --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.1);
 
   /* Background gradient */
-  --bg-gradient: linear-gradient(135deg, oklch(22% 0.03 260) 0%, oklch(27% 0.041 260.031) 100%);
+  --bg-gradient: linear-gradient(
+    135deg,
+    oklch(22% 0.03 260) 0%,
+    oklch(27% 0.041 260.031) 100%
+  );
 }
 
 /* ==================== BASE ==================== */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
   background: var(--bg-gradient);
   min-height: 100vh;
 }
 
 /* Background com padrão sutil */
 .bg-pattern {
-  background-image:
-    radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.03) 0%, transparent 30%);
+  background-image: radial-gradient(
+      circle at 20% 80%,
+      rgba(37, 99, 235, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(99, 102, 241, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(16, 185, 129, 0.03) 0%,
+      transparent 30%
+    );
 }
 
 [data-theme="dark"] .bg-pattern {
-  background-image:
-    radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.08) 0%, transparent 30%);
+  background-image: radial-gradient(
+      circle at 20% 80%,
+      rgba(99, 102, 241, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(139, 92, 246, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(16, 185, 129, 0.08) 0%,
+      transparent 30%
+    );
 }
 
 /* ==================== GLASSMORPHISM ==================== */
@@ -300,13 +332,17 @@ body {
 }
 
 .stat-card-glass::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--stat-color, oklch(15% 0 0)), transparent);
+  background: linear-gradient(
+    90deg,
+    var(--stat-color, oklch(15% 0 0)),
+    transparent
+  );
 }
 
 .stat-card-glass:hover {
@@ -315,18 +351,38 @@ body {
 }
 
 /* Light theme (lo-fi) stat colors */
-.stat-card-glass.success { --stat-color: oklch(90.13% 0.153 164.14); }
-.stat-card-glass.warning { --stat-color: oklch(88.37% 0.135 79.94); }
-.stat-card-glass.error { --stat-color: oklch(78.66% 0.15 28.47); }
-.stat-card-glass.info { --stat-color: oklch(79.54% 0.103 205.9); }
-.stat-card-glass.primary { --stat-color: oklch(15.906% 0 0); }
+.stat-card-glass.success {
+  --stat-color: oklch(90.13% 0.153 164.14);
+}
+.stat-card-glass.warning {
+  --stat-color: oklch(88.37% 0.135 79.94);
+}
+.stat-card-glass.error {
+  --stat-color: oklch(78.66% 0.15 28.47);
+}
+.stat-card-glass.info {
+  --stat-color: oklch(79.54% 0.103 205.9);
+}
+.stat-card-glass.primary {
+  --stat-color: oklch(15.906% 0 0);
+}
 
 /* Dark theme stat colors */
-[data-theme="dark"] .stat-card-glass.success { --stat-color: oklch(76% 0.177 163.223); }
-[data-theme="dark"] .stat-card-glass.warning { --stat-color: oklch(82% 0.189 84.429); }
-[data-theme="dark"] .stat-card-glass.error { --stat-color: oklch(71% 0.194 13.428); }
-[data-theme="dark"] .stat-card-glass.info { --stat-color: oklch(74% 0.16 232.661); }
-[data-theme="dark"] .stat-card-glass.primary { --stat-color: oklch(70% 0.165 254.624); }
+[data-theme="dark"] .stat-card-glass.success {
+  --stat-color: oklch(76% 0.177 163.223);
+}
+[data-theme="dark"] .stat-card-glass.warning {
+  --stat-color: oklch(82% 0.189 84.429);
+}
+[data-theme="dark"] .stat-card-glass.error {
+  --stat-color: oklch(71% 0.194 13.428);
+}
+[data-theme="dark"] .stat-card-glass.info {
+  --stat-color: oklch(74% 0.16 232.661);
+}
+[data-theme="dark"] .stat-card-glass.primary {
+  --stat-color: oklch(70% 0.165 254.624);
+}
 
 /* ==================== TABELAS COM GLASS ==================== */
 .table-glass {
@@ -403,8 +459,12 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInRight {
@@ -436,11 +496,21 @@ body {
   animation: fadeInUp 0.4s ease forwards;
 }
 
-.stagger-animate > *:nth-child(1) { animation-delay: 0.05s; }
-.stagger-animate > *:nth-child(2) { animation-delay: 0.1s; }
-.stagger-animate > *:nth-child(3) { animation-delay: 0.15s; }
-.stagger-animate > *:nth-child(4) { animation-delay: 0.2s; }
-.stagger-animate > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-animate > *:nth-child(1) {
+  animation-delay: 0.05s;
+}
+.stagger-animate > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.stagger-animate > *:nth-child(3) {
+  animation-delay: 0.15s;
+}
+.stagger-animate > *:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.stagger-animate > *:nth-child(5) {
+  animation-delay: 0.25s;
+}
 
 /* ==================== SCROLLBAR CUSTOMIZADA ==================== */
 ::-webkit-scrollbar {
@@ -475,34 +545,36 @@ body {
 
 /* ==================== PÁGINA DE LOGIN ==================== */
 .login-page {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
   position: relative;
   overflow: hidden;
 }
 
 /* Título PROMA SIGMA no lado esquerdo */
 .login-page > div:first-child span {
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 800;
   letter-spacing: -0.03em;
 }
 
 /* Descrição do sistema */
 .login-page > div:first-child p {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
 }
 
 /* Features no lado esquerdo */
 .login-page > div:first-child .flex.items-center span {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
 /* Gradiente de fundo moderno para o lado direito (formulário) */
 .login-page > div:last-child {
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     oklch(98% 0.01 250) 0%,
     oklch(95% 0.02 245) 25%,
     oklch(96% 0.015 255) 50%,
@@ -514,25 +586,40 @@ body {
 
 /* Overlay com padrão de mesh gradient */
 .login-page > div:last-child::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 0%, oklch(85% 0.12 250 / 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, oklch(70% 0.15 240 / 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 0% 50%, oklch(80% 0.1 260 / 0.08) 0%, transparent 40%);
+  background: radial-gradient(
+      ellipse at 20% 0%,
+      oklch(85% 0.12 250 / 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 100%,
+      oklch(70% 0.15 240 / 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 0% 50%,
+      oklch(80% 0.1 260 / 0.08) 0%,
+      transparent 40%
+    );
   pointer-events: none;
 }
 
 /* Círculos decorativos animados */
 .login-page > div:last-child::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -20%;
   right: -10%;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, oklch(65% 0.18 250 / 0.08) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    oklch(65% 0.18 250 / 0.08) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   animation: float-slow 20s ease-in-out infinite;
   pointer-events: none;
@@ -540,10 +627,11 @@ body {
 
 /* Estilo do lado esquerdo (imagem) com overlay gradiente azul */
 .login-page > div:first-child::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     oklch(25% 0.1 250 / 0.7) 0%,
     oklch(20% 0.15 240 / 0.5) 50%,
     oklch(30% 0.12 260 / 0.6) 100%
@@ -560,42 +648,51 @@ body {
 
 /* Efeito de brilho no canto */
 .login-page .animate-fadeInUp::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -100px;
   left: -100px;
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, oklch(70% 0.15 250 / 0.1) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    oklch(70% 0.15 250 / 0.1) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   pointer-events: none;
 }
 
 /* Input com borda gradiente no focus */
 .login-page input:focus {
-  border-image: linear-gradient(135deg, oklch(55% 0.2 255), oklch(50% 0.18 240)) 1;
-  box-shadow: 0 0 0 3px oklch(55% 0.2 255 / 0.15), 0 4px 12px oklch(50% 0.15 250 / 0.1);
+  border-image: linear-gradient(135deg, oklch(55% 0.2 255), oklch(50% 0.18 240))
+    1;
+  box-shadow: 0 0 0 3px oklch(55% 0.2 255 / 0.15),
+    0 4px 12px oklch(50% 0.15 250 / 0.1);
 }
 
 /* Botão de login com gradiente azul marinho */
 .login-page .btn-primary {
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     oklch(50% 0.18 250) 0%,
     oklch(40% 0.2 240) 50%,
     oklch(35% 0.22 235) 100%
   );
   border: none;
-  box-shadow: 0 4px 15px oklch(40% 0.2 245 / 0.4), 0 2px 4px oklch(30% 0.15 250 / 0.2);
+  box-shadow: 0 4px 15px oklch(40% 0.2 245 / 0.4),
+    0 2px 4px oklch(30% 0.15 250 / 0.2);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
 .login-page .btn-primary::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     oklch(55% 0.16 255 / 0.3) 0%,
     transparent 50%
   );
@@ -605,7 +702,8 @@ body {
 
 .login-page .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px oklch(40% 0.2 245 / 0.5), 0 4px 8px oklch(30% 0.15 250 / 0.3);
+  box-shadow: 0 6px 20px oklch(40% 0.2 245 / 0.5),
+    0 4px 8px oklch(30% 0.15 250 / 0.3);
 }
 
 .login-page .btn-primary:hover::before {
@@ -618,7 +716,8 @@ body {
 
 /* Animação de flutuação lenta */
 @keyframes float-slow {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
   33% {
@@ -647,14 +746,14 @@ body {
 
 /* Estilo padrão para títulos da página de login (Montserrat - corporativo) */
 .login-title {
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 /* H1 com gradiente */
 .login-page h1 {
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
   background: linear-gradient(135deg, oklch(25% 0.03 250), oklch(35% 0.08 245));
@@ -665,20 +764,20 @@ body {
 
 /* Labels do formulário de login */
 .login-page label {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
 
 /* Inputs do login */
 .login-page input {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
 }
 
 /* Botão de login */
 .login-page .btn-primary {
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 600;
   letter-spacing: 0.03em;
 }
@@ -686,12 +785,12 @@ body {
 /* Texto "Lembrar senha" */
 .login-page .checkbox + span,
 .login-page label span {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 /* Footer da página de login */
 .login-page p:last-child {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   letter-spacing: 0.02em;
 }
@@ -705,7 +804,8 @@ body {
 /* Dark Mode - Login Page */
 [data-theme="dark"] .login-page > div:last-child,
 [data-theme="dracula"] .login-page > div:last-child {
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     oklch(20% 0.03 250) 0%,
     oklch(22% 0.04 245) 25%,
     oklch(18% 0.05 255) 50%,
@@ -716,20 +816,35 @@ body {
 
 [data-theme="dark"] .login-page > div:last-child::before,
 [data-theme="dracula"] .login-page > div:last-child::before {
-  background:
-    radial-gradient(ellipse at 20% 0%, oklch(50% 0.15 250 / 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, oklch(45% 0.18 240 / 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 0% 50%, oklch(55% 0.12 260 / 0.08) 0%, transparent 40%);
+  background: radial-gradient(
+      ellipse at 20% 0%,
+      oklch(50% 0.15 250 / 0.15) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 100%,
+      oklch(45% 0.18 240 / 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 0% 50%,
+      oklch(55% 0.12 260 / 0.08) 0%,
+      transparent 40%
+    );
 }
 
 [data-theme="dark"] .login-page > div:last-child::after,
 [data-theme="dracula"] .login-page > div:last-child::after {
-  background: radial-gradient(circle, oklch(50% 0.2 250 / 0.1) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    oklch(50% 0.2 250 / 0.1) 0%,
+    transparent 70%
+  );
 }
 
 [data-theme="dark"] .login-page h1,
 [data-theme="dracula"] .login-page h1 {
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
   background: linear-gradient(135deg, oklch(90% 0.02 250), oklch(80% 0.08 245));
@@ -740,17 +855,20 @@ body {
 
 [data-theme="dark"] .login-page .btn-primary,
 [data-theme="dracula"] .login-page .btn-primary {
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     oklch(55% 0.2 250) 0%,
     oklch(45% 0.22 240) 50%,
     oklch(40% 0.24 235) 100%
   );
-  box-shadow: 0 4px 15px oklch(50% 0.25 245 / 0.3), 0 2px 4px oklch(40% 0.2 250 / 0.2);
+  box-shadow: 0 4px 15px oklch(50% 0.25 245 / 0.3),
+    0 2px 4px oklch(40% 0.2 250 / 0.2);
 }
 
 [data-theme="dark"] .login-page .btn-primary:hover,
 [data-theme="dracula"] .login-page .btn-primary:hover {
-  box-shadow: 0 6px 20px oklch(50% 0.25 245 / 0.4), 0 4px 8px oklch(40% 0.2 250 / 0.3);
+  box-shadow: 0 6px 20px oklch(50% 0.25 245 / 0.4),
+    0 4px 8px oklch(40% 0.2 250 / 0.3);
 }
 
 [data-theme="dark"] .login-page a[href="/esqueci-senha"],
@@ -771,7 +889,8 @@ body {
 
 /* ==================== LOGIN DIVIDER ==================== */
 .login-divider {
-  background: linear-gradient(to right,
+  background: linear-gradient(
+    to right,
     oklch(35% 0.15 245 / 0.35) 0%,
     oklch(40% 0.12 250 / 0.15) 40%,
     oklch(50% 0.08 255 / 0.05) 70%,
@@ -781,7 +900,8 @@ body {
 
 [data-theme="dark"] .login-divider,
 [data-theme="dracula"] .login-divider {
-  background: linear-gradient(to right,
+  background: linear-gradient(
+    to right,
     oklch(8% 0.04 250 / 0.7) 0%,
     oklch(12% 0.03 250 / 0.3) 40%,
     oklch(15% 0.02 250 / 0.1) 70%,
@@ -798,7 +918,11 @@ body {
 }
 
 [data-theme="dark"] .text-gradient {
-  background: linear-gradient(135deg, oklch(70% 0.165 254.624), oklch(65% 0.241 354.308));
+  background: linear-gradient(
+    135deg,
+    oklch(70% 0.165 254.624),
+    oklch(65% 0.241 354.308)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -816,21 +940,35 @@ body {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
-/* Theme toggle transition - otimizado para performance */
+/* Theme toggle transition */
+html {
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 html.theme-transitioning,
-html.theme-transitioning *:not(svg):not(path):not(circle) {
-  transition:
-    background-color 0.25s ease-out,
-    border-color 0.25s ease-out,
-    color 0.2s ease-out !important;
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    fill 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Gradiente de fundo com transição */
+/* Previne piscadas durante a transição */
+html.theme-transitioning {
+  pointer-events: none;
+}
+
+/* Transição suave para o gradiente de fundo */
 body {
-  transition: background 0.3s ease-out;
+  transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Elementos glass - transição apenas em cores, NÃO em backdrop-filter */
+/* Elementos glass com transição mais suave */
 .glass,
 .glass-card,
 .glass-sidebar,
@@ -839,10 +977,10 @@ body {
 .glass-input,
 .stat-card-glass,
 .table-glass {
-  transition:
-    background-color 0.25s ease-out,
-    border-color 0.25s ease-out,
-    box-shadow 0.25s ease-out;
+  transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ==================== MELHORIAS VISUAIS LOGIN - v2 ==================== */
@@ -878,7 +1016,8 @@ body {
 
 /* Animação de pulse suave para elementos decorativos */
 @keyframes softPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.6;
     transform: scale(1);
   }
@@ -900,7 +1039,8 @@ body {
 
 /* Animação de glow pulsante */
 @keyframes glowPulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px oklch(55% 0.2 250 / 0.2);
   }
   50% {
@@ -910,36 +1050,78 @@ body {
 
 /* Animação de shake para erros */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
 }
 
 /* Animação de bounce suave */
 @keyframes softBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 /* Animação de rotação suave para ícones */
 @keyframes iconFloat {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-3px) rotate(2deg); }
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(2deg);
+  }
 }
 
 /* Animação de entrada para os orbs de fundo */
 @keyframes orbFloat1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(20px, -20px) scale(1.1); }
-  50% { transform: translate(40px, 10px) scale(0.95); }
-  75% { transform: translate(10px, 30px) scale(1.05); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(20px, -20px) scale(1.1);
+  }
+  50% {
+    transform: translate(40px, 10px) scale(0.95);
+  }
+  75% {
+    transform: translate(10px, 30px) scale(1.05);
+  }
 }
 
 @keyframes orbFloat2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  25% { transform: translate(-30px, 20px) scale(0.9); }
-  50% { transform: translate(-10px, -30px) scale(1.1); }
-  75% { transform: translate(20px, -10px) scale(0.95); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(-30px, 20px) scale(0.9);
+  }
+  50% {
+    transform: translate(-10px, -30px) scale(1.1);
+  }
+  75% {
+    transform: translate(20px, -10px) scale(0.95);
+  }
 }
 
 /* === CLASSES DE ANIMAÇÃO === */
@@ -968,14 +1150,30 @@ body {
   animation: fadeInBlur 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.login-page .animate-fadeInUp > *:nth-child(1) { animation-delay: 0.1s; }
-.login-page .animate-fadeInUp > *:nth-child(2) { animation-delay: 0.2s; }
-.login-page .animate-fadeInUp > *:nth-child(3) { animation-delay: 0.3s; }
-.login-page .animate-fadeInUp > *:nth-child(4) { animation-delay: 0.4s; }
-.login-page .animate-fadeInUp > *:nth-child(5) { animation-delay: 0.5s; }
-.login-page .animate-fadeInUp > *:nth-child(6) { animation-delay: 0.6s; }
-.login-page .animate-fadeInUp > *:nth-child(7) { animation-delay: 0.7s; }
-.login-page .animate-fadeInUp > *:nth-child(8) { animation-delay: 0.8s; }
+.login-page .animate-fadeInUp > *:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.login-page .animate-fadeInUp > *:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.login-page .animate-fadeInUp > *:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.login-page .animate-fadeInUp > *:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.login-page .animate-fadeInUp > *:nth-child(5) {
+  animation-delay: 0.5s;
+}
+.login-page .animate-fadeInUp > *:nth-child(6) {
+  animation-delay: 0.6s;
+}
+.login-page .animate-fadeInUp > *:nth-child(7) {
+  animation-delay: 0.7s;
+}
+.login-page .animate-fadeInUp > *:nth-child(8) {
+  animation-delay: 0.8s;
+}
 
 /* Features do lado esquerdo com animação escalonada */
 .login-page .space-y-4 > div {
@@ -983,9 +1181,15 @@ body {
   animation: slideInFromLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.login-page .space-y-4 > div:nth-child(1) { animation-delay: 0.3s; }
-.login-page .space-y-4 > div:nth-child(2) { animation-delay: 0.45s; }
-.login-page .space-y-4 > div:nth-child(3) { animation-delay: 0.6s; }
+.login-page .space-y-4 > div:nth-child(1) {
+  animation-delay: 0.3s;
+}
+.login-page .space-y-4 > div:nth-child(2) {
+  animation-delay: 0.45s;
+}
+.login-page .space-y-4 > div:nth-child(3) {
+  animation-delay: 0.6s;
+}
 
 /* Hover nos feature cards */
 .login-page .space-y-4 > div {
@@ -1016,8 +1220,7 @@ body {
 
 .login-page input.input:focus {
   border-color: oklch(55% 0.2 255) !important;
-  box-shadow:
-    0 0 0 4px oklch(55% 0.2 255 / 0.15),
+  box-shadow: 0 0 0 4px oklch(55% 0.2 255 / 0.15),
     0 4px 20px oklch(50% 0.15 250 / 0.15) !important;
   transform: translateY(-1px);
 }
@@ -1041,7 +1244,7 @@ body {
 }
 
 .login-page .btn-primary::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -1060,8 +1263,7 @@ body {
 
 .login-page .btn-primary:hover {
   transform: translateY(-3px) scale(1.01);
-  box-shadow:
-    0 8px 25px oklch(40% 0.2 245 / 0.5),
+  box-shadow: 0 8px 25px oklch(40% 0.2 245 / 0.5),
     0 4px 10px oklch(30% 0.15 250 / 0.3);
 }
 
@@ -1080,7 +1282,7 @@ body {
 /* Alerta de erro com shake */
 .login-page .bg-error\/10 {
   animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both,
-             fadeInBlur 0.3s ease-out;
+    fadeInBlur 0.3s ease-out;
 }
 
 /* Alerta de sucesso com bounce */
@@ -1111,7 +1313,7 @@ body {
 }
 
 .login-page a[href="/esqueci-senha"]::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -2px;
   left: 0;
@@ -1140,13 +1342,17 @@ body {
 
 /* Segundo orb decorativo via CSS */
 .login-page > div:last-child .animate-fadeInUp::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -150px;
   left: -100px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, oklch(60% 0.15 280 / 0.06) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    oklch(60% 0.15 280 / 0.06) 0%,
+    transparent 70%
+  );
   border-radius: 50%;
   animation: orbFloat2 30s ease-in-out infinite;
   pointer-events: none;
@@ -1206,8 +1412,7 @@ body {
 [data-theme="dark"] .login-page input.input:focus,
 [data-theme="dracula"] .login-page input.input:focus {
   border-color: oklch(65% 0.2 255) !important;
-  box-shadow:
-    0 0 0 4px oklch(60% 0.2 255 / 0.2),
+  box-shadow: 0 0 0 4px oklch(60% 0.2 255 / 0.2),
     0 4px 20px oklch(55% 0.18 250 / 0.2) !important;
 }
 
@@ -1223,10 +1428,8 @@ body {
 
 [data-theme="dark"] .login-page .btn-primary:hover,
 [data-theme="dracula"] .login-page .btn-primary:hover {
-  box-shadow:
-    0 8px 25px oklch(50% 0.25 245 / 0.4),
-    0 4px 10px oklch(40% 0.2 250 / 0.3),
-    0 0 40px oklch(55% 0.2 250 / 0.2);
+  box-shadow: 0 8px 25px oklch(50% 0.25 245 / 0.4),
+    0 4px 10px oklch(40% 0.2 250 / 0.3), 0 0 40px oklch(55% 0.2 250 / 0.2);
 }
 
 /* === RESPONSIVO === */
@@ -1267,14 +1470,16 @@ body {
 }
 
 .login-page-v2 {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    sans-serif;
   min-height: 100vh;
   background: #f8fafc;
 }
 
 /* Brand Panel - Left Side */
 .login-brand-panel {
-  background: linear-gradient(135deg,
+  background: linear-gradient(
+    135deg,
     var(--navy-900) 0%,
     var(--navy-800) 40%,
     var(--navy-950) 100%
@@ -1319,7 +1524,8 @@ body {
 }
 
 @keyframes orbFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translate(0, 0) scale(1);
   }
   25% {
@@ -1335,9 +1541,11 @@ body {
 
 /* Grid pattern */
 .login-grid-pattern {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px
+    ),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 60px 60px;
 }
 
@@ -1378,13 +1586,21 @@ body {
 }
 
 @keyframes shake {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
-  10%, 30%, 50%, 70%, 90% {
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
     transform: translateX(-4px);
   }
-  20%, 40%, 60%, 80% {
+  20%,
+  40%,
+  60%,
+  80% {
     transform: translateX(4px);
   }
 }
@@ -1415,7 +1631,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(30, 58, 95, 0.5));
+  background: linear-gradient(
+    135deg,
+    rgba(14, 165, 233, 0.25),
+    rgba(30, 58, 95, 0.5)
+  );
   border-radius: 12px;
   color: #7dd3fc;
   flex-shrink: 0;
@@ -1428,9 +1648,15 @@ body {
   animation: slideInLeft 0.5s ease-out forwards;
 }
 
-.login-brand-panel .space-y-4 > div:nth-child(1) { animation-delay: 0.3s; }
-.login-brand-panel .space-y-4 > div:nth-child(2) { animation-delay: 0.45s; }
-.login-brand-panel .space-y-4 > div:nth-child(3) { animation-delay: 0.6s; }
+.login-brand-panel .space-y-4 > div:nth-child(1) {
+  animation-delay: 0.3s;
+}
+.login-brand-panel .space-y-4 > div:nth-child(2) {
+  animation-delay: 0.45s;
+}
+.login-brand-panel .space-y-4 > div:nth-child(3) {
+  animation-delay: 0.6s;
+}
 
 @keyframes slideInLeft {
   from {
@@ -1449,9 +1675,16 @@ body {
 }
 
 .login-form-bg {
-  background:
-    radial-gradient(ellipse at 0% 0%, rgba(42, 64, 96, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 100% 100%, rgba(30, 50, 80, 0.03) 0%, transparent 50%);
+  background: radial-gradient(
+      ellipse at 0% 0%,
+      rgba(42, 64, 96, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 100% 100%,
+      rgba(30, 50, 80, 0.03) 0%,
+      transparent 50%
+    );
 }
 
 /* Form container animation */
@@ -1511,8 +1744,12 @@ body {
   animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.login-form-container .login-input-group:nth-child(1) { animation-delay: 0.1s; }
-.login-form-container .login-input-group:nth-child(2) { animation-delay: 0.2s; }
+.login-form-container .login-input-group:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.login-form-container .login-input-group:nth-child(2) {
+  animation-delay: 0.2s;
+}
 
 /* Checkbox styling */
 .login-checkbox {
@@ -1544,7 +1781,7 @@ body {
 }
 
 .login-checkbox:checked::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 6px;
   top: 2px;
@@ -1557,7 +1794,12 @@ body {
 
 /* Submit button */
 .login-submit-btn {
-  background: linear-gradient(135deg, var(--navy-600) 0%, var(--navy-800) 50%, var(--navy-950) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--navy-600) 0%,
+    var(--navy-800) 50%,
+    var(--navy-950) 100%
+  );
   color: white;
   border: none;
   border-radius: 12px;
@@ -1569,7 +1811,7 @@ body {
 }
 
 .login-submit-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -1626,13 +1868,21 @@ body {
 
 [data-theme="dark"] .login-alert-error,
 [data-theme="dracula"] .login-alert-error {
-  background: linear-gradient(135deg, rgba(127, 29, 29, 0.3) 0%, rgba(153, 27, 27, 0.2) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(127, 29, 29, 0.3) 0%,
+    rgba(153, 27, 27, 0.2) 100%
+  );
   border-color: rgba(239, 68, 68, 0.3);
 }
 
 [data-theme="dark"] .login-alert-error-icon,
 [data-theme="dracula"] .login-alert-error-icon {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.4) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.3) 0%,
+    rgba(220, 38, 38, 0.4) 100%
+  );
   color: #f87171;
 }
 
@@ -1705,9 +1955,16 @@ body {
 
 [data-theme="dark"] .login-form-bg,
 [data-theme="dracula"] .login-form-bg {
-  background:
-    radial-gradient(ellipse at 0% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 100% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+  background: radial-gradient(
+      ellipse at 0% 0%,
+      rgba(6, 182, 212, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 100% 100%,
+      rgba(59, 130, 246, 0.08) 0%,
+      transparent 50%
+    );
 }
 
 [data-theme="dark"] .login-input,
@@ -1850,7 +2107,11 @@ body {
 /* Responsive adjustments for login v2 */
 @media (max-width: 1024px) {
   .login-page-v2 {
-    background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-800) 100%);
+    background: linear-gradient(
+      135deg,
+      var(--navy-900) 0%,
+      var(--navy-800) 100%
+    );
   }
 
   .login-form-panel {
