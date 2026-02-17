@@ -1,4 +1,5 @@
-const { Contrato, Sequencia, Estabelecimento, Fornecedor, Empresa } = require('../models');
+const { Op } = require('sequelize');
+const { sequelize, Contrato, Sequencia, Estabelecimento, Fornecedor, Empresa, Medicao, SolicitacaoAtualizacao } = require('../models');
 const auditService = require('../services/auditService');
 const { buildSetorFilter } = require('../middleware/setorFilter');
 
@@ -56,6 +57,15 @@ exports.create = async (req, res) => {
     try {
         if (!req.user.setor_id && !req.user.isAdmin) {
             return res.status(400).json({ message: 'Usuario nao possui setor atribuido. Contate o administrador.' });
+        }
+
+        // Verificar se o fornecedor pertence ao setor do usuario
+        const setorFilter = buildSetorFilter(req);
+        const fornecedor = await Fornecedor.findOne({
+            where: { id: req.body.fornecedor, ...setorFilter }
+        });
+        if (!fornecedor) {
+            return res.status(404).json({ message: 'Fornecedor nao encontrado no seu setor' });
         }
 
         // Verificar se o estabelecimento existe e buscar cod_estabel
@@ -162,24 +172,60 @@ exports.update = async (req, res) => {
 
 // Excluir contrato (cascata)
 exports.delete = async (req, res) => {
+    const t = await sequelize.transaction();
     try {
         const setorFilter = buildSetorFilter(req);
         const contrato = await Contrato.findOne({
             where: { id: req.params.id, ...setorFilter },
-            include: contratoInclude
+            include: contratoInclude,
+            transaction: t
         });
         if (!contrato) {
+            await t.rollback();
             return res.status(404).json({ message: 'Contrato nao encontrado' });
         }
 
-        // Contar sequencias para log
-        const sequenciasCount = await Sequencia.count({ where: { contrato_id: req.params.id } });
+        // Buscar sequencias do contrato
+        const sequencias = await Sequencia.findAll({
+            where: { contrato_id: req.params.id },
+            attributes: ['id'],
+            transaction: t
+        });
+        const sequenciaIds = sequencias.map(s => s.id);
+
+        if (sequenciaIds.length > 0) {
+            // Excluir medicoes das sequencias
+            await Medicao.destroy({
+                where: { sequencia_id: { [Op.in]: sequenciaIds } },
+                transaction: t
+            });
+
+            // Excluir solicitacoes de atualizacao das sequencias
+            await SolicitacaoAtualizacao.destroy({
+                where: { sequencia_id: { [Op.in]: sequenciaIds } },
+                transaction: t
+            });
+        }
+
+        // Excluir solicitacoes de atualizacao do contrato
+        await SolicitacaoAtualizacao.destroy({
+            where: { contrato_id: req.params.id },
+            transaction: t
+        });
 
         // Excluir sequencias do contrato
-        await Sequencia.destroy({ where: { contrato_id: req.params.id } });
+        await Sequencia.destroy({
+            where: { contrato_id: req.params.id },
+            transaction: t
+        });
 
         // Excluir contrato
-        await Contrato.destroy({ where: { id: req.params.id } });
+        await Contrato.destroy({
+            where: { id: req.params.id },
+            transaction: t
+        });
+
+        await t.commit();
 
         // Log de auditoria
         await auditService.logCrud(req, 'EXCLUIR', 'CONTRATO', 'Contrato', {
@@ -193,12 +239,13 @@ exports.delete = async (req, res) => {
                 empresa: contrato.estabelecimento?.empresa?.nome,
                 fornecedor: contrato.fornecedor?.nome
             },
-            metadados: { sequenciasExcluidas: sequenciasCount },
+            metadados: { sequenciasExcluidas: sequencias.length },
             nivel: 'CRITICAL'
         });
 
         res.json({ message: 'Contrato excluido com sucesso' });
     } catch (error) {
+        await t.rollback();
         res.status(500).json({ message: error.message });
     }
 };

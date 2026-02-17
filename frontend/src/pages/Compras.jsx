@@ -146,60 +146,132 @@ export default function Compras() {
     <div className="space-y-6 animate-fadeIn">
       <Toast toasts={toasts} />
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gradient">Compras</h1>
-          <p className="text-sm text-base-content/60 mt-1">Avaliacao de solicitacoes de atualizacao de contrato</p>
+      {/* ═══ Header ═══ */}
+      <div
+        className="glass-card p-6 relative overflow-hidden animate-fadeInUp"
+        style={{ animationFillMode: 'both' }}
+      >
+        {/* Acento gradiente superior */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, transparent, oklch(60% 0.18 255) 30%, oklch(65% 0.16 200) 70%, transparent)' }}
+        />
+        <div
+          className="absolute top-0 left-0 right-0 h-16 pointer-events-none opacity-[0.04]"
+          style={{ background: 'linear-gradient(to bottom, oklch(60% 0.18 255), transparent)' }}
+        />
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="text-xs text-base-content/40 uppercase tracking-wider font-medium mb-1">
+              Gestão de contratos
+            </p>
+            <h1 className="text-2xl font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              <span className="text-gradient">Compras</span>
+            </h1>
+            <p className="text-base-content/50 text-sm mt-1">
+              Avaliação de solicitações de atualização de contrato
+            </p>
+          </div>
+          <button
+            className="btn btn-primary btn-sm shadow-soft gap-2 group"
+            onClick={carregarDados}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform duration-500 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Atualizar
+          </button>
         </div>
-        <button className="btn btn-outline btn-sm gap-2" onClick={carregarDados}>
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Atualizar
-        </button>
       </div>
 
       {/* Cards estatisticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="stat-card-glass border-l-4 border-l-warning">
-          <div className="text-xs text-base-content/50 uppercase tracking-wider mb-1">Pendentes</div>
-          <div className="text-2xl font-bold text-warning">{estatisticas.pendentes}</div>
-        </div>
-        <div className="stat-card-glass border-l-4 border-l-success">
-          <div className="text-xs text-base-content/50 uppercase tracking-wider mb-1">Aprovadas (mes)</div>
-          <div className="text-2xl font-bold text-success">{estatisticas.aprovadasMes}</div>
-        </div>
-        <div className="stat-card-glass border-l-4 border-l-error">
-          <div className="text-xs text-base-content/50 uppercase tracking-wider mb-1">Reprovadas (mes)</div>
-          <div className="text-2xl font-bold text-error">{estatisticas.reprovadasMes}</div>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div role="tablist" className="tabs tabs-bordered">
-        <button
-          role="tab"
-          className={`tab ${activeTab === 'solicitacoes' ? 'tab-active font-semibold' : ''}`}
-          onClick={() => setActiveTab('solicitacoes')}
-        >
-          Solicitacoes ({solicitacoes.length})
-        </button>
-        <button
-          role="tab"
-          className={`tab ${activeTab === 'historico' ? 'tab-active font-semibold' : ''}`}
-          onClick={() => setActiveTab('historico')}
-        >
-          Historico
-        </button>
-      </div>
-
-      {/* Tab: Solicitacoes Pendentes */}
-      {activeTab === 'solicitacoes' && (
-        <div className="glass-card overflow-hidden">
-          <div className="p-4 border-b border-base-200/30">
-            <h2 className="text-base font-semibold">Listagem de Registros: Atualizacao de Contrato</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger-animate">
+        {/* Pendentes */}
+        <div className="stat-card-glass warning group" aria-label={`Solicitações pendentes: ${estatisticas.pendentes}`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-base-content/60 font-medium">Pendentes</p>
+              <p className="text-3xl font-bold text-warning mt-1">{estatisticas.pendentes}</p>
+              <p className="text-xs text-base-content/40 mt-0.5">aguardando avaliação</p>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-warning/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
           </div>
+        </div>
+
+        {/* Aprovadas */}
+        <div className="stat-card-glass success group" aria-label={`Aprovadas no mês: ${estatisticas.aprovadasMes}`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-base-content/60 font-medium">Aprovadas</p>
+              <p className="text-3xl font-bold text-success mt-1">{estatisticas.aprovadasMes}</p>
+              <p className="text-xs text-base-content/40 mt-0.5">neste mês</p>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Reprovadas */}
+        <div className="stat-card-glass error group" aria-label={`Reprovadas no mês: ${estatisticas.reprovadasMes}`}>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-base-content/60 font-medium">Reprovadas</p>
+              <p className="text-3xl font-bold text-error mt-1">{estatisticas.reprovadasMes}</p>
+              <p className="text-xs text-base-content/40 mt-0.5">neste mês</p>
+            </div>
+            <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs + Conteúdo */}
+      <div className="glass-card overflow-hidden">
+        {/* Tabs dentro do card */}
+        <div className="px-4 pt-4 border-b border-base-200/30">
+          <div role="tablist" className="flex gap-1">
+            <button
+              role="tab"
+              className={`px-4 py-2.5 text-sm font-medium rounded-t-lg transition-all duration-200 ${
+                activeTab === 'solicitacoes'
+                  ? 'bg-base-200/40 text-base-content border-b-2 border-primary'
+                  : 'text-base-content/50 hover:text-base-content/70 hover:bg-base-200/20'
+              }`}
+              onClick={() => setActiveTab('solicitacoes')}
+            >
+              Solicitações
+              {solicitacoes.length > 0 && (
+                <span className="ml-2 badge badge-warning badge-xs">{solicitacoes.length}</span>
+              )}
+            </button>
+            <button
+              role="tab"
+              className={`px-4 py-2.5 text-sm font-medium rounded-t-lg transition-all duration-200 ${
+                activeTab === 'historico'
+                  ? 'bg-base-200/40 text-base-content border-b-2 border-primary'
+                  : 'text-base-content/50 hover:text-base-content/70 hover:bg-base-200/20'
+              }`}
+              onClick={() => setActiveTab('historico')}
+            >
+              Histórico
+            </button>
+          </div>
+        </div>
+
+        {/* Tab: Solicitacoes Pendentes */}
+        {activeTab === 'solicitacoes' && (
+          <>
 
           {solicitacoes.length === 0 ? (
             <div className="p-8 text-center text-base-content/50">
@@ -289,79 +361,80 @@ export default function Compras() {
             </div>
           )}
           <div className="p-3 border-t border-base-200/30 bg-base-200/5">
-            <p className="text-xs text-base-content/40">{solicitacoes.length} solicitacao(oes) pendente(s)</p>
+            <p className="text-xs text-base-content/40">{solicitacoes.length} solicitação(ões) pendente(s)</p>
           </div>
-        </div>
-      )}
+        </>
+        )}
 
-      {/* Tab: Historico */}
-      {activeTab === 'historico' && (
-        <div className="glass-card overflow-hidden">
-          <div className="p-4 border-b border-base-200/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <h2 className="text-base font-semibold">Historico de Solicitacoes</h2>
-            <div className="flex gap-2">
-              <select
-                className="select select-bordered select-sm"
-                value={filtroStatus}
-                onChange={(e) => setFiltroStatus(e.target.value)}
-              >
-                <option value="">Todos os status</option>
-                <option value="aprovada">Aprovadas</option>
-                <option value="reprovada">Reprovadas</option>
-              </select>
+        {/* Tab: Historico */}
+        {activeTab === 'historico' && (
+          <>
+            <div className="p-4 border-b border-base-200/30 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <h2 className="text-base font-semibold">Histórico de Solicitações</h2>
+              <div className="flex gap-2">
+                <select
+                  className="select select-bordered select-sm"
+                  value={filtroStatus}
+                  onChange={(e) => setFiltroStatus(e.target.value)}
+                >
+                  <option value="">Todos os status</option>
+                  <option value="aprovada">Aprovadas</option>
+                  <option value="reprovada">Reprovadas</option>
+                </select>
+              </div>
             </div>
-          </div>
 
-          {historicoFiltrado.length === 0 ? (
-            <div className="p-8 text-center text-base-content/50">
-              <p>Nenhum registro no historico</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="table table-sm table-glass">
-                <thead>
-                  <tr className="text-base-content/50">
-                    <th>Fornecedor</th>
-                    <th>Contrato</th>
-                    <th>Seq.</th>
-                    <th>Status</th>
-                    <th>Solicitante</th>
-                    <th>Avaliador</th>
-                    <th>Data Avaliacao</th>
-                    <th>Observacao</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {historicoFiltrado.map(sol => (
-                    <tr key={sol.id} className="hover:bg-base-200/30">
-                      <td className="font-medium">{sol.fornecedor?.nome}</td>
-                      <td>{sol.contrato?.nr_contrato}</td>
-                      <td>{sol.sequencia?.num_seq_item}</td>
-                      <td>{getStatusBadge(sol.status)}</td>
-                      <td className="text-base-content/60">{sol.solicitante?.nome || sol.solicitante?.usuario}</td>
-                      <td className="text-base-content/60">{sol.avaliador?.nome || sol.avaliador?.usuario || '-'}</td>
-                      <td className="text-base-content/60 text-xs">{sol.data_avaliacao ? formatDate(sol.data_avaliacao) : '-'}</td>
-                      <td className="max-w-xs">
-                        <div className="text-xs text-base-content/60 truncate" title={sol.observacao}>
-                          {sol.observacao}
-                        </div>
-                        {sol.motivo_reprovacao && (
-                          <div className="text-xs text-error mt-1 truncate" title={sol.motivo_reprovacao}>
-                            Motivo: {sol.motivo_reprovacao}
-                          </div>
-                        )}
-                      </td>
+            {historicoFiltrado.length === 0 ? (
+              <div className="p-8 text-center text-base-content/50">
+                <p>Nenhum registro no histórico</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="table table-sm table-glass">
+                  <thead>
+                    <tr className="text-base-content/50">
+                      <th>Fornecedor</th>
+                      <th>Contrato</th>
+                      <th>Seq.</th>
+                      <th>Status</th>
+                      <th>Solicitante</th>
+                      <th>Avaliador</th>
+                      <th>Data Avaliação</th>
+                      <th>Observação</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {historicoFiltrado.map(sol => (
+                      <tr key={sol.id} className="hover:bg-base-200/30">
+                        <td className="font-medium">{sol.fornecedor?.nome}</td>
+                        <td>{sol.contrato?.nr_contrato}</td>
+                        <td>{sol.sequencia?.num_seq_item}</td>
+                        <td>{getStatusBadge(sol.status)}</td>
+                        <td className="text-base-content/60">{sol.solicitante?.nome || sol.solicitante?.usuario}</td>
+                        <td className="text-base-content/60">{sol.avaliador?.nome || sol.avaliador?.usuario || '-'}</td>
+                        <td className="text-base-content/60 text-xs">{sol.data_avaliacao ? formatDate(sol.data_avaliacao) : '-'}</td>
+                        <td className="max-w-xs">
+                          <div className="text-xs text-base-content/60 truncate" title={sol.observacao}>
+                            {sol.observacao}
+                          </div>
+                          {sol.motivo_reprovacao && (
+                            <div className="text-xs text-error mt-1 truncate" title={sol.motivo_reprovacao}>
+                              Motivo: {sol.motivo_reprovacao}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <div className="p-3 border-t border-base-200/30 bg-base-200/5">
+              <p className="text-xs text-base-content/40">{historicoFiltrado.length} registro(s)</p>
             </div>
-          )}
-          <div className="p-3 border-t border-base-200/30 bg-base-200/5">
-            <p className="text-xs text-base-content/40">{historicoFiltrado.length} registro(s)</p>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
 
       {/* Dialog de Aprovacao */}
       <ConfirmDialog

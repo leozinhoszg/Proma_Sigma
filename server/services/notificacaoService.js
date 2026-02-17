@@ -134,6 +134,16 @@ const notificacaoService = {
             { where: { usuario_id: usuarioId, lida: false } }
         );
         return count;
+    },
+
+    /**
+     * Remove todas as notificacoes de um usuario
+     */
+    async limparTodas(usuarioId) {
+        const count = await Notificacao.destroy({
+            where: { usuario_id: usuarioId }
+        });
+        return count;
     }
 };
 

@@ -293,19 +293,19 @@ export default function Dashboard() {
         className="glass-card p-6 relative overflow-hidden animate-fadeInUp"
         style={{ animationFillMode: "both" }}
       >
-        {/* Orb decorativo */}
+        {/* Acento gradiente superior */}
         <div
-          className="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-15 pointer-events-none"
+          className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle, oklch(55% 0.2 255), transparent 70%)",
+              "linear-gradient(90deg, transparent, oklch(60% 0.18 255) 30%, oklch(65% 0.16 200) 70%, transparent)",
           }}
         />
         <div
-          className="absolute -bottom-8 -left-8 w-24 h-24 rounded-full opacity-10 pointer-events-none"
+          className="absolute top-0 left-0 right-0 h-16 pointer-events-none opacity-[0.04]"
           style={{
             background:
-              "radial-gradient(circle, oklch(65% 0.18 200), transparent 70%)",
+              "linear-gradient(to bottom, oklch(60% 0.18 255), transparent)",
           }}
         />
 

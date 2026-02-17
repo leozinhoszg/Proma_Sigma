@@ -43,3 +43,12 @@ exports.marcarTodasComoLidas = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.limparTodas = async (req, res) => {
+    try {
+        const count = await notificacaoService.limparTodas(req.user.id);
+        res.json({ message: `${count} notificacoes removidas` });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

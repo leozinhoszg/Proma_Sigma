@@ -23,7 +23,7 @@ const tipoConfig = {
 };
 
 export default function NotificationBell() {
-  const { notificacoes, naoLidas, marcarComoLida, marcarTodasComoLidas, permissaoPush, solicitarPermissaoPush } = useNotifications();
+  const { notificacoes, naoLidas, marcarComoLida, marcarTodasComoLidas, limparTodas, permissaoPush, solicitarPermissaoPush } = useNotifications();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -78,14 +78,27 @@ export default function NotificationBell() {
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b dropdown-divider">
               <span className="font-semibold dropdown-text text-sm">Notificacoes</span>
-              {naoLidas > 0 && (
-                <button
-                  onClick={marcarTodasComoLidas}
-                  className="text-xs text-primary hover:underline"
-                >
-                  Marcar todas como lidas
-                </button>
-              )}
+              <div className="flex items-center gap-2">
+                {naoLidas > 0 && (
+                  <button
+                    onClick={marcarTodasComoLidas}
+                    className="text-xs text-primary hover:underline"
+                  >
+                    Marcar como lidas
+                  </button>
+                )}
+                {notificacoes.length > 0 && (
+                  <>
+                    {naoLidas > 0 && <span className="text-xs dropdown-text-muted">|</span>}
+                    <button
+                      onClick={limparTodas}
+                      className="text-xs text-error hover:underline"
+                    >
+                      Limpar todas
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Banner para ativar notificacoes */}

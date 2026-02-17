@@ -8,6 +8,7 @@ router.use(autenticar);
 router.get('/', notificacaoController.listar);
 router.get('/nao-lidas', notificacaoController.contarNaoLidas);
 router.patch('/lidas', notificacaoController.marcarTodasComoLidas);
+router.delete('/limpar', notificacaoController.limparTodas);
 router.patch('/:id/lida', notificacaoController.marcarComoLida);
 
 module.exports = router;

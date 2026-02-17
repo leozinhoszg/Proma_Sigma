@@ -8,7 +8,7 @@ const path = require('path');
 const { initSocket } = require('./config/socket');
 const { sequelize } = require('./config/db');
 const { connectDB } = require('./config/db');
-const seedData = require('./config/seed');
+// const seedData = require('./config/seed');
 const routes = require('./routes');
 
 const app = express();
@@ -48,7 +48,7 @@ const startServer = async () => {
         console.log('Tabelas sincronizadas com sucesso');
 
         // Executar seed se banco estiver vazio
-        await seedData();
+        // await seedData();
 
         const PORT = process.env.PORT || 3000;
         const HOST = process.env.HOST || '0.0.0.0';

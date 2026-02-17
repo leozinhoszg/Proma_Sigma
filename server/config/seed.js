@@ -10,32 +10,23 @@ const seedData = async () => {
 
         console.log('Iniciando seed do banco de dados...');
 
-        // Setores
-        const setores = await Setor.bulkCreate([
-            { nome: 'TI' },
-            { nome: 'LOGISTICA' },
-            { nome: 'COMPRAS' },
-            { nome: 'FINANCEIRO' },
-            { nome: 'RH' }
-        ]);
-        console.log(`${setores.length} setores criados`);
-        const setorTI = setores[0];
+        // Setores (findOrCreate para evitar duplicatas de execucoes anteriores)
+        const nomeSetores = ['TI', 'LOGISTICA', 'COMPRAS', 'FINANCEIRO', 'RH'];
+        const setores = await Promise.all(
+            nomeSetores.map(nome => Setor.findOrCreate({ where: { nome }, defaults: { nome } }))
+        );
+        console.log(`${setores.length} setores verificados/criados`);
+        const setorTI = setores[0][0];
 
-        const empresas = await Empresa.bulkCreate([
-            { cod_empresa: '01', nome: 'PROMA BRASIL' },
-            { cod_empresa: '02', nome: 'PMC' }
-        ]);
+        const [promaBrasil] = await Empresa.findOrCreate({ where: { cod_empresa: '01' }, defaults: { cod_empresa: '01', nome: 'PROMA BRASIL' } });
+        const [pmc] = await Empresa.findOrCreate({ where: { cod_empresa: '02' }, defaults: { cod_empresa: '02', nome: 'PMC' } });
+        console.log('2 empresas verificadas/criadas');
 
-        console.log(`${empresas.length} empresas criadas`);
-        const [promaBrasil, pmc] = empresas;
-
-        const estabelecimentos = await Estabelecimento.bulkCreate([
-            { empresa_id: promaBrasil.id, cod_estabel: '01', nome: 'PROMA CONTAGEM' },
-            { empresa_id: promaBrasil.id, cod_estabel: '02', nome: 'PROMA JUATUBA' },
-            { empresa_id: pmc.id, cod_estabel: '101', nome: 'PMC GOIANA' }
-        ]);
-
-        console.log(`${estabelecimentos.length} estabelecimentos criados`);
+        const [estab01] = await Estabelecimento.findOrCreate({ where: { empresa_id: promaBrasil.id, cod_estabel: '01' }, defaults: { empresa_id: promaBrasil.id, cod_estabel: '01', nome: 'PROMA CONTAGEM' } });
+        const [estab02] = await Estabelecimento.findOrCreate({ where: { empresa_id: promaBrasil.id, cod_estabel: '02' }, defaults: { empresa_id: promaBrasil.id, cod_estabel: '02', nome: 'PROMA JUATUBA' } });
+        const [estab101] = await Estabelecimento.findOrCreate({ where: { empresa_id: pmc.id, cod_estabel: '101' }, defaults: { empresa_id: pmc.id, cod_estabel: '101', nome: 'PMC GOIANA' } });
+        const estabelecimentos = [estab01, estab02, estab101];
+        console.log('3 estabelecimentos verificados/criados');
 
         const fornecedores = await Fornecedor.bulkCreate([
             { nome: 'DI2S', setor_id: setorTI.id },

@@ -1,4 +1,4 @@
-const { Sequencia, Contrato, Fornecedor } = require('../models');
+const { sequelize, Sequencia, Contrato, Fornecedor, Medicao, SolicitacaoAtualizacao } = require('../models');
 const auditService = require('../services/auditService');
 const { buildSetorFilter } = require('../middleware/setorFilter');
 
@@ -245,19 +245,40 @@ exports.updateStatus = async (req, res) => {
 
 // Excluir sequencia
 exports.delete = async (req, res) => {
+    const t = await sequelize.transaction();
     try {
         const setorFilter = buildSetorFilter(req);
 
         // Buscar dados antes de excluir verificando setor
         const sequencia = await Sequencia.findOne({
             where: { id: req.params.id },
-            include: sequenciaIncludeComSetor(setorFilter)
+            include: sequenciaIncludeComSetor(setorFilter),
+            transaction: t
         });
         if (!sequencia) {
+            await t.rollback();
             return res.status(404).json({ message: 'Sequencia nao encontrada' });
         }
 
-        await Sequencia.destroy({ where: { id: req.params.id } });
+        // Excluir medicoes da sequencia
+        await Medicao.destroy({
+            where: { sequencia_id: req.params.id },
+            transaction: t
+        });
+
+        // Excluir solicitacoes de atualizacao da sequencia
+        await SolicitacaoAtualizacao.destroy({
+            where: { sequencia_id: req.params.id },
+            transaction: t
+        });
+
+        // Excluir sequencia
+        await Sequencia.destroy({
+            where: { id: req.params.id },
+            transaction: t
+        });
+
+        await t.commit();
 
         // Log de auditoria
         await auditService.logCrud(req, 'EXCLUIR', 'SEQUENCIA', 'Sequencia', {
@@ -275,6 +296,7 @@ exports.delete = async (req, res) => {
 
         res.json({ message: 'Sequencia excluida com sucesso' });
     } catch (error) {
+        await t.rollback();
         res.status(500).json({ message: error.message });
     }
 };

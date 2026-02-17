@@ -371,14 +371,14 @@ export default function RelatorioMensal() {
         className="glass-card p-6 relative overflow-hidden animate-fadeInUp"
         style={{ animationFillMode: 'both' }}
       >
-        {/* Orbs decorativos */}
+        {/* Acento gradiente superior */}
         <div
-          className="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-15 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, oklch(55% 0.2 255), transparent 70%)' }}
+          className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, transparent, oklch(60% 0.18 255) 30%, oklch(65% 0.16 200) 70%, transparent)' }}
         />
         <div
-          className="absolute -bottom-8 -left-8 w-24 h-24 rounded-full opacity-10 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, oklch(65% 0.18 200), transparent 70%)' }}
+          className="absolute top-0 left-0 right-0 h-16 pointer-events-none opacity-[0.04]"
+          style={{ background: 'linear-gradient(to bottom, oklch(60% 0.18 255), transparent)' }}
         />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -610,14 +610,14 @@ export default function RelatorioMensal() {
             </button>
 
             <button
-              className="btn btn-secondary btn-sm shadow-soft gap-1.5"
+              className="btn btn-primary btn-sm shadow-soft gap-2 group"
               onClick={sincronizarTodas}
               disabled={syncing}
             >
               {syncing ? (
                 <span className="loading loading-spinner loading-xs"></span>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transition-transform duration-500 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               )}

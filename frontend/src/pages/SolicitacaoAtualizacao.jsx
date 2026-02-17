@@ -225,20 +225,40 @@ export default function SolicitacaoAtualizacao() {
     <div className="space-y-6 animate-fadeIn">
       <Toast toasts={toasts} />
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gradient">Solicitacao de Atualizacao de Contrato</h1>
-          <p className="text-sm text-base-content/60 mt-1">Solicite alteracoes em contratos existentes</p>
+      {/* ═══ Header ═══ */}
+      <div
+        className="glass-card p-6 relative overflow-hidden animate-fadeInUp"
+        style={{ animationFillMode: 'both' }}
+      >
+        {/* Acento gradiente superior */}
+        <div
+          className="absolute top-0 left-0 right-0 h-[2px] pointer-events-none"
+          style={{ background: 'linear-gradient(90deg, transparent, oklch(60% 0.18 255) 30%, oklch(65% 0.16 200) 70%, transparent)' }}
+        />
+        <div
+          className="absolute top-0 left-0 right-0 h-16 pointer-events-none opacity-[0.04]"
+          style={{ background: 'linear-gradient(to bottom, oklch(60% 0.18 255), transparent)' }}
+        />
+
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <p className="text-xs text-base-content/40 uppercase tracking-wider font-medium mb-1">
+              Gestão de contratos
+            </p>
+            <h1 className="text-2xl font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              Solicitação de{' '}
+              <span className="text-gradient">Atualização</span>
+            </h1>
+            <p className="text-base-content/50 text-sm mt-1">
+              Solicite alterações em contratos existentes
+              {usuario?.setor && (
+                <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                  {usuario.setor.nome}
+                </span>
+              )}
+            </p>
+          </div>
         </div>
-        {usuario?.setor && (
-          <span className="badge badge-lg badge-info gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-            {usuario.setor.nome}
-          </span>
-        )}
       </div>
 
       {/* Formulario */}

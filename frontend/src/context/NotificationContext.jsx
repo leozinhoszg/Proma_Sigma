@@ -149,12 +149,23 @@ export function NotificationProvider({ children }) {
     }
   }, []);
 
+  const limparTodas = useCallback(async () => {
+    try {
+      await notificacoesAPI.limparTodas();
+      setNotificacoes([]);
+      setNaoLidas(0);
+    } catch (error) {
+      console.error('Erro ao limpar notificacoes:', error);
+    }
+  }, []);
+
   const value = {
     notificacoes,
     naoLidas,
     loading,
     marcarComoLida,
     marcarTodasComoLidas,
+    limparTodas,
     socket: socketRef.current,
     permissaoPush,
     solicitarPermissaoPush

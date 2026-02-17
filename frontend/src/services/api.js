@@ -282,5 +282,6 @@ export const notificacoesAPI = {
   listar: (params) => api.get('/notificacoes', { params }),
   contarNaoLidas: () => api.get('/notificacoes/nao-lidas'),
   marcarComoLida: (id) => api.patch(`/notificacoes/${id}/lida`),
-  marcarTodasComoLidas: () => api.patch('/notificacoes/lidas')
+  marcarTodasComoLidas: () => api.patch('/notificacoes/lidas'),
+  limparTodas: () => api.delete('/notificacoes/limpar')
 };
