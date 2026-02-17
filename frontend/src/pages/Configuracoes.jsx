@@ -46,7 +46,7 @@ export default function Configuracoes() {
 
       {/* Cabecalho */}
       <div>
-        <h1 className="text-2xl font-bold text-gradient">Configuracoes</h1>
+        <h1 className="text-2xl font-bold text-gradient">Configurações</h1>
         <p className="text-base-content/50 text-sm mt-1">Gerencie usuarios e perfis do sistema</p>
       </div>
 
@@ -328,12 +328,12 @@ function UsuariosTab({ showToast }) {
             <table className="table">
               <thead className="bg-base-200/30">
                 <tr className="text-base-content/60 uppercase text-xs">
-                  <th>Usuario</th>
-                  <th>Email</th>
+                  <th>Usuário</th>
+                  <th>E-mail</th>
                   <th>Perfil</th>
                   <th>Setor</th>
                   <th className="text-center">Status</th>
-                  <th className="text-right">Acoes</th>
+                  <th className="text-right">Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -380,7 +380,7 @@ function UsuariosTab({ showToast }) {
             </table>
           </div>
           <div className="p-4 border-t border-base-200/30 bg-base-200/10">
-            <p className="text-sm text-base-content/50">{filteredUsuarios.length} usuario(s)</p>
+            <p className="text-sm text-base-content/50">{filteredUsuarios.length} usuário(s)</p>
           </div>
         </div>
       )}
@@ -410,7 +410,7 @@ function UsuariosTab({ showToast }) {
           {!editingId && (
             <div className="alert alert-info text-sm">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-              <span>O usuario recebera um email para definir sua propria senha.</span>
+              <span>O usuário receberá um e-mail para definir sua propria senha.</span>
             </div>
           )}
           <FormField label="Perfil">
@@ -632,7 +632,7 @@ function PerfisTab({ showToast }) {
                 </span>
               </div>
               <div className="mb-4">
-                <p className="text-xs text-base-content/50 uppercase mb-2">Permissoes</p>
+                <p className="text-xs text-base-content/50 uppercase mb-2">Permissões</p>
                 {perfil.isAdmin ? (
                   <span className="badge badge-warning badge-outline gap-1">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

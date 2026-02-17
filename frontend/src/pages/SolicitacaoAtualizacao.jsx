@@ -137,8 +137,8 @@ export default function SolicitacaoAtualizacao() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.fornecedor_id || !formData.contrato_id || !formData.sequencia_id || !formData.observacao.trim()) {
-      warning('Preencha todos os campos obrigatorios');
+    if (!formData.fornecedor_id || !formData.contrato_id || !formData.sequencia_id || !formData.novo_valor || !formData.novo_dia_emissao || !anexoPdf || !formData.observacao.trim()) {
+      warning('Preencha todos os campos obrigatórios');
       return;
     }
 
@@ -149,9 +149,9 @@ export default function SolicitacaoAtualizacao() {
       data.append('contrato_id', formData.contrato_id);
       data.append('sequencia_id', formData.sequencia_id);
       data.append('observacao', formData.observacao.trim());
-      if (formData.novo_valor) data.append('novo_valor', formData.novo_valor);
-      if (formData.novo_dia_emissao) data.append('novo_dia_emissao', formData.novo_dia_emissao);
-      if (anexoPdf) data.append('anexo_pdf', anexoPdf);
+      data.append('novo_valor', formData.novo_valor);
+      data.append('novo_dia_emissao', formData.novo_dia_emissao);
+      data.append('anexo_pdf', anexoPdf);
 
       await solicitacoesAPI.criar(data);
 
@@ -267,7 +267,7 @@ export default function SolicitacaoAtualizacao() {
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          Nova Solicitacao
+          Nova Solicitação
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -310,7 +310,7 @@ export default function SolicitacaoAtualizacao() {
 
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Sequencia <span className="text-error">*</span></span>
+                <span className="label-text font-medium">Sequência <span className="text-error">*</span></span>
               </label>
               <select
                 name="sequencia_id"
@@ -319,7 +319,7 @@ export default function SolicitacaoAtualizacao() {
                 onChange={handleChange}
                 disabled={!formData.contrato_id}
               >
-                <option value="">Selecionar sequencia...</option>
+                <option value="">Selecionar sequência...</option>
                 {sequencias.map(s => (
                   <option key={s.id} value={s.id}>{s.num_seq_item}</option>
                 ))}
@@ -334,17 +334,16 @@ export default function SolicitacaoAtualizacao() {
                 Valor atual: <strong className="text-base-content">{formatCurrency(sequenciaSelecionada.valor)}</strong>
               </span>
               <span className="text-base-content/60">
-                Dia emissao: <strong className="text-base-content">{sequenciaSelecionada.dia_emissao}</strong>
+                Dia emissão: <strong className="text-base-content">{sequenciaSelecionada.dia_emissao}</strong>
               </span>
             </div>
           )}
 
-          {/* Novos valores (opcionais) */}
+          {/* Novos valores */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Novo Valor (R$)</span>
-                <span className="label-text-alt text-base-content/40">Opcional</span>
+                <span className="label-text font-medium">Novo Valor (R$) <span className="text-error">*</span></span>
               </label>
               <input
                 type="number"
@@ -360,8 +359,8 @@ export default function SolicitacaoAtualizacao() {
 
             <div className="form-control">
               <label className="label">
-                <span className="label-text font-medium">Novo Dia de Emissao</span>
-                <span className="label-text-alt text-base-content/40">Opcional (1-31)</span>
+                <span className="label-text font-medium">Novo Dia de Emissão <span className="text-error">*</span></span>
+                <span className="label-text-alt text-base-content/40">(1-31)</span>
               </label>
               <input
                 type="number"
@@ -379,7 +378,7 @@ export default function SolicitacaoAtualizacao() {
           {/* Anexo PDF */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-medium">Anexo (PDF)</span>
+              <span className="label-text font-medium">Anexo (PDF) <span className="text-error">*</span></span>
               <span className="label-text-alt text-base-content/40">Max 10MB</span>
             </label>
             <input
@@ -394,7 +393,7 @@ export default function SolicitacaoAtualizacao() {
           {/* Observacao */}
           <div className="form-control">
             <label className="label">
-              <span className="label-text font-medium">Observacao <span className="text-error">*</span></span>
+              <span className="label-text font-medium">Observação <span className="text-error">*</span></span>
             </label>
             <textarea
               name="observacao"
@@ -422,7 +421,7 @@ export default function SolicitacaoAtualizacao() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
-                  Enviar Solicitacao
+                  Enviar Solicitação
                 </>
               )}
             </button>
@@ -437,7 +436,7 @@ export default function SolicitacaoAtualizacao() {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
-            Minhas Solicitacoes
+            Minhas Solicitações
           </h2>
         </div>
 
@@ -446,7 +445,7 @@ export default function SolicitacaoAtualizacao() {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <p>Nenhuma solicitacao enviada ainda</p>
+            <p>Nenhuma solicitação enviada ainda</p>
           </div>
         ) : (
           <div className="overflow-x-auto">

@@ -2503,3 +2503,30 @@ html.theme-transitioning .btn-primary {
     opacity: 0.3;
   }
 }
+
+/* ==================== SPLASH SCREEN (React Layer 2) ==================== */
+
+.splash-screen-react {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(14,165,233,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(37,99,235,0.10) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(56,189,248,0.06) 0%, transparent 40%),
+    linear-gradient(135deg, var(--navy-900) 0%, #0f1d33 25%, var(--navy-800) 50%, #0d1a2e 75%, var(--navy-950) 100%);
+  overflow: hidden;
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.splash-screen-react.splash-fade-out {
+  opacity: 0;
+  transform: scale(1.02);
+  pointer-events: none;
+}

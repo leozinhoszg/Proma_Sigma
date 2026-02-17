@@ -1,9 +1,10 @@
 const path = require('path');
 const fs = require('fs');
 const { Op } = require('sequelize');
-const { SolicitacaoAtualizacao, User, Setor, Fornecedor, Contrato, Sequencia, Estabelecimento, Empresa } = require('../models');
+const { SolicitacaoAtualizacao, User, Setor, Fornecedor, Contrato, Sequencia, Estabelecimento, Empresa, Perfil, PerfilPermissao } = require('../models');
 const auditService = require('../services/auditService');
 const notificacaoService = require('../services/notificacaoService');
+const emailService = require('../services/emailService');
 
 // Include padrao para consultas
 const solicitacaoInclude = [
@@ -191,6 +192,34 @@ exports.create = async (req, res) => {
                 fornecedor_nome: fornecedor?.nome
             }
         }).catch(err => console.error('Erro ao notificar compras:', err));
+
+        // Enviar e-mail para usuarios de Compras
+        (async () => {
+            try {
+                const usersCompras = await User.findAll({
+                    include: [{
+                        model: Perfil,
+                        as: 'perfil',
+                        include: [{ model: PerfilPermissao, as: 'permissoesRef' }]
+                    }],
+                    where: { ativo: true }
+                });
+
+                const destinatarios = usersCompras.filter(
+                    u => u.perfil?.is_admin || u.perfil?.permissoesRef?.some(p => p.permissao === 'compras')
+                );
+
+                if (destinatarios.length > 0) {
+                    await emailService.enviarNotificacaoSolicitacao(destinatarios, {
+                        solicitanteNome,
+                        contratoNr: contrato.nr_contrato,
+                        fornecedorNome: fornecedor?.nome || 'N/A'
+                    });
+                }
+            } catch (err) {
+                console.error('Erro ao enviar e-mail para compras:', err);
+            }
+        })();
 
         res.status(201).json(solicitacaoCompleta);
     } catch (error) {

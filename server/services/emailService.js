@@ -8,6 +8,7 @@ const {
     templateSenhaAlterada,
     templateResetSenhaLink,
     templateAtivacaoConta,
+    templateSolicitacaoCriada,
     APP_NAME
 } = require('./emailTemplates');
 const auditService = require('./auditService');
@@ -299,6 +300,26 @@ const emailService = {
         } catch (error) {
             console.error('Erro ao enviar confirmacao de senha:', error);
             // Nao lanca erro para nao interromper o fluxo
+        }
+    },
+
+    /**
+     * Envia notificacao de nova solicitacao de atualizacao para usuarios de Compras
+     * @param {Array} destinatarios - Array de objetos User com email
+     * @param {Object} dados - { solicitanteNome, contratoNr, fornecedorNome }
+     */
+    async enviarNotificacaoSolicitacao(destinatarios, dados) {
+        const urlCompras = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/compras`;
+        const html = templateSolicitacaoCriada(dados.solicitanteNome, dados.contratoNr, dados.fornecedorNome, urlCompras);
+
+        for (const user of destinatarios) {
+            try {
+                await enviarEmail(user.email, 'Nova Solicitacao de Atualizacao', html, 'NOTIFICACAO_SOLICITACAO', user);
+                console.log(`Notificacao de solicitacao enviada para: ${user.email}`);
+            } catch (error) {
+                console.error(`Erro ao enviar notificacao de solicitacao para ${user.email}:`, error);
+                // Nao lanca erro para nao interromper o fluxo
+            }
         }
     }
 };

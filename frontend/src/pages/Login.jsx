@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getHomePath } from '../utils/helpers';
 import ThemeToggle from '../components/ui/ThemeToggle';
 import logo from '../assets/PROMA 6.2.png';
 
@@ -49,8 +50,8 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await login(usuario, senha, lembrar);
-      navigate('/');
+      const data = await login(usuario, senha, lembrar);
+      navigate(getHomePath(data.user));
     } catch (err) {
       setError(err.response?.data?.message || 'Erro ao fazer login');
     } finally {
@@ -82,7 +83,7 @@ export default function Login() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
+        <div className="relative z-10 flex flex-col items-center w-full px-12 pt-[12vh] text-white">
           <div className="max-w-md text-center">
             {/* Logo */}
             <div className="mb-10 login-logo-container">
@@ -162,7 +163,7 @@ export default function Login() {
         {/* Subtle background pattern */}
         <div className="absolute inset-0 login-form-bg"></div>
 
-        <div className="flex-1 flex items-start justify-center p-6 sm:p-8 lg:p-16 lg:pt-[27vh] relative z-10">
+        <div className="flex-1 flex items-center lg:items-start justify-center p-6 sm:p-8 lg:p-16 lg:pt-[21vh] relative z-10">
           <div className="w-full max-w-md login-form-container">
             {/* Mobile Logo */}
             <div className="lg:hidden flex flex-col items-center mb-10">

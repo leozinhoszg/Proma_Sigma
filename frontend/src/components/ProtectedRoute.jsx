@@ -5,13 +5,9 @@ export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
   const location = useLocation();
 
+  // SplashScreen global (em App.jsx) cobre a tela durante o loading
   if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Carregando...</p>
-      </div>
-    );
+    return null;
   }
 
   if (!user) {

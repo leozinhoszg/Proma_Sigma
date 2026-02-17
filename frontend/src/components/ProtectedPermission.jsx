@@ -1,10 +1,11 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getHomePath } from '../utils/helpers';
 
 /**
  * Componente de guarda de permissão
  * Verifica se o usuário tem a permissão necessária para acessar a rota
- * Se não tiver, redireciona para o dashboard
+ * Se não tiver, redireciona para a homepage do usuário
  *
  * @param {string|string[]} permissao - Permissão(ões) necessária(s) para acessar a rota
  * @param {React.ReactNode} children - Componente filho a ser renderizado
@@ -38,7 +39,7 @@ export default function ProtectedPermission({ permissao, children }) {
   };
 
   if (!temPermissao()) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={getHomePath(usuario)} replace />;
   }
 
   return children;

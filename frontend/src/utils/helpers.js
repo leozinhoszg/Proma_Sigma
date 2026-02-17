@@ -133,3 +133,35 @@ export const ESTABELECIMENTOS = {
 };
 
 export const getEstabelecimentoNome = (codigo) => ESTABELECIMENTOS[codigo] || codigo;
+
+// Ordem de prioridade para homepage (mesma ordem do menu)
+const HOME_ROUTES = [
+  { path: '/', permissao: 'dashboard' },
+  { path: '/fornecedores', permissao: 'fornecedores' },
+  { path: '/contratos', permissao: 'contratos' },
+  { path: '/relatorio', permissao: 'relatorio' },
+  { path: '/solicitacoes', permissao: 'solicitacoes' },
+  { path: '/compras', permissao: 'compras' },
+  { path: '/configuracoes', permissao: ['usuarios', 'perfis', 'auditoria', 'empresas', 'estabelecimentos'] },
+];
+
+// Retorna o path da homepage baseado nas permissoes do usuario
+export const getHomePath = (user) => {
+  const perfil = user?.perfil;
+
+  // Admin vai para o Dashboard
+  if (perfil?.isAdmin) return '/';
+
+  const permissoes = perfil?.permissoes || [];
+
+  for (const route of HOME_ROUTES) {
+    if (Array.isArray(route.permissao)) {
+      if (route.permissao.some(p => permissoes.includes(p))) return route.path;
+    } else {
+      if (permissoes.includes(route.permissao)) return route.path;
+    }
+  }
+
+  // Fallback: pagina de perfil (todos tem acesso)
+  return '/perfil';
+};

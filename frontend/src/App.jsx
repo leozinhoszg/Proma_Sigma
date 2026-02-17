@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProtectedPermission from './components/ProtectedPermission';
+import HomeRedirect from './components/HomeRedirect';
 import MainLayout from './components/layout/MainLayout';
+import SplashScreen from './components/ui/SplashScreen';
 
 // Pages - Auth
 import Login from './pages/Login';
@@ -25,16 +27,13 @@ import Compras from './pages/Compras';
 // Styles
 import './index.css';
 
-function App() {
-  // Inicializar tema do localStorage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-  }, []);
+function AppContent() {
+  const { loading } = useAuth();
+
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <NotificationProvider>
+    <>
+      <SplashScreen isLoading={loading} />
+      <NotificationProvider>
         <Routes>
           {/* Rotas públicas */}
           <Route path="/login" element={<Login />} />
@@ -50,7 +49,11 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={
+              <HomeRedirect>
+                <Dashboard />
+              </HomeRedirect>
+            } />
             <Route path="/perfil" element={<Perfil />} />
             <Route path="/fornecedores" element={
               <ProtectedPermission permissao="fornecedores">
@@ -87,7 +90,21 @@ function App() {
           {/* Redirecionar rotas desconhecidas */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-        </NotificationProvider>
+      </NotificationProvider>
+    </>
+  );
+}
+
+function App() {
+  // Inicializar tema do localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }, []);
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppContent />
       </AuthProvider>
     </BrowserRouter>
   );

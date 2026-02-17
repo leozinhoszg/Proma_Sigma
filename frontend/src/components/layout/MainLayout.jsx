@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { getHomePath } from "../../utils/helpers";
 import ThemeToggle from "../ui/ThemeToggle";
 import NotificationBell from "../ui/NotificationBell";
 import logo from "../../assets/PROMA 6.2.png";
@@ -21,6 +22,8 @@ export default function MainLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { usuario, logout } = useAuth();
+
+  const homePath = useMemo(() => getHomePath(usuario), [usuario]);
 
   // Filtrar itens de navegação baseado nas permissões do usuário
   const navItems = useMemo(() => {
@@ -76,7 +79,7 @@ export default function MainLayout() {
         <div className="relative z-10 px-4 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
+            <Link to={homePath} className="flex items-center gap-3">
               <img src={logo} alt="PROMA" className="h-10 w-auto" />
               <span className="navbar-brand font-bold text-xl tracking-wide logo-font">
                 PROMA SIGMA

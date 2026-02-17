@@ -581,6 +581,52 @@ ${infoBox('#fee2e2', '#ef4444', '#991b1b', '<strong>Nao foi voce?</strong> Entre
     return baseLayout(content);
 };
 
+/**
+ * Template para notificacao de nova solicitacao de atualizacao (enviado para Compras)
+ */
+const templateSolicitacaoCriada = (solicitanteNome, contratoNr, fornecedorNome, urlCompras) => {
+    const content = `
+<h2 style="margin:0 0 20px 0;color:${PRIMARY_COLOR};font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Nova Solicitacao de Atualizacao
+</h2>
+
+<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+<strong>${solicitanteNome}</strong> enviou uma solicitacao de atualizacao de contrato:
+</p>
+
+${credentialsBox([
+    { label: 'Contrato', value: contratoNr },
+    { label: 'Fornecedor', value: fornecedorNome }
+])}
+
+<!-- Botao para visualizar -->
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:30px 0;">
+<tr>
+<td align="center">
+${bulletproofButton(urlCompras, 'Visualizar Solicitacao', SECONDARY_COLOR)}
+</td>
+</tr>
+</table>
+
+<p style="margin:20px 0;color:#64748b;font-size:13px;text-align:center;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Ou copie e cole o link abaixo no seu navegador:
+</p>
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 25px 0;">
+<tr>
+<td align="center" style="padding:12px 16px;background-color:#f1f5f9;word-break:break-all;">
+<a href="${urlCompras}" style="color:#3b82f6;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;text-decoration:none;">
+${urlCompras}
+</a>
+</td>
+</tr>
+</table>
+
+${infoBox('#dbeafe', '#3b82f6', '#1e40af', 'Acesse a tela de Compras para avaliar esta solicitacao.')}
+    `;
+
+    return baseLayout(content);
+};
+
 module.exports = {
     templateOtpResetSenha,
     templateOtpVerificacaoEmail,
@@ -590,5 +636,6 @@ module.exports = {
     templateSenhaAlterada,
     templateResetSenhaLink,
     templateAtivacaoConta,
+    templateSolicitacaoCriada,
     APP_NAME
 };

@@ -84,7 +84,7 @@ export default function ResetPassword() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col justify-center items-center w-full p-12 text-white">
+      <div className="relative z-10 flex flex-col items-center w-full px-12 pt-[20vh] text-white">
         <div className="max-w-md text-center">
           {/* Logo */}
           <div className="mb-10 login-logo-container">
@@ -176,7 +176,7 @@ export default function ResetPassword() {
         <div className="w-full lg:w-[55%] flex flex-col login-form-panel relative">
           <div className="absolute inset-0 login-form-bg"></div>
 
-          <div className="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-16 relative z-10">
+          <div className="flex-1 flex items-center lg:items-start justify-center p-6 sm:p-8 lg:p-16 lg:pt-[20vh] relative z-10">
             <div className="w-full max-w-md login-form-container text-center">
               {/* Mobile Logo */}
               <div className="lg:hidden flex flex-col items-center mb-10">
@@ -244,7 +244,7 @@ export default function ResetPassword() {
         <div className="w-full lg:w-[55%] flex flex-col login-form-panel relative">
           <div className="absolute inset-0 login-form-bg"></div>
 
-          <div className="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-16 relative z-10">
+          <div className="flex-1 flex items-center lg:items-start justify-center p-6 sm:p-8 lg:p-16 lg:pt-[20vh] relative z-10">
             <div className="w-full max-w-md login-form-container text-center">
               {/* Mobile Logo */}
               <div className="lg:hidden flex flex-col items-center mb-10">
@@ -303,7 +303,7 @@ export default function ResetPassword() {
       <div className="w-full lg:w-[55%] flex flex-col login-form-panel relative">
         <div className="absolute inset-0 login-form-bg"></div>
 
-        <div className="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-16 relative z-10">
+        <div className="flex-1 flex items-center lg:items-start justify-center p-6 sm:p-8 lg:p-16 lg:pt-[20vh] relative z-10">
           <div className="w-full max-w-md login-form-container">
             {/* Mobile Logo */}
             <div className="lg:hidden flex flex-col items-center mb-10">
@@ -318,7 +318,7 @@ export default function ResetPassword() {
             {/* Back Link */}
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-navy-700 dark:hover:text-sky-400 transition-colors mb-6 group"
+              className="inline-flex items-center gap-2 text-gray-500 login-forgot-link hover:text-navy-700 transition-colors mb-6 group"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
