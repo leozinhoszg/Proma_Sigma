@@ -25,14 +25,14 @@ const criarUsuarioAdmin = async () => {
                 ativo: true
             });
             await PerfilPermissao.bulkCreate([
-                'dashboard', 'fornecedores', 'contratos', 'relatorio', 'usuarios', 'perfis', 'auditoria'
+                'dashboard', 'fornecedores', 'contratos', 'relatorio', 'usuarios', 'perfis', 'auditoria', 'solicitacoes', 'compras'
             ].map(p => ({ perfil_id: perfilAdmin.id, permissao: p })));
         }
 
         const admin = await User.create({
-            usuario: 'admin',
-            email: 'admin@sistema.local',
-            senha: 'Admin@123',
+            usuario: 'gfernandes',
+            email: 'guilherme.fernandes@promagroup.com',
+            senha: '123456',
             perfil_id: perfilAdmin.id,
             ativo: true,
             email_verificado: true,

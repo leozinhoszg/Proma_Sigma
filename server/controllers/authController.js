@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const { Op } = require('sequelize');
-const { User, Perfil, PerfilPermissao, RefreshToken } = require('../models');
+const { User, Perfil, PerfilPermissao, RefreshToken, Setor } = require('../models');
 const authService = require('../services/authService');
 const emailService = require('../services/emailService');
 const auditService = require('../services/auditService');
@@ -102,7 +102,7 @@ exports.login = async (req, res) => {
         const ipAddress = req.ip || req.connection.remoteAddress;
         const userAgent = req.get('User-Agent') || '';
 
-        // Buscar usuario com senha e popular perfil
+        // Buscar usuario com senha e popular perfil e setor
         const user = await User.scope('withSenha').findOne({
             where: {
                 [Op.or]: [{ usuario }, { email: usuario }]
@@ -112,6 +112,11 @@ exports.login = async (req, res) => {
                     model: Perfil,
                     as: 'perfil',
                     include: [{ model: PerfilPermissao, as: 'permissoesRef' }]
+                },
+                {
+                    model: Setor,
+                    as: 'setor',
+                    attributes: ['id', 'nome']
                 }
             ]
         });
@@ -227,7 +232,8 @@ exports.login = async (req, res) => {
                 email: user.email,
                 fotoPerfil: user.foto_perfil,
                 perfil: perfilFormatado,
-                emailVerificado: user.email_verificado
+                emailVerificado: user.email_verificado,
+                setor: user.setor ? { id: user.setor.id, nome: user.setor.nome } : null
             },
             ...tokens
         });
@@ -600,6 +606,11 @@ exports.getMe = async (req, res) => {
                     model: Perfil,
                     as: 'perfil',
                     include: [{ model: PerfilPermissao, as: 'permissoesRef' }]
+                },
+                {
+                    model: Setor,
+                    as: 'setor',
+                    attributes: ['id', 'nome']
                 }
             ]
         });
@@ -617,7 +628,8 @@ exports.getMe = async (req, res) => {
             perfil: formatPerfilComPermissoes(user.perfil),
             emailVerificado: user.email_verificado,
             ultimoLogin: user.ultimo_login,
-            createdAt: user.created_at
+            createdAt: user.created_at,
+            setor: user.setor ? { id: user.setor.id, nome: user.setor.nome } : null
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

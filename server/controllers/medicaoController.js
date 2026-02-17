@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const { Medicao, Sequencia, Contrato, Fornecedor } = require('../models');
 const medicaoService = require('../services/medicaoService');
 const auditService = require('../services/auditService');
+const { buildSetorFilter } = require('../middleware/setorFilter');
 
 // Include para sequencia com contrato e fornecedor
 const sequenciaFullInclude = [
@@ -129,7 +130,8 @@ exports.sincronizar = async (req, res) => {
 // Sincronizar todas as sequencias
 exports.sincronizarTodas = async (req, res) => {
     try {
-        const resultados = await medicaoService.sincronizarTodas();
+        const setorFilter = buildSetorFilter(req);
+        const resultados = await medicaoService.sincronizarTodas(setorFilter);
 
         const sucessos = resultados.filter(r => r.sucesso).length;
         const erros = resultados.filter(r => !r.sucesso).length;
@@ -213,6 +215,7 @@ exports.getStatusConsolidado = async (req, res) => {
 // Verificar alertas de valor
 exports.getAlertas = async (req, res) => {
     try {
+        const setorFilter = buildSetorFilter(req);
         const alertas = await Medicao.findAll({
             where: { alerta_valor: true },
             include: [
@@ -223,6 +226,7 @@ exports.getAlertas = async (req, res) => {
                         {
                             model: Contrato,
                             as: 'contrato',
+                            where: { ...setorFilter },
                             include: [{ model: Fornecedor, as: 'fornecedor' }]
                         }
                     ]
@@ -231,18 +235,20 @@ exports.getAlertas = async (req, res) => {
             order: [['created_at', 'DESC']]
         });
 
-        res.json(alertas.map(med => ({
-            medicaoId: med.id,
-            sequencia: med.sequencia?.num_seq_item,
-            contrato: med.sequencia?.contrato?.nr_contrato,
-            fornecedor: med.sequencia?.contrato?.fornecedor?.nome,
-            mesReferencia: med.mes_referencia,
-            valorEsperado: med.sequencia?.valor,
-            valorMedicao: med.val_medicao,
-            diferenca: med.diferenca_valor,
-            numeroNota: med.numero_nota,
-            dataMedicao: med.dat_medicao
-        })));
+        res.json(alertas
+            .filter(med => med.sequencia?.contrato)
+            .map(med => ({
+                medicaoId: med.id,
+                sequencia: med.sequencia?.num_seq_item,
+                contrato: med.sequencia?.contrato?.nr_contrato,
+                fornecedor: med.sequencia?.contrato?.fornecedor?.nome,
+                mesReferencia: med.mes_referencia,
+                valorEsperado: med.sequencia?.valor,
+                valorMedicao: med.val_medicao,
+                diferenca: med.diferenca_valor,
+                numeroNota: med.numero_nota,
+                dataMedicao: med.dat_medicao
+            })));
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

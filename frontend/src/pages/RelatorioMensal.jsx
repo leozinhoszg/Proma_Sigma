@@ -3,6 +3,7 @@ import { relatorioAPI, medicoesAPI } from '../services/api';
 import { formatCurrency, formatDate } from '../utils/helpers';
 import { useToast } from '../hooks/useToast';
 import Toast from '../components/ui/Toast';
+import { useAuth } from '../context/AuthContext';
 
 const MESES = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
 
@@ -37,6 +38,7 @@ const getStatusLabel = (status) => {
 };
 
 export default function RelatorioMensal() {
+  const { user } = useAuth();
   const [relatorio, setRelatorio] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -390,6 +392,11 @@ export default function RelatorioMensal() {
             </h1>
             <p className="text-base-content/50 text-sm mt-1">
               Acompanhamento das medições por fornecedor e contrato
+              {user?.setor && (
+                <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                  {user.setor.nome}
+                </span>
+              )}
             </p>
           </div>
 

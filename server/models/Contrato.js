@@ -27,11 +27,16 @@ const Contrato = sequelize.define('Contrato', {
     observacao: {
         type: DataTypes.TEXT,
         defaultValue: ''
+    },
+    setor_id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        allowNull: true
     }
 }, {
     tableName: 'contratos',
     indexes: [
-        { fields: ['fornecedor_id', 'nr_contrato', 'estabelecimento_id'] }
+        { fields: ['fornecedor_id', 'nr_contrato', 'estabelecimento_id'] },
+        { fields: ['setor_id'] }
     ]
 });
 

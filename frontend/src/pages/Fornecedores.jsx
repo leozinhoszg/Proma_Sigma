@@ -4,8 +4,10 @@ import Modal, { FormField } from '../components/ui/Modal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import { useToast } from '../hooks/useToast';
 import Toast from '../components/ui/Toast';
+import { useAuth } from '../context/AuthContext';
 
 export default function Fornecedores() {
+  const { user } = useAuth();
   const [fornecedores, setFornecedores] = useState([]);
   const [contratos, setContratos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -181,6 +183,11 @@ export default function Fornecedores() {
             </h1>
             <p className="text-base-content/50 text-sm mt-1">
               Gerencie os fornecedores do sistema
+              {user?.setor && (
+                <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                  {user.setor.nome}
+                </span>
+              )}
             </p>
           </div>
           <button
@@ -405,10 +412,10 @@ export default function Fornecedores() {
                 </tbody>
               </table>
             </div>
-            <div className="p-4 border-t border-base-200/30 bg-base-200/5">
-              <p className="text-xs text-base-content/40">
-                {filteredFornecedores.length} fornecedor{filteredFornecedores.length !== 1 ? 'es' : ''} encontrado{filteredFornecedores.length !== 1 ? 's' : ''}
-                {searchTerm && ` para "${searchTerm}"`}
+            <div className="p-4 border-t border-base-200/30 bg-base-200/10">
+              <p className="text-sm text-base-content/50">
+                {filteredFornecedores.length} fornecedor(es)
+                {searchTerm && ` encontrado(s) para "${searchTerm}"`}
               </p>
             </div>
           </div>

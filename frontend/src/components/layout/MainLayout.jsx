@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import ThemeToggle from "../ui/ThemeToggle";
+import NotificationBell from "../ui/NotificationBell";
 import logo from "../../assets/PROMA 6.2.png";
 
 // Itens de navegação com suas permissões necessárias
@@ -10,6 +11,8 @@ const allNavItems = [
   { path: "/fornecedores", label: "Fornecedores", permissao: "fornecedores" },
   { path: "/contratos", label: "Contratos", permissao: "contratos" },
   { path: "/relatorio", label: "Relatório", permissao: "relatorio" },
+  { path: "/solicitacoes", label: "Solicitações", permissao: "solicitacoes" },
+  { path: "/compras", label: "Compras", permissao: "compras" },
 ];
 
 export default function MainLayout() {
@@ -58,7 +61,7 @@ export default function MainLayout() {
   };
 
   return (
-    <div className="min-h-screen app-bg">
+    <div className="min-h-screen app-bg flex flex-col">
       {/* Navbar */}
       <nav className="navbar-header">
         {/* Decorative background (clipped) */}
@@ -101,6 +104,7 @@ export default function MainLayout() {
             <div className="flex items-center gap-3">
               {/* Theme Toggle */}
               <ThemeToggle className="navbar-link" />
+              <NotificationBell />
 
               {/* User Menu */}
               <div className="relative">

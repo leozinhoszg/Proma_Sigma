@@ -1,5 +1,5 @@
 const { Op } = require('sequelize');
-const { User, Perfil, PerfilPermissao } = require('../models');
+const { User, Perfil, PerfilPermissao, Setor } = require('../models');
 const emailService = require('../services/emailService');
 const auditService = require('../services/auditService');
 
@@ -20,6 +20,11 @@ const perfilInclude = [
         model: Perfil,
         as: 'perfil',
         include: [{ model: PerfilPermissao, as: 'permissoesRef' }]
+    },
+    {
+        model: Setor,
+        as: 'setor',
+        attributes: ['id', 'nome']
     }
 ];
 
@@ -80,7 +85,7 @@ exports.getById = async (req, res) => {
 // Criar novo usuario
 exports.create = async (req, res) => {
     try {
-        const { usuario, email, perfil, ativo, enviarEmail } = req.body;
+        const { usuario, email, perfil, setor_id, ativo, enviarEmail } = req.body;
 
         // Verificar se usuario ou email ja existem
         const usuarioExistente = await User.findOne({
@@ -113,6 +118,7 @@ exports.create = async (req, res) => {
             usuario,
             email,
             perfil_id: perfil || null,
+            setor_id: setor_id || null,
             ativo: ativo !== undefined ? ativo : true,
             conta_ativada: false, // Conta nao ativada ate usuario definir senha
             email_verificado: false
@@ -172,7 +178,7 @@ exports.create = async (req, res) => {
 // Atualizar usuario
 exports.update = async (req, res) => {
     try {
-        const { usuario, email, perfil, ativo } = req.body;
+        const { usuario, email, perfil, setor_id, ativo } = req.body;
         const userId = req.params.id;
 
         // Verificar se usuario existe
@@ -216,6 +222,7 @@ exports.update = async (req, res) => {
         if (usuario) camposAtualizar.usuario = usuario;
         if (email) camposAtualizar.email = email;
         if (perfil !== undefined) camposAtualizar.perfil_id = perfil || null;
+        if (setor_id !== undefined) camposAtualizar.setor_id = setor_id || null;
         if (ativo !== undefined) camposAtualizar.ativo = ativo;
 
         // Buscar nomes dos perfis para auditoria

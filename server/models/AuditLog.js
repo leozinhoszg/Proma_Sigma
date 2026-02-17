@@ -27,14 +27,14 @@ const AuditLog = sequelize.define('AuditLog', {
             'OTP_VERIFICADO', 'TOKEN_REFRESH', 'CRIAR', 'ATUALIZAR', 'EXCLUIR',
             'VISUALIZAR', 'ATIVAR', 'DESATIVAR', 'ALTERAR_PERMISSOES', 'ALTERAR_PERFIL',
             'SINCRONIZAR', 'SINCRONIZAR_LOTE', 'EXPORTAR', 'IMPORTAR',
-            'EMAIL_ENVIADO', 'EMAIL_FALHA'
+            'EMAIL_ENVIADO', 'EMAIL_FALHA', 'APROVAR', 'REPROVAR'
         ),
         allowNull: false
     },
     categoria: {
         type: DataTypes.ENUM(
             'AUTH', 'USUARIO', 'PERFIL', 'FORNECEDOR', 'CONTRATO', 'SEQUENCIA',
-            'MEDICAO', 'SISTEMA', 'EMAIL', 'EMPRESA', 'ESTABELECIMENTO'
+            'MEDICAO', 'SISTEMA', 'EMAIL', 'EMPRESA', 'ESTABELECIMENTO', 'SOLICITACAO'
         ),
         allowNull: false
     },

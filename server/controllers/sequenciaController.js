@@ -1,5 +1,6 @@
 const { Sequencia, Contrato, Fornecedor } = require('../models');
 const auditService = require('../services/auditService');
+const { buildSetorFilter } = require('../middleware/setorFilter');
 
 // Include padrao para sequencia com contrato e fornecedor
 const sequenciaInclude = [
@@ -10,16 +11,29 @@ const sequenciaInclude = [
     }
 ];
 
+// Gera include com filtro de setor no contrato
+function sequenciaIncludeComSetor(setorFilter) {
+    return [
+        {
+            model: Contrato,
+            as: 'contrato',
+            where: { ...setorFilter },
+            include: [{ model: Fornecedor, as: 'fornecedor', attributes: ['id', 'nome'] }]
+        }
+    ];
+}
+
 // Listar todas as sequencias
 exports.getAll = async (req, res) => {
     try {
+        const setorFilter = buildSetorFilter(req);
         const where = {};
         if (req.query.contrato) {
             where.contrato_id = req.query.contrato;
         }
         const sequencias = await Sequencia.findAll({
             where,
-            include: sequenciaInclude,
+            include: sequenciaIncludeComSetor(setorFilter),
             order: [['num_seq_item', 'ASC']]
         });
         res.json(sequencias);
@@ -31,8 +45,10 @@ exports.getAll = async (req, res) => {
 // Buscar sequencia por ID
 exports.getById = async (req, res) => {
     try {
-        const sequencia = await Sequencia.findByPk(req.params.id, {
-            include: sequenciaInclude
+        const setorFilter = buildSetorFilter(req);
+        const sequencia = await Sequencia.findOne({
+            where: { id: req.params.id },
+            include: sequenciaIncludeComSetor(setorFilter)
         });
         if (!sequencia) {
             return res.status(404).json({ message: 'Sequencia nao encontrada' });
@@ -47,6 +63,7 @@ exports.getById = async (req, res) => {
 exports.buscar = async (req, res) => {
     try {
         const { contrato: nrContrato, estabelecimento, sequencia } = req.query;
+        const setorFilter = buildSetorFilter(req);
 
         // Validar parametros obrigatorios
         if (!nrContrato || !estabelecimento || !sequencia) {
@@ -60,7 +77,8 @@ exports.buscar = async (req, res) => {
         const contratoDoc = await Contrato.findOne({
             where: {
                 nr_contrato: parseInt(nrContrato),
-                cod_estabel: estabelecimento
+                cod_estabel: estabelecimento,
+                ...setorFilter
             },
             include: [{ model: Fornecedor, as: 'fornecedor', attributes: ['id', 'nome'] }]
         });
@@ -95,6 +113,16 @@ exports.buscar = async (req, res) => {
 // Criar nova sequencia
 exports.create = async (req, res) => {
     try {
+        const setorFilter = buildSetorFilter(req);
+
+        // Verificar que o contrato pertence ao setor do usuario
+        const contrato = await Contrato.findOne({
+            where: { id: req.body.contrato, ...setorFilter }
+        });
+        if (!contrato) {
+            return res.status(404).json({ message: 'Contrato nao encontrado' });
+        }
+
         const sequencia = await Sequencia.create({
             contrato_id: req.body.contrato,
             num_seq_item: req.body.num_seq_item,
@@ -129,8 +157,13 @@ exports.create = async (req, res) => {
 // Atualizar sequencia
 exports.update = async (req, res) => {
     try {
-        // Buscar dados anteriores para auditoria
-        const sequenciaAnterior = await Sequencia.findByPk(req.params.id);
+        const setorFilter = buildSetorFilter(req);
+
+        // Buscar dados anteriores verificando setor
+        const sequenciaAnterior = await Sequencia.findOne({
+            where: { id: req.params.id },
+            include: sequenciaIncludeComSetor(setorFilter)
+        });
         if (!sequenciaAnterior) {
             return res.status(404).json({ message: 'Sequencia nao encontrada' });
         }
@@ -171,12 +204,16 @@ exports.update = async (req, res) => {
 exports.updateStatus = async (req, res) => {
     try {
         const { monthKey, status } = req.body;
+        const setorFilter = buildSetorFilter(req);
 
         if (!monthKey || !status) {
             return res.status(400).json({ message: 'monthKey e status sao obrigatorios' });
         }
 
-        const sequencia = await Sequencia.findByPk(req.params.id);
+        const sequencia = await Sequencia.findOne({
+            where: { id: req.params.id },
+            include: sequenciaIncludeComSetor(setorFilter)
+        });
         if (!sequencia) {
             return res.status(404).json({ message: 'Sequencia nao encontrada' });
         }
@@ -209,9 +246,12 @@ exports.updateStatus = async (req, res) => {
 // Excluir sequencia
 exports.delete = async (req, res) => {
     try {
-        // Buscar dados antes de excluir para auditoria
-        const sequencia = await Sequencia.findByPk(req.params.id, {
-            include: sequenciaInclude
+        const setorFilter = buildSetorFilter(req);
+
+        // Buscar dados antes de excluir verificando setor
+        const sequencia = await Sequencia.findOne({
+            where: { id: req.params.id },
+            include: sequenciaIncludeComSetor(setorFilter)
         });
         if (!sequencia) {
             return res.status(404).json({ message: 'Sequencia nao encontrada' });

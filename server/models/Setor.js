@@ -1,31 +1,34 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 
-const Fornecedor = sequelize.define('Fornecedor', {
+const Setor = sequelize.define('Setor', {
     id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true
     },
     nome: {
-        type: DataTypes.STRING(255),
+        type: DataTypes.STRING(100),
         allowNull: false,
+        unique: true,
         validate: {
-            notEmpty: { msg: 'Nome do fornecedor e obrigatorio' }
+            notEmpty: { msg: 'Nome do setor e obrigatorio' },
+            len: { args: [1, 100], msg: 'Nome deve ter no maximo 100 caracteres' }
         },
         set(val) {
             this.setDataValue('nome', val ? val.toUpperCase().trim() : val);
         }
     },
-    setor_id: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        allowNull: true
+    ativo: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 }, {
-    tableName: 'fornecedores',
+    tableName: 'setores',
     indexes: [
-        { unique: true, fields: ['nome', 'setor_id'], name: 'fornecedor_nome_setor_unique' }
+        { fields: ['nome'] }
     ]
 });
 
-module.exports = Fornecedor;
+module.exports = Setor;

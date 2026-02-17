@@ -1,4 +1,4 @@
-const { Fornecedor, Contrato, Sequencia, Empresa, Estabelecimento } = require('../models');
+const { Fornecedor, Contrato, Sequencia, Empresa, Estabelecimento, Setor } = require('../models');
 
 const seedData = async () => {
     try {
@@ -9,6 +9,17 @@ const seedData = async () => {
         }
 
         console.log('Iniciando seed do banco de dados...');
+
+        // Setores
+        const setores = await Setor.bulkCreate([
+            { nome: 'TI' },
+            { nome: 'LOGISTICA' },
+            { nome: 'COMPRAS' },
+            { nome: 'FINANCEIRO' },
+            { nome: 'RH' }
+        ]);
+        console.log(`${setores.length} setores criados`);
+        const setorTI = setores[0];
 
         const empresas = await Empresa.bulkCreate([
             { cod_empresa: '01', nome: 'PROMA BRASIL' },
@@ -27,26 +38,26 @@ const seedData = async () => {
         console.log(`${estabelecimentos.length} estabelecimentos criados`);
 
         const fornecedores = await Fornecedor.bulkCreate([
-            { nome: 'DI2S' },
-            { nome: 'CABTEC' },
-            { nome: 'CONTI CONSULTORIA' },
-            { nome: 'VIVO' },
-            { nome: 'BKP GARANTIDO' },
-            { nome: 'SENIOR' }
+            { nome: 'DI2S', setor_id: setorTI.id },
+            { nome: 'CABTEC', setor_id: setorTI.id },
+            { nome: 'CONTI CONSULTORIA', setor_id: setorTI.id },
+            { nome: 'VIVO', setor_id: setorTI.id },
+            { nome: 'BKP GARANTIDO', setor_id: setorTI.id },
+            { nome: 'SENIOR', setor_id: setorTI.id }
         ]);
 
         console.log(`${fornecedores.length} fornecedores criados`);
         const [di2s, cabtec, conti, vivo, bkp, senior] = fornecedores;
 
         const contratos = await Contrato.bulkCreate([
-            { fornecedor_id: di2s.id, nr_contrato: 310, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01' },
-            { fornecedor_id: cabtec.id, nr_contrato: 474, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01' },
-            { fornecedor_id: conti.id, nr_contrato: 684, estabelecimento_id: estabelecimentos[1].id, cod_estabel: '02' },
-            { fornecedor_id: vivo.id, nr_contrato: 236, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01' },
-            { fornecedor_id: bkp.id, nr_contrato: 593, estabelecimento_id: estabelecimentos[1].id, cod_estabel: '02', observacao: 'Necessario atualizacao de contrato' },
-            { fornecedor_id: bkp.id, nr_contrato: 594, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01', observacao: 'Necessario atualizacao de contrato' },
-            { fornecedor_id: senior.id, nr_contrato: 545, estabelecimento_id: estabelecimentos[1].id, cod_estabel: '02' },
-            { fornecedor_id: senior.id, nr_contrato: 545, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01', observacao: 'Necessario atualizacao de contrato' }
+            { fornecedor_id: di2s.id, nr_contrato: 310, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01', setor_id: setorTI.id },
+            { fornecedor_id: cabtec.id, nr_contrato: 474, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01', setor_id: setorTI.id },
+            { fornecedor_id: conti.id, nr_contrato: 684, estabelecimento_id: estabelecimentos[1].id, cod_estabel: '02', setor_id: setorTI.id },
+            { fornecedor_id: vivo.id, nr_contrato: 236, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01', setor_id: setorTI.id },
+            { fornecedor_id: bkp.id, nr_contrato: 593, estabelecimento_id: estabelecimentos[1].id, cod_estabel: '02', observacao: 'Necessario atualizacao de contrato', setor_id: setorTI.id },
+            { fornecedor_id: bkp.id, nr_contrato: 594, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01', observacao: 'Necessario atualizacao de contrato', setor_id: setorTI.id },
+            { fornecedor_id: senior.id, nr_contrato: 545, estabelecimento_id: estabelecimentos[1].id, cod_estabel: '02', setor_id: setorTI.id },
+            { fornecedor_id: senior.id, nr_contrato: 545, estabelecimento_id: estabelecimentos[0].id, cod_estabel: '01', observacao: 'Necessario atualizacao de contrato', setor_id: setorTI.id }
         ]);
 
         console.log(`${contratos.length} contratos criados`);

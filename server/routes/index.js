@@ -13,6 +13,9 @@ const perfisRoutes = require('./perfis');
 const auditoriaRoutes = require('./auditoria');
 const empresasRoutes = require('./empresas');
 const estabelecimentosRoutes = require('./estabelecimentos');
+const setoresRoutes = require('./setores');
+const solicitacoesRoutes = require('./solicitacoes');
+const notificacoesRoutes = require('./notificacoes');
 
 // Health check
 router.get('/health', (req, res) => {
@@ -49,7 +52,10 @@ router.get('/', (req, res) => {
             perfis: 'GET|POST /api/perfis, GET|PUT|DELETE /api/perfis/:id',
             auditoria: 'GET /api/auditoria',
             empresas: 'GET|POST /api/empresas, GET|PUT|DELETE /api/empresas/:id',
-            estabelecimentos: 'GET|POST /api/estabelecimentos, GET|PUT|DELETE /api/estabelecimentos/:id'
+            estabelecimentos: 'GET|POST /api/estabelecimentos, GET|PUT|DELETE /api/estabelecimentos/:id',
+            setores: 'GET|POST /api/setores, PUT|DELETE /api/setores/:id',
+            solicitacoes: 'GET|POST /api/solicitacoes, GET /api/solicitacoes/:id, GET /api/solicitacoes/:id/anexo, PATCH /api/solicitacoes/:id/aprovar|reprovar, GET /api/solicitacoes/compras/listar|estatisticas',
+            notificacoes: 'GET /api/notificacoes, GET /api/notificacoes/nao-lidas, PATCH /api/notificacoes/:id/lida, PATCH /api/notificacoes/lidas'
         }
     });
 });
@@ -69,5 +75,8 @@ router.use('/perfis', perfisRoutes);
 router.use('/auditoria', auditoriaRoutes);
 router.use('/empresas', empresasRoutes);
 router.use('/estabelecimentos', estabelecimentosRoutes);
+router.use('/setores', setoresRoutes);
+router.use('/solicitacoes', solicitacoesRoutes);
+router.use('/notificacoes', notificacoesRoutes);
 
 module.exports = router;

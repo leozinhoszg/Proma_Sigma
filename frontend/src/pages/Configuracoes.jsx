@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { usuariosAPI, perfisAPI, auditoriaAPI, empresasAPI, estabelecimentosAPI } from '../services/api';
+import { usuariosAPI, perfisAPI, auditoriaAPI, empresasAPI, estabelecimentosAPI, setoresAPI } from '../services/api';
 import Modal, { FormField } from '../components/ui/Modal';
 import ConfirmDialog from '../components/ui/ConfirmDialog';
 import Loading from '../components/ui/Loading';
@@ -17,14 +17,15 @@ export default function Configuracoes() {
   // Verificar permissões
   const permissoes = useMemo(() => {
     const perfil = usuarioLogado?.perfil;
-    if (!perfil) return { usuarios: false, perfis: false, auditoria: false, empresas: false };
-    if (perfil.isAdmin) return { usuarios: true, perfis: true, auditoria: true, empresas: true };
+    if (!perfil) return { usuarios: false, perfis: false, auditoria: false, empresas: false, setores: false };
+    if (perfil.isAdmin) return { usuarios: true, perfis: true, auditoria: true, empresas: true, setores: true };
     const perms = perfil.permissoes || [];
     return {
       usuarios: perms.includes('usuarios'),
       perfis: perms.includes('perfis'),
       auditoria: perms.includes('auditoria'),
-      empresas: perms.includes('empresas') || perms.includes('estabelecimentos')
+      empresas: perms.includes('empresas') || perms.includes('estabelecimentos'),
+      setores: perms.includes('usuarios')
     };
   }, [usuarioLogado?.perfil]);
 
@@ -95,6 +96,17 @@ export default function Configuracoes() {
             Empresas
           </button>
         )}
+        {permissoes.setores && (
+          <button
+            className={`tab ${activeTab === 'setores' ? 'tab-active' : ''}`}
+            onClick={() => setActiveTab('setores')}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Setores
+          </button>
+        )}
       </div>
 
       {/* Conteudo das Tabs */}
@@ -110,6 +122,9 @@ export default function Configuracoes() {
       {activeTab === 'empresas' && permissoes.empresas && (
         <EmpresasTab showToast={showToast} />
       )}
+      {activeTab === 'setores' && permissoes.setores && (
+        <SetoresTab showToast={showToast} />
+      )}
     </div>
   );
 }
@@ -118,6 +133,7 @@ export default function Configuracoes() {
 function UsuariosTab({ showToast }) {
   const [usuarios, setUsuarios] = useState([]);
   const [perfis, setPerfis] = useState([]);
+  const [setores, setSetores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -133,6 +149,7 @@ function UsuariosTab({ showToast }) {
     usuario: '',
     email: '',
     perfil: '',
+    setor: '',
     ativo: true
   });
   const [novaSenha, setNovaSenha] = useState('');
@@ -144,12 +161,14 @@ function UsuariosTab({ showToast }) {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [usuariosRes, perfisRes] = await Promise.all([
+      const [usuariosRes, perfisRes, setoresRes] = await Promise.all([
         usuariosAPI.listar(),
-        perfisAPI.listar({ ativo: true })
+        perfisAPI.listar({ ativo: true }),
+        setoresAPI.listar({ ativo: true })
       ]);
       setUsuarios(usuariosRes.data || []);
       setPerfis(perfisRes.data || []);
+      setSetores(setoresRes.data || []);
     } catch (error) {
       console.error('Erro ao carregar dados:', error);
       showToast('Erro ao carregar dados', 'error');
@@ -159,7 +178,7 @@ function UsuariosTab({ showToast }) {
   };
 
   const openCreateModal = () => {
-    setFormData({ usuario: '', email: '', perfil: '', ativo: true });
+    setFormData({ usuario: '', email: '', perfil: '', setor: '', ativo: true });
     setEditingId(null);
     setIsModalOpen(true);
   };
@@ -169,6 +188,7 @@ function UsuariosTab({ showToast }) {
       usuario: usuario.usuario || '',
       email: usuario.email || '',
       perfil: usuario.perfil?.id || '',
+      setor: usuario.setor?.id || '',
       ativo: usuario.ativo
     });
     setEditingId(usuario.id);
@@ -202,6 +222,7 @@ function UsuariosTab({ showToast }) {
         usuario: formData.usuario,
         email: formData.email,
         perfil: formData.perfil || null,
+        setor_id: formData.setor || null,
         ativo: formData.ativo
       };
 
@@ -310,6 +331,7 @@ function UsuariosTab({ showToast }) {
                   <th>Usuario</th>
                   <th>Email</th>
                   <th>Perfil</th>
+                  <th>Setor</th>
                   <th className="text-center">Status</th>
                   <th className="text-right">Acoes</th>
                 </tr>
@@ -321,6 +343,9 @@ function UsuariosTab({ showToast }) {
                     <td className="text-base-content/70">{usuario.email}</td>
                     <td>
                       <ProfileBadgeSimple perfil={usuario.perfil} size="sm" />
+                    </td>
+                    <td className="text-sm text-base-content/70">
+                      {usuario.setor?.nome || '-'}
                     </td>
                     <td className="text-center">
                       <button
@@ -393,6 +418,14 @@ function UsuariosTab({ showToast }) {
               <option value="">Sem perfil</option>
               {perfis.map((p) => (
                 <option key={p.id} value={p.id}>{p.nome} {p.isAdmin && '(Admin)'}</option>
+              ))}
+            </select>
+          </FormField>
+          <FormField label="Setor">
+            <select className="select select-bordered w-full" value={formData.setor} onChange={(e) => setFormData({ ...formData, setor: e.target.value })}>
+              <option value="">Sem setor</option>
+              {setores.map((s) => (
+                <option key={s.id} value={s.id}>{s.nome}</option>
               ))}
             </select>
           </FormField>
@@ -737,6 +770,7 @@ function AuditoriaTab({ showToast }) {
     { id: 'CONTRATO', nome: 'Contratos' },
     { id: 'SEQUENCIA', nome: 'Sequencias' },
     { id: 'MEDICAO', nome: 'Medicoes' },
+    { id: 'SOLICITACAO', nome: 'Solicitacoes' },
     { id: 'SISTEMA', nome: 'Sistema' },
     { id: 'EMAIL', nome: 'Emails' }
   ];
@@ -1621,6 +1655,210 @@ function EmpresasTab({ showToast }) {
         onConfirm={handleDeleteEstabelecimento}
         title="Excluir Estabelecimento"
         message="Tem certeza que deseja excluir este estabelecimento?"
+        confirmText="Excluir"
+        variant="error"
+      />
+    </>
+  );
+}
+
+// ==================== TAB DE SETORES ====================
+function SetoresTab({ showToast }) {
+  const [setores, setSetores] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
+
+  const [formData, setFormData] = useState({ nome: '', ativo: true });
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const response = await setoresAPI.listar();
+      setSetores(response.data || []);
+    } catch (error) {
+      console.error('Erro ao carregar setores:', error);
+      showToast('Erro ao carregar setores', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openCreateModal = () => {
+    setFormData({ nome: '', ativo: true });
+    setEditingId(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (setor) => {
+    setFormData({ nome: setor.nome || '', ativo: setor.ativo });
+    setEditingId(setor.id);
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.nome.trim()) {
+      showToast('Nome do setor e obrigatorio', 'warning');
+      return;
+    }
+    try {
+      setSaving(true);
+      if (editingId) {
+        await setoresAPI.atualizar(editingId, formData);
+        showToast('Setor atualizado com sucesso', 'success');
+      } else {
+        await setoresAPI.criar(formData);
+        showToast('Setor criado com sucesso', 'success');
+      }
+      setIsModalOpen(false);
+      loadData();
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Erro ao salvar setor', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await setoresAPI.excluir(deletingId);
+      showToast('Setor excluido com sucesso', 'success');
+      loadData();
+    } catch (error) {
+      showToast(error.response?.data?.message || 'Erro ao excluir setor', 'error');
+    }
+  };
+
+  const filteredSetores = setores.filter(s =>
+    s.nome?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) return <Loading text="Carregando setores..." />;
+
+  return (
+    <>
+      {/* Busca e Botao */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="glass-card p-3 flex-1">
+          <div className="flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-base-content/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Buscar setor..."
+              className="input input-ghost flex-1 glass-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+        <button className="btn btn-primary shadow-soft" onClick={openCreateModal}>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+          Novo Setor
+        </button>
+      </div>
+
+      {/* Lista */}
+      {filteredSetores.length === 0 ? (
+        <div className="glass-card p-8">
+          <EmptyState
+            title={searchTerm ? "Nenhum resultado" : "Nenhum setor"}
+            description={searchTerm ? "Tente outro termo" : "Clique em 'Novo Setor'"}
+            icon="🏬"
+          />
+        </div>
+      ) : (
+        <div className="glass-card overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead className="bg-base-200/30">
+                <tr className="text-base-content/60 uppercase text-xs">
+                  <th>Nome</th>
+                  <th className="text-center">Status</th>
+                  <th className="text-right">Acoes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredSetores.map((setor) => (
+                  <tr key={setor.id} className="hover:bg-base-200/20 transition-colors">
+                    <td className="font-semibold">{setor.nome}</td>
+                    <td className="text-center">
+                      <span className={`badge ${setor.ativo ? 'badge-success' : 'badge-error'}`}>
+                        {setor.ativo ? 'Ativo' : 'Inativo'}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="flex justify-end gap-1">
+                        <button className="btn btn-ghost btn-sm btn-square" onClick={() => openEditModal(setor)} title="Editar">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </button>
+                        <button className="btn btn-ghost btn-sm btn-square text-error hover:bg-error/10" onClick={() => { setDeletingId(setor.id); setIsDeleteDialogOpen(true); }} title="Excluir">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="p-4 border-t border-base-200/30 bg-base-200/10">
+            <p className="text-sm text-base-content/50">{filteredSetores.length} setor(es)</p>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Criar/Editar */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={editingId ? 'Editar Setor' : 'Novo Setor'}
+        size="sm"
+        actions={
+          <>
+            <button className="btn btn-ghost" onClick={() => setIsModalOpen(false)} disabled={saving}>Cancelar</button>
+            <button className="btn btn-primary" onClick={handleSubmit} disabled={saving}>
+              {saving ? <span className="loading loading-spinner loading-sm"></span> : 'Salvar'}
+            </button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <FormField label="Nome do Setor" required>
+            <input type="text" className="input input-bordered w-full" value={formData.nome} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} placeholder="Ex: TI, Logistica, Compras" autoFocus />
+          </FormField>
+          <FormField label="Status">
+            <label className="label cursor-pointer justify-start gap-3">
+              <input type="checkbox" className="toggle toggle-primary" checked={formData.ativo} onChange={(e) => setFormData({ ...formData, ativo: e.target.checked })} />
+              <span className="label-text">{formData.ativo ? 'Ativo' : 'Inativo'}</span>
+            </label>
+          </FormField>
+        </div>
+      </Modal>
+
+      {/* Confirmacao Exclusao */}
+      <ConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleDelete}
+        title="Excluir Setor"
+        message="Tem certeza que deseja excluir este setor? Usuarios vinculados a este setor perderao a vinculacao."
         confirmText="Excluir"
         variant="error"
       />

@@ -245,7 +245,9 @@ exports.getPermissoesDisponiveis = async (req, res) => {
             { id: 'perfis', nome: 'Perfis', descricao: 'Gerenciar perfis de acesso' },
             { id: 'auditoria', nome: 'Auditoria', descricao: 'Visualizar logs de auditoria do sistema' },
             { id: 'empresas', nome: 'Empresas', descricao: 'Gerenciar empresas' },
-            { id: 'estabelecimentos', nome: 'Estabelecimentos', descricao: 'Gerenciar estabelecimentos' }
+            { id: 'estabelecimentos', nome: 'Estabelecimentos', descricao: 'Gerenciar estabelecimentos' },
+            { id: 'solicitacoes', nome: 'Solicitacoes', descricao: 'Solicitar atualizacao de contratos' },
+            { id: 'compras', nome: 'Compras', descricao: 'Avaliar solicitacoes de atualizacao de contratos' }
         ];
 
         res.json(permissoes);

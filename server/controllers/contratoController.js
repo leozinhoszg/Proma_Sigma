@@ -1,5 +1,6 @@
 const { Contrato, Sequencia, Estabelecimento, Fornecedor, Empresa } = require('../models');
 const auditService = require('../services/auditService');
+const { buildSetorFilter } = require('../middleware/setorFilter');
 
 // Include padrao para contrato com fornecedor e estabelecimento->empresa
 const contratoInclude = [
@@ -17,7 +18,8 @@ const contratoInclude = [
 // Listar todos os contratos
 exports.getAll = async (req, res) => {
     try {
-        const where = {};
+        const setorFilter = buildSetorFilter(req);
+        const where = { ...setorFilter };
         if (req.query.fornecedor) {
             where.fornecedor_id = req.query.fornecedor;
         }
@@ -35,7 +37,9 @@ exports.getAll = async (req, res) => {
 // Buscar contrato por ID
 exports.getById = async (req, res) => {
     try {
-        const contrato = await Contrato.findByPk(req.params.id, {
+        const setorFilter = buildSetorFilter(req);
+        const contrato = await Contrato.findOne({
+            where: { id: req.params.id, ...setorFilter },
             include: contratoInclude
         });
         if (!contrato) {
@@ -50,6 +54,10 @@ exports.getById = async (req, res) => {
 // Criar novo contrato
 exports.create = async (req, res) => {
     try {
+        if (!req.user.setor_id && !req.user.isAdmin) {
+            return res.status(400).json({ message: 'Usuario nao possui setor atribuido. Contate o administrador.' });
+        }
+
         // Verificar se o estabelecimento existe e buscar cod_estabel
         const estabelecimento = await Estabelecimento.findByPk(req.body.estabelecimento, {
             include: [{ model: Empresa, as: 'empresa', attributes: ['id', 'cod_empresa', 'nome'] }]
@@ -63,7 +71,8 @@ exports.create = async (req, res) => {
             nr_contrato: req.body.nr_contrato,
             estabelecimento_id: req.body.estabelecimento,
             cod_estabel: estabelecimento.cod_estabel,
-            observacao: req.body.observacao || ''
+            observacao: req.body.observacao || '',
+            setor_id: req.user.setor_id
         });
 
         const contratoPopulado = await Contrato.findByPk(contrato.id, {
@@ -80,7 +89,8 @@ exports.create = async (req, res) => {
                 cod_estabel: contrato.cod_estabel,
                 estabelecimento: estabelecimento.nome,
                 empresa: estabelecimento.empresa?.nome,
-                fornecedor: contratoPopulado.fornecedor?.nome
+                fornecedor: contratoPopulado.fornecedor?.nome,
+                setor_id: contrato.setor_id
             }
         });
 
@@ -93,8 +103,9 @@ exports.create = async (req, res) => {
 // Atualizar contrato
 exports.update = async (req, res) => {
     try {
-        // Buscar dados anteriores para auditoria
-        const contratoAnterior = await Contrato.findByPk(req.params.id, {
+        const setorFilter = buildSetorFilter(req);
+        const contratoAnterior = await Contrato.findOne({
+            where: { id: req.params.id, ...setorFilter },
             include: contratoInclude
         });
         if (!contratoAnterior) {
@@ -152,7 +163,9 @@ exports.update = async (req, res) => {
 // Excluir contrato (cascata)
 exports.delete = async (req, res) => {
     try {
-        const contrato = await Contrato.findByPk(req.params.id, {
+        const setorFilter = buildSetorFilter(req);
+        const contrato = await Contrato.findOne({
+            where: { id: req.params.id, ...setorFilter },
             include: contratoInclude
         });
         if (!contrato) {

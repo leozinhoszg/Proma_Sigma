@@ -65,6 +65,10 @@ const User = sequelize.define('User', {
         type: DataTypes.INTEGER.UNSIGNED,
         defaultValue: null
     },
+    setor_id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        defaultValue: null
+    },
     ativo: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

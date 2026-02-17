@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import ProtectedPermission from './components/ProtectedPermission';
 import MainLayout from './components/layout/MainLayout';
@@ -18,6 +19,8 @@ import Contratos from './pages/Contratos';
 import RelatorioMensal from './pages/RelatorioMensal';
 import Configuracoes from './pages/Configuracoes';
 import Perfil from './pages/Perfil';
+import SolicitacaoAtualizacao from './pages/SolicitacaoAtualizacao';
+import Compras from './pages/Compras';
 
 // Styles
 import './index.css';
@@ -31,6 +34,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <NotificationProvider>
         <Routes>
           {/* Rotas públicas */}
           <Route path="/login" element={<Login />} />
@@ -63,6 +67,16 @@ function App() {
                 <RelatorioMensal />
               </ProtectedPermission>
             } />
+            <Route path="/solicitacoes" element={
+              <ProtectedPermission permissao="solicitacoes">
+                <SolicitacaoAtualizacao />
+              </ProtectedPermission>
+            } />
+            <Route path="/compras" element={
+              <ProtectedPermission permissao="compras">
+                <Compras />
+              </ProtectedPermission>
+            } />
             <Route path="/configuracoes" element={
               <ProtectedPermission permissao={['usuarios', 'perfis', 'auditoria', 'empresas', 'estabelecimentos']}>
                 <Configuracoes />
@@ -73,6 +87,7 @@ function App() {
           {/* Redirecionar rotas desconhecidas */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </NotificationProvider>
       </AuthProvider>
     </BrowserRouter>
   );

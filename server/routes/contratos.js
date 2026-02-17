@@ -3,14 +3,16 @@ const router = express.Router();
 const { contratoController } = require('../controllers');
 const { autenticar, autorizarPermissao } = require('../middleware/auth');
 
-// Todas as rotas requerem autenticacao e permissao de contratos
+// Todas as rotas requerem autenticacao
 router.use(autenticar);
-router.use(autorizarPermissao('contratos'));
 
+// Leitura: qualquer usuario autenticado (necessario para dropdowns em outras paginas)
 router.get('/', contratoController.getAll);
 router.get('/:id', contratoController.getById);
-router.post('/', contratoController.create);
-router.put('/:id', contratoController.update);
-router.delete('/:id', contratoController.delete);
+
+// Escrita: requer permissao de contratos
+router.post('/', autorizarPermissao('contratos'), contratoController.create);
+router.put('/:id', autorizarPermissao('contratos'), contratoController.update);
+router.delete('/:id', autorizarPermissao('contratos'), contratoController.delete);
 
 module.exports = router;

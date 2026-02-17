@@ -12,6 +12,9 @@ const RefreshToken = require('./RefreshToken');
 const AuditLog = require('./AuditLog');
 const Webhook = require('./Webhook');
 const WebhookEvento = require('./WebhookEvento');
+const Setor = require('./Setor');
+const SolicitacaoAtualizacao = require('./SolicitacaoAtualizacao');
+const Notificacao = require('./Notificacao');
 
 // === Associations ===
 
@@ -55,6 +58,41 @@ Medicao.belongsTo(Sequencia, { foreignKey: 'sequencia_id', as: 'sequencia' });
 Webhook.hasMany(WebhookEvento, { foreignKey: 'webhook_id', as: 'eventosRef' });
 WebhookEvento.belongsTo(Webhook, { foreignKey: 'webhook_id' });
 
+// Setor <-> User
+Setor.hasMany(User, { foreignKey: 'setor_id', as: 'usuarios' });
+User.belongsTo(Setor, { foreignKey: 'setor_id', as: 'setor' });
+
+// Setor <-> Fornecedor
+Setor.hasMany(Fornecedor, { foreignKey: 'setor_id', as: 'fornecedores' });
+Fornecedor.belongsTo(Setor, { foreignKey: 'setor_id', as: 'setor' });
+
+// Setor <-> Contrato
+Setor.hasMany(Contrato, { foreignKey: 'setor_id', as: 'contratos' });
+Contrato.belongsTo(Setor, { foreignKey: 'setor_id', as: 'setor' });
+
+// SolicitacaoAtualizacao associations
+User.hasMany(SolicitacaoAtualizacao, { foreignKey: 'solicitante_id', as: 'solicitacoes' });
+SolicitacaoAtualizacao.belongsTo(User, { foreignKey: 'solicitante_id', as: 'solicitante' });
+
+User.hasMany(SolicitacaoAtualizacao, { foreignKey: 'avaliador_id', as: 'avaliacoes' });
+SolicitacaoAtualizacao.belongsTo(User, { foreignKey: 'avaliador_id', as: 'avaliador' });
+
+Setor.hasMany(SolicitacaoAtualizacao, { foreignKey: 'setor_id', as: 'solicitacoes' });
+SolicitacaoAtualizacao.belongsTo(Setor, { foreignKey: 'setor_id', as: 'setor' });
+
+Fornecedor.hasMany(SolicitacaoAtualizacao, { foreignKey: 'fornecedor_id', as: 'solicitacoesAtualizacao' });
+SolicitacaoAtualizacao.belongsTo(Fornecedor, { foreignKey: 'fornecedor_id', as: 'fornecedor' });
+
+Contrato.hasMany(SolicitacaoAtualizacao, { foreignKey: 'contrato_id', as: 'solicitacoesAtualizacao' });
+SolicitacaoAtualizacao.belongsTo(Contrato, { foreignKey: 'contrato_id', as: 'contrato' });
+
+Sequencia.hasMany(SolicitacaoAtualizacao, { foreignKey: 'sequencia_id', as: 'solicitacoesAtualizacao' });
+SolicitacaoAtualizacao.belongsTo(Sequencia, { foreignKey: 'sequencia_id', as: 'sequencia' });
+
+// Notificacao <-> User
+User.hasMany(Notificacao, { foreignKey: 'usuario_id', as: 'notificacoes' });
+Notificacao.belongsTo(User, { foreignKey: 'usuario_id', as: 'usuario' });
+
 module.exports = {
     sequelize,
     Perfil,
@@ -69,5 +107,8 @@ module.exports = {
     RefreshToken,
     AuditLog,
     Webhook,
-    WebhookEvento
+    WebhookEvento,
+    Setor,
+    SolicitacaoAtualizacao,
+    Notificacao
 };

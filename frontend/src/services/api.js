@@ -241,3 +241,46 @@ export const estabelecimentosAPI = {
   atualizar: (id, data) => api.put(`/estabelecimentos/${id}`, data),
   excluir: (id) => api.delete(`/estabelecimentos/${id}`)
 };
+
+// ==================== SETORES ====================
+export const setoresAPI = {
+  getAll: (params) => api.get('/setores', { params }),
+  getById: (id) => api.get(`/setores/${id}`),
+  create: (data) => api.post('/setores', data),
+  update: (id, data) => api.put(`/setores/${id}`, data),
+  delete: (id) => api.delete(`/setores/${id}`),
+  // Aliases em português
+  listar: (params) => api.get('/setores', { params }),
+  criar: (data) => api.post('/setores', data),
+  atualizar: (id, data) => api.put(`/setores/${id}`, data),
+  excluir: (id) => api.delete(`/setores/${id}`)
+};
+
+// ==================== SOLICITACOES ====================
+export const solicitacoesAPI = {
+  // Solicitacoes do usuario
+  getAll: (params) => api.get('/solicitacoes', { params }),
+  getById: (id) => api.get(`/solicitacoes/${id}`),
+  create: (formData) => api.post('/solicitacoes', formData, {
+    headers: { 'Content-Type': undefined }
+  }),
+  downloadAnexo: (id) => api.get(`/solicitacoes/${id}/anexo`, { responseType: 'blob' }),
+  // Compras
+  listarCompras: (params) => api.get('/solicitacoes/compras/listar', { params }),
+  estatisticas: () => api.get('/solicitacoes/compras/estatisticas'),
+  aprovar: (id) => api.patch(`/solicitacoes/${id}/aprovar`),
+  reprovar: (id, motivo) => api.patch(`/solicitacoes/${id}/reprovar`, { motivo_reprovacao: motivo }),
+  // Aliases em português
+  listar: (params) => api.get('/solicitacoes', { params }),
+  criar: (formData) => api.post('/solicitacoes', formData, {
+    headers: { 'Content-Type': undefined }
+  })
+};
+
+// ==================== NOTIFICACOES ====================
+export const notificacoesAPI = {
+  listar: (params) => api.get('/notificacoes', { params }),
+  contarNaoLidas: () => api.get('/notificacoes/nao-lidas'),
+  marcarComoLida: (id) => api.patch(`/notificacoes/${id}/lida`),
+  marcarTodasComoLidas: () => api.patch('/notificacoes/lidas')
+};

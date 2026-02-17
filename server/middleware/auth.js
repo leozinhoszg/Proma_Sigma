@@ -1,5 +1,5 @@
 const authService = require('../services/authService');
-const { Perfil, PerfilPermissao } = require('../models');
+const { Perfil, PerfilPermissao, User } = require('../models');
 
 const autenticar = async (req, res, next) => {
     try {
@@ -17,6 +17,12 @@ const autenticar = async (req, res, next) => {
             email: decoded.email,
             perfilId: decoded.perfil
         };
+
+        // Carregar setor_id do usuario
+        const userRecord = await User.findByPk(decoded.id, { attributes: ['setor_id'] });
+        if (userRecord) {
+            req.user.setor_id = userRecord.setor_id;
+        }
 
         if (decoded.perfil) {
             const perfil = await Perfil.findByPk(decoded.perfil, {

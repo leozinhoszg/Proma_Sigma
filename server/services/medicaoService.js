@@ -195,11 +195,13 @@ async function atualizarStatusMensal(sequenciaId) {
     return sequencia;
 }
 
-async function sincronizarTodas() {
+async function sincronizarTodas(setorFilter = {}) {
+    const contratoWhere = Object.keys(setorFilter).length > 0 ? { where: setorFilter } : {};
     const sequencias = await Sequencia.findAll({
         include: [{
             model: Contrato,
             as: 'contrato',
+            ...contratoWhere,
             include: [{ model: require('../models').Fornecedor, as: 'fornecedor' }]
         }]
     });

@@ -1,7 +1,11 @@
 require('dotenv').config();
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { initSocket } = require('./config/socket');
 const { sequelize } = require('./config/db');
 const { connectDB } = require('./config/db');
 const seedData = require('./config/seed');
@@ -47,14 +51,50 @@ const startServer = async () => {
         await seedData();
 
         const PORT = process.env.PORT || 3000;
-        app.listen(PORT, () => {
+        const HOST = process.env.HOST || '0.0.0.0';
+
+        // Verificar se certificados SSL existem
+        const sslKeyPath = path.join(__dirname, 'ssl', 'server.key');
+        const sslCertPath = path.join(__dirname, 'ssl', 'server.crt');
+        const useSSL = fs.existsSync(sslKeyPath) && fs.existsSync(sslCertPath);
+
+        let server;
+        if (useSSL) {
+            const sslOptions = {
+                key: fs.readFileSync(sslKeyPath),
+                cert: fs.readFileSync(sslCertPath),
+            };
+            server = https.createServer(sslOptions, app);
+        } else {
+            server = http.createServer(app);
+        }
+
+        const protocol = useSSL ? 'https' : 'http';
+
+        initSocket(server);
+        server.listen(PORT, HOST, () => {
+            // Obter IP da rede local
+            const os = require('os');
+            const interfaces = os.networkInterfaces();
+            let networkIP = null;
+            for (const name of Object.keys(interfaces)) {
+                for (const iface of interfaces[name]) {
+                    if (iface.family === 'IPv4' && !iface.internal) {
+                        networkIP = iface.address;
+                        break;
+                    }
+                }
+                if (networkIP) break;
+            }
+
             console.log(`
 ========================================
-  Servidor rodando na porta ${PORT}
+  Servidor rodando na porta ${PORT} (${useSSL ? 'HTTPS' : 'HTTP'})
 ========================================
 
-  Frontend: http://localhost:3000
-  API:      http://localhost:${PORT}/api
+  Local:    ${protocol}://localhost:${PORT}
+  Network:  ${protocol}://${networkIP || 'N/A'}:${PORT}
+  API:      ${protocol}://localhost:${PORT}/api
 
   Endpoints disponiveis:
 

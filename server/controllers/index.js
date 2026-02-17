@@ -10,6 +10,9 @@ const perfilController = require('./perfilController');
 const auditController = require('./auditController');
 const empresaController = require('./empresaController');
 const estabelecimentoController = require('./estabelecimentoController');
+const setorController = require('./setorController');
+const solicitacaoController = require('./solicitacaoController');
+const notificacaoController = require('./notificacaoController');
 
 module.exports = {
     fornecedorController,
@@ -23,5 +26,8 @@ module.exports = {
     perfilController,
     auditController,
     empresaController,
-    estabelecimentoController
+    estabelecimentoController,
+    setorController,
+    solicitacaoController,
+    notificacaoController
 };

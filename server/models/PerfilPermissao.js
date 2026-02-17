@@ -14,7 +14,8 @@ const PerfilPermissao = sequelize.define('PerfilPermissao', {
     permissao: {
         type: DataTypes.ENUM(
             'dashboard', 'fornecedores', 'contratos', 'relatorio',
-            'usuarios', 'perfis', 'auditoria', 'empresas', 'estabelecimentos'
+            'usuarios', 'perfis', 'auditoria', 'empresas', 'estabelecimentos',
+            'solicitacoes', 'compras'
         ),
         allowNull: false
     }

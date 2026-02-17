@@ -1,31 +1,31 @@
 const { Op } = require('sequelize');
-const { Fornecedor, Contrato, Sequencia, Medicao, Estabelecimento, Empresa } = require('../models');
-
-// Include completo para sequencia com contrato, fornecedor e estabelecimento
-const sequenciaFullInclude = [
-    {
-        model: Contrato,
-        as: 'contrato',
-        include: [
-            { model: Fornecedor, as: 'fornecedor', attributes: ['id', 'nome'] },
-            {
-                model: Estabelecimento,
-                as: 'estabelecimento',
-                attributes: ['id', 'cod_estabel', 'nome'],
-                include: [{ model: Empresa, as: 'empresa', attributes: ['id', 'cod_empresa', 'nome'] }]
-            }
-        ]
-    }
-];
+const { Fornecedor, Contrato, Sequencia, Medicao, Estabelecimento, Empresa, Setor } = require('../models');
+const { buildSetorFilter } = require('../middleware/setorFilter');
 
 // Dados completos para tabela mensal
 exports.getTabela = async (req, res) => {
     try {
         const { ano } = req.query;
         const anoFiltro = ano ? parseInt(ano) : new Date().getFullYear();
+        const setorFilter = buildSetorFilter(req);
 
         const sequencias = await Sequencia.findAll({
-            include: sequenciaFullInclude
+            include: [
+                {
+                    model: Contrato,
+                    as: 'contrato',
+                    where: { ...setorFilter },
+                    include: [
+                        { model: Fornecedor, as: 'fornecedor', attributes: ['id', 'nome'] },
+                        {
+                            model: Estabelecimento,
+                            as: 'estabelecimento',
+                            attributes: ['id', 'cod_estabel', 'nome'],
+                            include: [{ model: Empresa, as: 'empresa', attributes: ['id', 'cod_empresa', 'nome'] }]
+                        }
+                    ]
+                }
+            ]
         });
 
         // Buscar medicoes do ano selecionado
@@ -102,11 +102,28 @@ exports.getTabela = async (req, res) => {
 // Resumo para dashboard
 exports.getResumo = async (req, res) => {
     try {
+        const setorFilter = buildSetorFilter(req);
+
         const [fornecedores, contratos, sequencias] = await Promise.all([
-            Fornecedor.count(),
-            Contrato.count(),
+            Fornecedor.count({ where: { ...setorFilter } }),
+            Contrato.count({ where: { ...setorFilter } }),
             Sequencia.findAll({
-                include: sequenciaFullInclude
+                include: [
+                    {
+                        model: Contrato,
+                        as: 'contrato',
+                        where: { ...setorFilter },
+                        include: [
+                            { model: Fornecedor, as: 'fornecedor', attributes: ['id', 'nome'] },
+                            {
+                                model: Estabelecimento,
+                                as: 'estabelecimento',
+                                attributes: ['id', 'cod_estabel', 'nome'],
+                                include: [{ model: Empresa, as: 'empresa', attributes: ['id', 'cod_empresa', 'nome'] }]
+                            }
+                        ]
+                    }
+                ]
             })
         ]);
 
@@ -153,28 +170,32 @@ exports.seed = async (req, res) => {
         await Contrato.destroy({ where: {} });
         await Fornecedor.destroy({ where: {} });
 
+        // Buscar primeiro setor para atribuir aos dados de seed
+        const setor = await Setor.findOne({ where: { ativo: true }, order: [['id', 'ASC']] });
+        const setorId = setor ? setor.id : null;
+
         // Criar fornecedores
         const fornecedores = await Fornecedor.bulkCreate([
-            { nome: 'DI2S' },
-            { nome: 'CABTEC' },
-            { nome: 'CONTI CONSULTORIA' },
-            { nome: 'VIVO' },
-            { nome: 'BKP GARANTIDO' },
-            { nome: 'SENIOR' }
+            { nome: 'DI2S', setor_id: setorId },
+            { nome: 'CABTEC', setor_id: setorId },
+            { nome: 'CONTI CONSULTORIA', setor_id: setorId },
+            { nome: 'VIVO', setor_id: setorId },
+            { nome: 'BKP GARANTIDO', setor_id: setorId },
+            { nome: 'SENIOR', setor_id: setorId }
         ]);
 
         const [di2s, cabtec, conti, vivo, bkp, senior] = fornecedores;
 
         // Criar contratos
         const contratos = await Contrato.bulkCreate([
-            { fornecedor_id: di2s.id, nr_contrato: 310, cod_estabel: '01' },
-            { fornecedor_id: cabtec.id, nr_contrato: 474, cod_estabel: '01' },
-            { fornecedor_id: conti.id, nr_contrato: 684, cod_estabel: '02' },
-            { fornecedor_id: vivo.id, nr_contrato: 236, cod_estabel: '01' },
-            { fornecedor_id: bkp.id, nr_contrato: 593, cod_estabel: '02', observacao: 'Necessario atualizacao de contrato' },
-            { fornecedor_id: bkp.id, nr_contrato: 594, cod_estabel: '01', observacao: 'Necessario atualizacao de contrato' },
-            { fornecedor_id: senior.id, nr_contrato: 545, cod_estabel: '02' },
-            { fornecedor_id: senior.id, nr_contrato: 545, cod_estabel: '01', observacao: 'Necessario atualizacao de contrato' }
+            { fornecedor_id: di2s.id, nr_contrato: 310, cod_estabel: '01', setor_id: setorId },
+            { fornecedor_id: cabtec.id, nr_contrato: 474, cod_estabel: '01', setor_id: setorId },
+            { fornecedor_id: conti.id, nr_contrato: 684, cod_estabel: '02', setor_id: setorId },
+            { fornecedor_id: vivo.id, nr_contrato: 236, cod_estabel: '01', setor_id: setorId },
+            { fornecedor_id: bkp.id, nr_contrato: 593, cod_estabel: '02', observacao: 'Necessario atualizacao de contrato', setor_id: setorId },
+            { fornecedor_id: bkp.id, nr_contrato: 594, cod_estabel: '01', observacao: 'Necessario atualizacao de contrato', setor_id: setorId },
+            { fornecedor_id: senior.id, nr_contrato: 545, cod_estabel: '02', setor_id: setorId },
+            { fornecedor_id: senior.id, nr_contrato: 545, cod_estabel: '01', observacao: 'Necessario atualizacao de contrato', setor_id: setorId }
         ]);
 
         // Criar sequencias

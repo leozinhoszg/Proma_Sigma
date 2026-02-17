@@ -6,6 +6,7 @@ import ConfirmDialog from '../components/ui/ConfirmDialog';
 import DayPicker from '../components/ui/DayPicker';
 import { useToast } from '../hooks/useToast';
 import Toast from '../components/ui/Toast';
+import { useAuth } from '../context/AuthContext';
 
 const initialContratoForm = {
   fornecedor: '',
@@ -21,6 +22,7 @@ const initialSequenciaForm = {
 };
 
 export default function Contratos() {
+  const { user } = useAuth();
   const [contratos, setContratos] = useState([]);
   const [fornecedores, setFornecedores] = useState([]);
   const [estabelecimentos, setEstabelecimentos] = useState([]);
@@ -368,6 +370,11 @@ export default function Contratos() {
             </h1>
             <p className="text-base-content/50 text-sm mt-1">
               Gerencie os contratos e suas sequências
+              {user?.setor && (
+                <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                  {user.setor.nome}
+                </span>
+              )}
             </p>
           </div>
           <button

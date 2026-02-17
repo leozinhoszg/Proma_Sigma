@@ -1,11 +1,16 @@
 const { Op } = require('sequelize');
 const { Fornecedor, Contrato, Sequencia } = require('../models');
 const auditService = require('../services/auditService');
+const { buildSetorFilter } = require('../middleware/setorFilter');
 
 // Listar todos os fornecedores
 exports.getAll = async (req, res) => {
     try {
-        const fornecedores = await Fornecedor.findAll({ order: [['nome', 'ASC']] });
+        const setorFilter = buildSetorFilter(req);
+        const fornecedores = await Fornecedor.findAll({
+            where: { ...setorFilter },
+            order: [['nome', 'ASC']]
+        });
         res.json(fornecedores);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -15,7 +20,10 @@ exports.getAll = async (req, res) => {
 // Buscar fornecedor por ID
 exports.getById = async (req, res) => {
     try {
-        const fornecedor = await Fornecedor.findByPk(req.params.id);
+        const setorFilter = buildSetorFilter(req);
+        const fornecedor = await Fornecedor.findOne({
+            where: { id: req.params.id, ...setorFilter }
+        });
         if (!fornecedor) {
             return res.status(404).json({ message: 'Fornecedor nao encontrado' });
         }
@@ -28,8 +36,13 @@ exports.getById = async (req, res) => {
 // Criar novo fornecedor
 exports.create = async (req, res) => {
     try {
+        if (!req.user.setor_id && !req.user.isAdmin) {
+            return res.status(400).json({ message: 'Usuario nao possui setor atribuido. Contate o administrador.' });
+        }
+
         const novoFornecedor = await Fornecedor.create({
-            nome: req.body.nome
+            nome: req.body.nome,
+            setor_id: req.user.setor_id
         });
 
         // Log de auditoria
@@ -37,7 +50,7 @@ exports.create = async (req, res) => {
             recursoId: novoFornecedor.id,
             recursoNome: novoFornecedor.nome,
             descricao: `Fornecedor criado: ${novoFornecedor.nome}`,
-            dadosNovos: { nome: novoFornecedor.nome }
+            dadosNovos: { nome: novoFornecedor.nome, setor_id: novoFornecedor.setor_id }
         });
 
         res.status(201).json(novoFornecedor);
@@ -49,8 +62,10 @@ exports.create = async (req, res) => {
 // Atualizar fornecedor
 exports.update = async (req, res) => {
     try {
-        // Buscar dados anteriores para auditoria
-        const fornecedorAnterior = await Fornecedor.findByPk(req.params.id);
+        const setorFilter = buildSetorFilter(req);
+        const fornecedorAnterior = await Fornecedor.findOne({
+            where: { id: req.params.id, ...setorFilter }
+        });
         if (!fornecedorAnterior) {
             return res.status(404).json({ message: 'Fornecedor nao encontrado' });
         }
@@ -80,7 +95,10 @@ exports.update = async (req, res) => {
 // Excluir fornecedor (cascata)
 exports.delete = async (req, res) => {
     try {
-        const fornecedor = await Fornecedor.findByPk(req.params.id);
+        const setorFilter = buildSetorFilter(req);
+        const fornecedor = await Fornecedor.findOne({
+            where: { id: req.params.id, ...setorFilter }
+        });
         if (!fornecedor) {
             return res.status(404).json({ message: 'Fornecedor nao encontrado' });
         }
