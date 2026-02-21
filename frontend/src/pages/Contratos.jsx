@@ -312,7 +312,7 @@ export default function Contratos() {
         </div>
 
         {/* Skeleton Stats */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="stat-card-glass p-4">
               <div className="h-3 w-20 bg-base-300/50 rounded-full animate-pulse mb-2" />
@@ -397,7 +397,7 @@ export default function Contratos() {
 
       {/* ═══ Cards de Estatísticas ═══ */}
       <div
-        className="grid grid-cols-3 gap-4 stagger-animate animate-fadeInUp"
+        className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 stagger-animate animate-fadeInUp"
         style={{ animationDelay: '0.1s', animationFillMode: 'both' }}
       >
         <div className="stat-card-glass info group">
@@ -430,7 +430,7 @@ export default function Contratos() {
           </div>
         </div>
 
-        <div className="stat-card-glass warning group">
+        <div className="stat-card-glass warning group col-span-2 sm:col-span-1">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-base-content/50 font-medium">Sequências</p>
@@ -558,7 +558,7 @@ export default function Contratos() {
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                               </svg>
-                              Seq
+                              <span className="hidden sm:inline">Seq</span>
                             </button>
                             <button
                               className="btn btn-xs btn-ghost btn-square opacity-60 hover:opacity-100 hover:bg-primary/10 hover:text-primary transition-all"
@@ -587,7 +587,7 @@ export default function Contratos() {
                             <table className="table table-sm table-glass">
                               <thead>
                                 <tr className="text-base-content/40 text-xs">
-                                  <th scope="col" className="pl-14">Sequência</th>
+                                  <th scope="col" className="pl-4 sm:pl-14">Sequência</th>
                                   <th scope="col" className="text-center">Dia Emissão</th>
                                   <th scope="col" className="text-right">Valor</th>
                                   <th scope="col" className="text-right pr-6">Ações</th>
@@ -604,7 +604,7 @@ export default function Contratos() {
                                       opacity: 0,
                                     }}
                                   >
-                                    <td className="pl-14">
+                                    <td className="pl-4 sm:pl-14">
                                       <div className="flex items-center gap-2">
                                         <div className="w-6 h-6 rounded-lg bg-warning/10 flex items-center justify-center shrink-0">
                                           <span className="text-xs font-bold text-warning">{seq.num_seq_item}</span>

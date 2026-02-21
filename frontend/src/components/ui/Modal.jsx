@@ -11,10 +11,10 @@ export default function Modal({ isOpen, onClose, title, children, actions, size 
 
   return (
     <dialog className="modal modal-open z-50">
-      <div className={`modal-box glass-modal animate-fadeInUp max-h-[85vh] overflow-y-auto ${sizeClasses[size]}`}>
+      <div className={`modal-box glass-modal animate-fadeInUp max-h-[85vh] sm:max-h-[85vh] overflow-y-auto w-[calc(100vw-1rem)] sm:w-[calc(100vw-2rem)] md:w-auto ${sizeClasses[size]}`}>
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-base-200/30">
-          <h3 className="font-bold text-xl text-gradient">{title}</h3>
+        <div className="flex items-center justify-between mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-base-200/30">
+          <h3 className="font-bold text-lg sm:text-xl text-gradient">{title}</h3>
           <button
             className="btn btn-sm btn-circle btn-ghost text-base-content/50 hover:text-base-content hover:bg-base-200/50"
             onClick={onClose}
@@ -30,7 +30,7 @@ export default function Modal({ isOpen, onClose, title, children, actions, size 
 
         {/* Actions */}
         {actions && (
-          <div className="modal-action pt-6 mt-6 border-t border-base-200/30 flex justify-end gap-3">
+          <div className="modal-action pt-4 sm:pt-6 mt-4 sm:mt-6 border-t border-base-200/30 flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
             {actions}
           </div>
         )}

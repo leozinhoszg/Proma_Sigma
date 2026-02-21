@@ -62,7 +62,7 @@ export default function Login() {
   return (
     <div className="login-page-v2 min-h-screen flex">
       {/* Theme Toggle */}
-      <div className="fixed top-6 right-6 z-50">
+      <div className="fixed top-4 right-4 lg:top-6 lg:right-6 z-50">
         <ThemeToggle className="btn-circle login-theme-toggle backdrop-blur-md" />
       </div>
 
@@ -163,41 +163,41 @@ export default function Login() {
         {/* Subtle background pattern */}
         <div className="absolute inset-0 login-form-bg"></div>
 
-        <div className="flex-1 flex items-center lg:items-start justify-center p-6 sm:p-8 lg:p-16 lg:pt-[21vh] relative z-10">
+        <div className="flex-1 flex items-center lg:items-start justify-center px-5 py-6 sm:p-8 lg:p-16 lg:pt-[21vh] relative z-10">
           <div className="w-full max-w-md login-form-container">
             {/* Mobile Logo */}
-            <div className="lg:hidden flex flex-col items-center mb-10">
-              <div className="inline-flex items-center justify-center p-3 bg-linear-to-br from-navy-600 to-navy-800 rounded-xl shadow-lg mb-4">
-                <img src={logo} alt="PROMA" className="h-10" />
+            <div className="lg:hidden flex items-center gap-3 mb-6">
+              <div className="inline-flex items-center justify-center p-2.5 bg-linear-to-br from-navy-600 to-navy-800 rounded-xl shadow-lg">
+                <img src={logo} alt="PROMA" className="h-8" />
               </div>
-              <h1 className="text-2xl font-bold text-navy-900 dark:text-white logo-font">
+              <h1 className="text-xl font-bold logo-font mobile-logo-title">
                 PROMA <span className="text-sky-600 dark:text-sky-400">SIGMA</span>
               </h1>
             </div>
 
             {/* Welcome Text */}
-            <div className="mb-8">
+            <div className="mb-5 lg:mb-8">
               {isReturningVisitor && (
-                <span className="inline-flex items-center gap-2 text-xs font-semibold login-welcome-badge px-3 py-1.5 rounded-full mb-3">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold login-welcome-badge px-2.5 py-1 rounded-full mb-2 lg:mb-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 lg:h-3.5 lg:w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   Bem-vindo de volta
                 </span>
               )}
-              <h2 className="text-3xl lg:text-4xl font-bold login-title mb-2">
+              <h2 className="text-2xl lg:text-4xl font-bold login-title mb-1 lg:mb-2">
                 Acesse sua conta
               </h2>
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className="text-sm lg:text-base text-gray-500 dark:text-gray-400">
                 Entre com suas credenciais para continuar
               </p>
             </div>
 
             {/* Alerts */}
             {error && (
-              <div className="login-alert-error mb-6 p-4 rounded-xl flex items-center gap-3">
-                <div className="login-alert-error-icon w-10 h-10 rounded-full flex items-center justify-center shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="login-alert-error mb-4 lg:mb-6 p-3 lg:p-4 rounded-xl flex items-center gap-2.5 lg:gap-3">
+                <div className="login-alert-error-icon w-8 h-8 lg:w-10 lg:h-10 rounded-full flex items-center justify-center shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 lg:h-5 lg:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
@@ -206,9 +206,9 @@ export default function Login() {
             )}
 
             {success && (
-              <div className="mb-6 p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 flex items-center gap-3 login-alert-success">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="mb-4 lg:mb-6 p-3 lg:p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 flex items-center gap-2.5 lg:gap-3 login-alert-success">
+                <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 lg:h-5 lg:w-5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
@@ -217,21 +217,21 @@ export default function Login() {
             )}
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-5">
               <div className="login-input-group">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                  Email ou Usuário
+                <label className="block text-sm font-semibold text-[var(--navy-400)] dark:text-gray-400 mb-1.5 lg:mb-2">
+                  E-mail ou Usuário
                 </label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="absolute left-3.5 lg:left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 lg:h-5 lg:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </div>
                   <input
                     type="text"
-                    className="login-input w-full h-13 pl-12 pr-4 text-base"
-                    placeholder="nome@email.com"
+                    className="login-input w-full h-12 lg:h-13 pl-11 lg:pl-12 pr-4 text-sm lg:text-base"
+                    placeholder="nome@promagroup.com"
                     value={usuario}
                     onChange={(e) => setUsuario(e.target.value)}
                     autoComplete="username"
@@ -240,18 +240,18 @@ export default function Login() {
               </div>
 
               <div className="login-input-group">
-                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-semibold text-[var(--navy-700)] dark:text-gray-300 mb-1.5 lg:mb-2">
                   Senha
                 </label>
                 <div className="relative">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="absolute left-3.5 lg:left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 lg:h-5 lg:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    className="login-input w-full h-13 pl-12 pr-12 text-base"
+                    className="login-input w-full h-12 lg:h-13 pl-11 lg:pl-12 pr-12 text-sm lg:text-base"
                     placeholder="Digite sua senha"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
@@ -259,15 +259,15 @@ export default function Login() {
                   />
                   <button
                     type="button"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-navy-700 dark:hover:text-sky-400 transition-colors p-1"
+                    className="absolute right-3.5 lg:right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-navy-700 dark:hover:text-sky-400 transition-colors p-1"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 lg:h-5 lg:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                       </svg>
                     ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4.5 w-4.5 lg:h-5 lg:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
@@ -277,20 +277,20 @@ export default function Login() {
               </div>
 
               <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2.5 cursor-pointer group">
+                <label className="flex items-center gap-2 lg:gap-2.5 cursor-pointer group">
                   <input
                     type="checkbox"
                     className="login-checkbox"
                     checked={lembrar}
                     onChange={(e) => setLembrar(e.target.checked)}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                  <span className="text-xs lg:text-sm text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                     Manter conectado
                   </span>
                 </label>
                 <Link
                   to="/esqueci-senha"
-                  className="text-sm font-semibold login-forgot-link transition-colors"
+                  className="text-xs lg:text-sm font-semibold login-forgot-link transition-colors"
                 >
                   Esqueceu a senha?
                 </Link>
@@ -298,7 +298,7 @@ export default function Login() {
 
               <button
                 type="submit"
-                className="login-submit-btn w-full h-13 text-base font-semibold"
+                className="login-submit-btn w-full h-12 lg:h-13 text-sm lg:text-base font-semibold"
                 disabled={loading}
               >
                 {loading ? (
@@ -321,7 +321,7 @@ export default function Login() {
             </form>
 
             {/* Divider */}
-            <div className="relative my-8">
+            <div className="relative my-5 lg:my-8">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
               </div>
@@ -331,15 +331,15 @@ export default function Login() {
             </div>
 
             {/* Security badges */}
-            <div className="flex items-center justify-center gap-6 text-gray-400 dark:text-gray-500">
-              <div className="flex items-center gap-2 text-xs">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="flex items-center justify-center gap-4 lg:gap-6 text-gray-400 dark:text-gray-500">
+              <div className="flex items-center gap-1.5 lg:gap-2 text-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 lg:h-4 lg:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
                 <span>SSL Seguro</span>
               </div>
-              <div className="flex items-center gap-2 text-xs">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex items-center gap-1.5 lg:gap-2 text-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 lg:h-4 lg:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
                 <span>Dados Protegidos</span>
@@ -349,7 +349,7 @@ export default function Login() {
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 pb-6 text-center">
+        <div className="relative lg:absolute lg:bottom-0 lg:left-0 lg:right-0 z-10 pb-4 lg:pb-6 pt-2 text-center">
           <p className="text-xs text-gray-400 dark:text-gray-500">
             PROMA SIGMA &copy; {new Date().getFullYear()} &bull; Todos os direitos reservados
           </p>

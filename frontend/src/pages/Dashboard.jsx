@@ -309,12 +309,12 @@ export default function Dashboard() {
           }}
         />
 
-        <div className="relative z-10 flex items-center justify-between">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <p className="text-xs text-base-content/40 uppercase tracking-wider font-medium mb-1">
               {getFormattedDate()}
             </p>
-            <h1 className="text-2xl font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <h1 className="text-xl sm:text-2xl font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               {getGreeting()},{" "}
               <span className="text-gradient">
                 {usuario?.nome?.split(" ")[0] || "Usuário"}
@@ -348,7 +348,7 @@ export default function Dashboard() {
       </div>
 
       {/* ═══ Cards de Estatísticas ═══ */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 stagger-animate">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 stagger-animate">
         {/* Atrasadas */}
         <div className="stat-card-glass error group" aria-label={`Medições atrasadas: ${stats.atrasadas}`}>
           <div className="flex items-center justify-between">
@@ -356,12 +356,12 @@ export default function Dashboard() {
               <p className="text-sm text-base-content/60 font-medium">
                 Medições Atrasadas
               </p>
-              <p className="text-3xl font-bold text-error mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-error mt-1">
                 {animAtrasadas}
               </p>
               <p className="text-xs text-base-content/40 mt-0.5">neste mês</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-error/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-error"
@@ -387,12 +387,12 @@ export default function Dashboard() {
               <p className="text-sm text-base-content/60 font-medium">
                 Medições Pendentes
               </p>
-              <p className="text-3xl font-bold text-warning mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-warning mt-1">
                 {animPendentes}
               </p>
               <p className="text-xs text-base-content/40 mt-0.5">neste mês</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-warning/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-warning/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-warning"
@@ -418,12 +418,12 @@ export default function Dashboard() {
               <p className="text-sm text-base-content/60 font-medium">
                 Fornecedores
               </p>
-              <p className="text-3xl font-bold text-info mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-info mt-1">
                 {animFornecedores}
               </p>
               <p className="text-xs text-base-content/40 mt-0.5">cadastrados</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-info/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-info"
@@ -449,12 +449,12 @@ export default function Dashboard() {
               <p className="text-sm text-base-content/60 font-medium">
                 Contratos
               </p>
-              <p className="text-3xl font-bold text-success mt-1">
+              <p className="text-2xl sm:text-3xl font-bold text-success mt-1">
                 {animContratos}
               </p>
               <p className="text-xs text-base-content/40 mt-0.5">ativos</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-success/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6 text-success"
@@ -564,11 +564,11 @@ export default function Dashboard() {
 
       {/* ═══ Listas de Medições ═══ */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fadeInUp"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 animate-fadeInUp"
         style={{ animationDelay: "0.35s", animationFillMode: "both" }}
       >
         {/* ── Medições Atrasadas ── */}
-        <div className="glass-card glass-card-hover p-6 border-l-4 border-l-error">
+        <div className="glass-card glass-card-hover p-4 sm:p-6 border-l-4 border-l-error">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold flex items-center gap-2 text-error">
               <svg
@@ -642,7 +642,7 @@ export default function Dashboard() {
                     <th scope="col">Fornecedor</th>
                     <th scope="col">Contrato</th>
                     <th scope="col" className="text-center">Dia</th>
-                    <th scope="col" className="text-right">Valor</th>
+                    <th scope="col" className="text-right hidden sm:table-cell">Valor</th>
                     <th scope="col">Status</th>
                   </tr>
                 </thead>
@@ -664,7 +664,7 @@ export default function Dashboard() {
                       <td className="text-center text-base-content/60">
                         {m.diaEmissao}
                       </td>
-                      <td className="text-right text-sm text-base-content/70">
+                      <td className="text-right text-sm text-base-content/70 hidden sm:table-cell">
                         {formatCurrency(m.valor)}
                       </td>
                       <td>
@@ -683,7 +683,7 @@ export default function Dashboard() {
         </div>
 
         {/* ── Medições Pendentes ── */}
-        <div className="glass-card glass-card-hover p-6 border-l-4 border-l-warning">
+        <div className="glass-card glass-card-hover p-4 sm:p-6 border-l-4 border-l-warning">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold flex items-center gap-2 text-warning">
               <svg
@@ -757,7 +757,7 @@ export default function Dashboard() {
                     <th scope="col">Fornecedor</th>
                     <th scope="col">Contrato</th>
                     <th scope="col" className="text-center">Dia</th>
-                    <th scope="col" className="text-right">Valor</th>
+                    <th scope="col" className="text-right hidden sm:table-cell">Valor</th>
                     <th scope="col">Status</th>
                   </tr>
                 </thead>
@@ -779,7 +779,7 @@ export default function Dashboard() {
                       <td className="text-center text-base-content/60">
                         {m.diaEmissao}
                       </td>
-                      <td className="text-right text-sm text-base-content/70">
+                      <td className="text-right text-sm text-base-content/70 hidden sm:table-cell">
                         {formatCurrency(m.valor)}
                       </td>
                       <td>

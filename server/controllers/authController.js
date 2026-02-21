@@ -157,13 +157,30 @@ exports.login = async (req, res) => {
         const senhaCorreta = await user.compararSenha(senha);
 
         if (!senhaCorreta) {
+            const JANELA_TENTATIVAS_MS = 15 * 60 * 1000; // 15 minutos
+
+            // Resetar contador se a janela de tentativas expirou
+            if (
+                user.primeira_tentativa_falha &&
+                Date.now() - new Date(user.primeira_tentativa_falha).getTime() > JANELA_TENTATIVAS_MS
+            ) {
+                user.tentativas_login = 0;
+                user.primeira_tentativa_falha = null;
+            }
+
+            // Iniciar nova janela se contador esta zerado
+            if (!user.tentativas_login || user.tentativas_login === 0) {
+                user.primeira_tentativa_falha = new Date();
+            }
+
             // Incrementar tentativas de login falhas
             user.tentativas_login = (user.tentativas_login || 0) + 1;
 
-            // Bloquear apos 5 tentativas
+            // Bloquear apos 5 tentativas dentro da janela
             if (user.tentativas_login >= 5) {
                 user.bloqueado_ate = new Date(Date.now() + 15 * 60 * 1000); // 15 minutos
                 user.tentativas_login = 0;
+                user.primeira_tentativa_falha = null;
                 await auditService.logAuth(req, 'LOGIN_BLOQUEADO', `Conta bloqueada apos 5 tentativas falhas: ${user.usuario}`, {
                     sucesso: false,
                     usuarioId: user.id,
@@ -206,6 +223,7 @@ exports.login = async (req, res) => {
 
         // Resetar tentativas de login e atualizar ultimo login
         user.tentativas_login = 0;
+        user.primeira_tentativa_falha = null;
         user.bloqueado_ate = null;
         user.ultimo_login = new Date();
         await user.save();
@@ -477,6 +495,7 @@ exports.verificarOtpResetSenha = async (req, res) => {
         user.otp_code = null;
         user.otp_expira = null;
         user.tentativas_login = 0;
+        user.primeira_tentativa_falha = null;
         user.bloqueado_ate = null;
         await user.save();
 
@@ -577,6 +596,7 @@ exports.resetPassword = async (req, res) => {
         user.token_reset_senha = null;
         user.token_reset_expira = null;
         user.tentativas_login = 0;
+        user.primeira_tentativa_falha = null;
         user.bloqueado_ate = null;
         await user.save();
 

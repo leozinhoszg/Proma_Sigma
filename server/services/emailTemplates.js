@@ -1,28 +1,54 @@
 /**
  * Templates de Email - PROMA SIGMA
- * Templates profissionais com branding da aplicacao
+ * Design alinhado com a identidade visual do sistema
+ * Paleta navy + accent sky-400 + glassmorphism-inspired
  * Compativel com: Outlook (novo/antigo), Hotmail, Gmail, Yahoo, Apple Mail
  */
 
 const APP_NAME = 'PROMA SIGMA';
-const APP_LOGO_URL = process.env.FRONTEND_URL
-    ? `${process.env.FRONTEND_URL}/logo.png`
-    : 'https://via.placeholder.com/200x60?text=PROMA+SIGMA';
-const PRIMARY_COLOR = '#1a365d';
-const SECONDARY_COLOR = '#2563eb';
+// Paleta de cores alinhada com o frontend (navy + sky)
+const NAVY_900 = '#0a1628';
+const NAVY_700 = '#1e3250';
+const NAVY_600 = '#2a4060';
+const ACCENT = '#38bdf8';    // sky-400 - accent color do sistema
+const ACCENT_DARK = '#0284c7'; // sky-600
+
+// Cores semanticas
+const TEXT_PRIMARY = '#1e293b';
+const TEXT_BODY = '#475569';
+const TEXT_MUTED = '#64748b';
+const TEXT_LIGHT = '#94a3b8';
+const BG_BODY = '#f0f2f5';
+const BG_CARD = '#ffffff';
+const BG_SUBTLE = '#f1f5f9';
+const BORDER_LIGHT = '#e2e8f0';
+
+// Status colors
+const COLOR_SUCCESS = '#059669';
+const COLOR_WARNING = '#f59e0b';
+const COLOR_ERROR = '#dc2626';
+const COLOR_INFO = '#2563eb';
+
+/**
+ * Decoracao do header - linha fina accent acima do titulo
+ */
+const headerDecor = `
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:0 auto 16px auto;">
+<tr>
+<td style="width:40px;height:2px;background-color:${ACCENT};font-size:0;line-height:0;">&nbsp;</td>
+</tr>
+</table>
+`;
 
 /**
  * Gera botao bulletproof compativel com todos os clientes de email
- * @param {string} url - URL do link
- * @param {string} text - Texto do botao
- * @param {string} bgColor - Cor de fundo do botao
- * @param {string} textColor - Cor do texto (default: branco)
+ * Design alinhado com os botoes do sistema (navy gradient)
  */
-const bulletproofButton = (url, text, bgColor, textColor = '#ffffff') => `
+const bulletproofButton = (url, text, bgColor = NAVY_600, textColor = '#ffffff') => `
 <!--[if mso]>
-<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${url}" style="height:50px;v-text-anchor:middle;width:220px;" arcsize="10%" strokecolor="${bgColor}" fillcolor="${bgColor}">
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${url}" style="height:52px;v-text-anchor:middle;width:240px;" arcsize="12%" strokecolor="${bgColor}" fillcolor="${bgColor}">
 <w:anchorlock/>
-<center style="color:${textColor};font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;font-size:16px;font-weight:bold;">
+<center style="color:${textColor};font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;font-size:15px;font-weight:bold;letter-spacing:0.5px;">
 ${text}
 </center>
 </v:roundrect>
@@ -30,8 +56,8 @@ ${text}
 <!--[if !mso]><!-->
 <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center">
 <tr>
-<td style="border-radius:8px;background-color:${bgColor};">
-<a href="${url}" target="_blank" style="display:block;padding:14px 40px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;font-size:16px;font-weight:600;color:${textColor};text-decoration:none;text-align:center;border-radius:8px;">
+<td style="border-radius:8px;background-color:${bgColor};box-shadow:0 4px 12px rgba(10,22,40,0.18);">
+<a href="${url}" target="_blank" style="display:block;padding:16px 48px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;font-size:15px;font-weight:700;color:${textColor};text-decoration:none;text-align:center;border-radius:8px;letter-spacing:0.5px;">
 ${text}
 </a>
 </td>
@@ -41,7 +67,8 @@ ${text}
 `;
 
 /**
- * Layout base para todos os emails - Compativel com Outlook
+ * Layout base para todos os emails
+ * Header navy gradient com accent stripe + footer navy
  */
 const baseLayout = (content) => `
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -100,38 +127,67 @@ font-family: inherit !important;
 font-weight: inherit !important;
 line-height: inherit !important;
 }
+@media only screen and (max-width: 620px) {
+.email-container { width: 100% !important; }
+.email-content { padding: 28px 20px !important; }
+.email-header-inner { padding: 28px 20px !important; }
+.email-footer-inner { padding: 20px !important; }
+}
 </style>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f6f9;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;-webkit-font-smoothing:antialiased;">
+<body style="margin:0;padding:0;background-color:${BG_BODY};font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;-webkit-font-smoothing:antialiased;">
 <!--[if mso]>
 <style type="text/css">
 body, table, td, p, a, span {font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif !important;}
 </style>
 <![endif]-->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f4f6f9;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:${BG_BODY};">
 <tr>
-<td align="center" style="padding:40px 20px;">
+<td align="center" style="padding:32px 16px;">
 <!--[if mso]>
 <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0" width="600">
 <tr>
 <td>
 <![endif]-->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin:0 auto;background-color:#ffffff;">
-<!-- Header com VML para Outlook -->
+<table role="presentation" class="email-container" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;margin:0 auto;">
+
+<!-- Outer shadow wrapper (non-Outlook) -->
+<!--[if !mso]><!-->
 <tr>
-<td align="center" style="background-color:${PRIMARY_COLOR};">
+<td style="border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(10,22,40,0.12);">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+<!--<![endif]-->
+
+<!-- Header com gradiente navy -->
+<tr>
+<td align="center" style="background-color:${NAVY_900};">
 <!--[if gte mso 9]>
-<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:100px;">
-<v:fill type="solid" color="${PRIMARY_COLOR}"/>
+<v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;">
+<v:fill type="gradient" color="${NAVY_700}" color2="${NAVY_900}" angle="135"/>
 <v:textbox inset="0,0,0,0">
 <![endif]-->
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td align="center" valign="middle" style="padding:30px 40px;background-color:${PRIMARY_COLOR};">
-<h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:700;letter-spacing:1px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-${APP_NAME}
+<td align="center" valign="middle" class="email-header-inner" style="padding:36px 40px 32px 40px;">
+
+${headerDecor}
+
+<!--[if mso]>
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center">
+<tr>
+<td align="center" style="padding:0 0 4px 0;">
+<![endif]-->
+<h1 style="margin:0;font-size:28px;font-weight:800;letter-spacing:3px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;line-height:1.2;">
+<span style="color:#ffffff;">PROMA</span>
+<span style="color:${ACCENT};">&nbsp;SIGMA</span>
 </h1>
-<p style="margin:8px 0 0 0;color:#b8c5d6;font-size:14px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+<!--[if mso]>
+</td>
+</tr>
+</table>
+<![endif]-->
+
+<p style="margin:8px 0 0 0;color:${TEXT_LIGHT};font-size:13px;letter-spacing:0.5px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
 Sistema de Gestao de Contratos
 </p>
 </td>
@@ -144,30 +200,47 @@ Sistema de Gestao de Contratos
 </td>
 </tr>
 
+<!-- Accent stripe -->
+<tr>
+<td style="height:4px;background-color:${ACCENT};font-size:0;line-height:0;">&nbsp;</td>
+</tr>
+
 <!-- Content -->
 <tr>
-<td style="padding:40px;background-color:#ffffff;">
+<td class="email-content" style="padding:40px 44px;background-color:${BG_CARD};">
 ${content}
 </td>
 </tr>
 
-<!-- Footer -->
+<!-- Footer accent line -->
 <tr>
-<td style="background-color:#f8fafc;padding:25px 40px;border-top:1px solid #e2e8f0;">
+<td style="height:2px;background-color:${ACCENT};font-size:0;line-height:0;opacity:0.4;">&nbsp;</td>
+</tr>
+
+<!-- Footer navy -->
+<tr>
+<td style="background-color:${NAVY_900};">
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td align="center">
-<p style="margin:0 0 10px 0;color:#64748b;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+<td class="email-footer-inner" align="center" style="padding:22px 40px;">
+<p style="margin:0 0 4px 0;color:${TEXT_LIGHT};font-size:11px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
 Este email foi enviado automaticamente pelo sistema ${APP_NAME}.
 </p>
-<p style="margin:0;color:#94a3b8;font-size:12px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-&copy; ${new Date().getFullYear()} PROMA Group. Todos os direitos reservados.
+<p style="margin:0;color:#516785;font-size:11px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+&copy; ${new Date().getFullYear()} PROMA Group &mdash; Todos os direitos reservados.
 </p>
 </td>
 </tr>
 </table>
 </td>
 </tr>
+
+<!--[if !mso]><!-->
+</table>
+</td>
+</tr>
+<!--<![endif]-->
+
 </table>
 <!--[if mso]>
 </td>
@@ -182,33 +255,106 @@ Este email foi enviado automaticamente pelo sistema ${APP_NAME}.
 `;
 
 /**
- * Caixa de informacoes com borda (compativel com Outlook)
+ * Heading com barra accent inferior
  */
-const infoBox = (bgColor, borderColor, textColor, content) => `
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:25px 0;">
+const sectionHeading = (text, accentColor = NAVY_600) => `
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 24px 0;">
 <tr>
-<td style="background-color:${bgColor};border-left:4px solid ${borderColor};padding:15px 20px;">
-<p style="margin:0;color:${textColor};font-size:14px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-${content}
-</p>
+<td style="padding-bottom:14px;border-bottom:2px solid ${BORDER_LIGHT};">
+<h2 style="margin:0;color:${TEXT_PRIMARY};font-size:21px;font-weight:700;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;line-height:1.3;">
+<span style="border-bottom:3px solid ${accentColor};padding-bottom:12px;">${text}</span>
+</h2>
 </td>
 </tr>
 </table>
 `;
 
 /**
- * Caixa de credenciais (compativel com Outlook)
+ * Saudacao padrao
+ */
+const greeting = (nome) => `
+<p style="margin:0 0 18px 0;color:${TEXT_BODY};font-size:15px;line-height:1.7;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Ola, <strong style="color:${TEXT_PRIMARY};">${nome}</strong>
+</p>
+`;
+
+/**
+ * Paragrafo padrao
+ */
+const paragraph = (text) => `
+<p style="margin:0 0 20px 0;color:${TEXT_BODY};font-size:15px;line-height:1.7;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+${text}
+</p>
+`;
+
+/**
+ * Texto secundario / nota de rodape
+ */
+const footnote = (text) => `
+<p style="margin:24px 0 0 0;color:${TEXT_MUTED};font-size:13px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+${text}
+</p>
+`;
+
+/**
+ * Caixa de informacoes com borda e icone (compativel com Outlook)
+ */
+const infoBox = (type, content) => {
+    const themes = {
+        warning: { bg: '#fef9ec', border: COLOR_WARNING, text: '#78350f', icon: '&#9888;' },
+        error:   { bg: '#fef2f2', border: COLOR_ERROR, text: '#991b1b', icon: '&#10006;' },
+        success: { bg: '#ecfdf5', border: COLOR_SUCCESS, text: '#065f46', icon: '&#10004;' },
+        info:    { bg: '#eff6ff', border: COLOR_INFO, text: '#1e40af', icon: '&#8505;' },
+    };
+    const t = themes[type] || themes.info;
+    return `
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:20px 0;">
+<tr>
+<!--[if !mso]><!-->
+<td style="background-color:${t.bg};border-left:4px solid ${t.border};border-radius:0 8px 8px 0;padding:14px 18px;">
+<!--<![endif]-->
+<!--[if mso]>
+<td style="background-color:${t.bg};border-left:4px solid ${t.border};padding:14px 18px;">
+<![endif]-->
+<p style="margin:0;color:${t.text};font-size:14px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+${content}
+</p>
+</td>
+</tr>
+</table>
+`;
+};
+
+/**
+ * Caixa de credenciais (design navy accent)
  */
 const credentialsBox = (items) => `
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f8fafc;border:1px solid #e2e8f0;margin:25px 0;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:24px 0;">
+<!--[if !mso]><!-->
 <tr>
-<td style="padding:25px;">
+<td style="background-color:${BG_SUBTLE};border:1px solid ${BORDER_LIGHT};border-radius:12px;border-left:4px solid ${NAVY_600};padding:0;">
+<!--<![endif]-->
+<!--[if mso]>
+<tr>
+<td style="background-color:${BG_SUBTLE};border:1px solid ${BORDER_LIGHT};border-left:4px solid ${NAVY_600};padding:0;">
+<![endif]-->
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-${items.map(item => `
 <tr>
-<td style="padding:8px 0;">
-<span style="color:#64748b;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${item.label}:</span>
-<strong style="color:${PRIMARY_COLOR};font-size:15px;margin-left:10px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${item.value}</strong>
+<td style="padding:20px 24px;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+${items.map((item, i) => `
+<tr>
+<td style="padding:${i > 0 ? '10px' : '0'} 0 0 0;">
+<table role="presentation" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td style="vertical-align:top;padding-right:8px;">
+<span style="color:${TEXT_MUTED};font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${item.label}:</span>
+</td>
+<td style="vertical-align:top;">
+<strong style="color:${NAVY_700};font-size:14px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${item.value}</strong>
+</td>
+</tr>
+</table>
 </td>
 </tr>
 `).join('')}
@@ -216,22 +362,52 @@ ${items.map(item => `
 </td>
 </tr>
 </table>
+</td>
+</tr>
+</table>
 `;
 
 /**
- * Caixa de codigo OTP (compativel com Outlook)
+ * Caixa de codigo OTP (design premium com accent navy)
  */
-const otpBox = (codigo, bgColor, textColor) => `
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:30px 0;">
+const otpBox = (codigo, variant = 'default') => {
+    const variants = {
+        default:  { bg: BG_SUBTLE, accent: NAVY_600, text: NAVY_900, label: TEXT_MUTED },
+        success:  { bg: '#ecfdf5', accent: COLOR_SUCCESS, text: '#065f46', label: '#6b7280' },
+    };
+    const v = variants[variant] || variants.default;
+    return `
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:28px 0;">
 <tr>
-<td align="center" style="background-color:${bgColor};padding:30px;">
-<p style="margin:0 0 10px 0;color:${textColor};font-size:14px;text-transform:uppercase;letter-spacing:1px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Seu codigo de verificacao
+<td align="center">
+<!--[if !mso]><!-->
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="border-radius:14px;overflow:hidden;">
+<!--<![endif]-->
+<!--[if mso]>
+<table role="presentation" cellspacing="0" cellpadding="0" border="0">
+<![endif]-->
+<tr>
+<td align="center" style="background-color:${v.bg};padding:28px 48px;">
+<p style="margin:0 0 14px 0;color:${v.label};font-size:12px;text-transform:uppercase;letter-spacing:2px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Codigo de verificacao
 </p>
 <table role="presentation" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td style="font-size:36px;font-weight:700;color:${PRIMARY_COLOR};letter-spacing:8px;font-family:Courier New,monospace;">
+<!--[if !mso]><!-->
+<td style="background-color:${BG_CARD};border:2px solid ${v.accent};border-radius:10px;padding:14px 32px;">
+<!--<![endif]-->
+<!--[if mso]>
+<td style="background-color:${BG_CARD};border:2px solid ${v.accent};padding:14px 32px;">
+<![endif]-->
+<span style="font-size:34px;font-weight:700;color:${v.text};letter-spacing:10px;font-family:Courier New,monospace;">
 ${codigo}
+</span>
+</td>
+</tr>
+</table>
+<p style="margin:14px 0 0 0;color:${v.label};font-size:12px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Insira este codigo no sistema para continuar
+</p>
 </td>
 </tr>
 </table>
@@ -239,40 +415,74 @@ ${codigo}
 </tr>
 </table>
 `;
+};
+
+/**
+ * Bloco de link alternativo (para copiar/colar)
+ */
+const linkFallback = (url) => `
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:4px 0 24px 0;">
+<tr>
+<td align="center" style="padding:0 0 8px 0;">
+<span style="color:${TEXT_LIGHT};font-size:11px;text-transform:uppercase;letter-spacing:1px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
+Ou copie e cole o link abaixo
+</span>
+</td>
+</tr>
+<tr>
+<!--[if !mso]><!-->
+<td align="center" style="padding:10px 16px;background-color:${BG_SUBTLE};border:1px solid ${BORDER_LIGHT};border-radius:6px;word-break:break-all;">
+<!--<![endif]-->
+<!--[if mso]>
+<td align="center" style="padding:10px 16px;background-color:${BG_SUBTLE};border:1px solid ${BORDER_LIGHT};word-break:break-all;">
+<![endif]-->
+<a href="${url}" style="color:${ACCENT_DARK};font-size:12px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;text-decoration:none;">
+${url}
+</a>
+</td>
+</tr>
+</table>
+`;
+
+/**
+ * Wrapper de botao centralizado com margem
+ */
+const buttonBlock = (url, text, bgColor = NAVY_600) => `
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:28px 0;">
+<tr>
+<td align="center">
+${bulletproofButton(url, text, bgColor)}
+</td>
+</tr>
+</table>
+`;
+
+// =============================================================================
+// TEMPLATES
+// =============================================================================
 
 /**
  * Template para codigo OTP de redefinicao de senha
  */
 const templateOtpResetSenha = (nomeUsuario, codigoOtp) => {
     const content = `
-<h2 style="margin:0 0 20px 0;color:${PRIMARY_COLOR};font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Redefinicao de Senha
-</h2>
+${sectionHeading('Redefinicao de Senha', COLOR_WARNING)}
 
-<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ola <strong>${nomeUsuario}</strong>,
-</p>
+${greeting(nomeUsuario)}
 
-<p style="margin:0 0 25px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Recebemos uma solicitacao para redefinir a senha da sua conta no ${APP_NAME}.
-Utilize o codigo abaixo para concluir o processo:
-</p>
+${paragraph(`Recebemos uma solicitacao para redefinir a senha da sua conta no ${APP_NAME}. Utilize o codigo abaixo para concluir o processo:`)}
 
-${otpBox(codigoOtp, '#f1f5f9', '#64748b')}
+${otpBox(codigoOtp)}
 
-${infoBox('#fef3c7', '#f59e0b', '#92400e', '<strong>Importante:</strong> Este codigo expira em <strong>15 minutos</strong>. Nao compartilhe este codigo com ninguem.')}
+${infoBox('warning', '<strong>Importante:</strong> Este codigo expira em <strong>15 minutos</strong>. Nao compartilhe este codigo com ninguem.')}
 
-<p style="margin:25px 0 0 0;color:#64748b;font-size:14px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Se voce nao solicitou a redefinicao de senha, ignore este email.
-Sua senha permanecera inalterada.
-</p>
+${footnote('Se voce nao solicitou a redefinicao de senha, ignore este email. Sua senha permanecera inalterada.')}
     `;
-
     return baseLayout(content);
 };
 
 /**
- * Template para novo usuario criado pelo admin
+ * Template para novo usuario criado pelo admin (deprecado, mantido por compatibilidade)
  */
 const templateNovoUsuario = (nomeUsuario, email, senhaTemporaria) => {
     const urlLogin = process.env.FRONTEND_URL
@@ -280,41 +490,24 @@ const templateNovoUsuario = (nomeUsuario, email, senhaTemporaria) => {
         : 'http://localhost:3000/login';
 
     const content = `
-<h2 style="margin:0 0 20px 0;color:${PRIMARY_COLOR};font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Bem-vindo ao ${APP_NAME}!
-</h2>
+${sectionHeading(`Bem-vindo ao ${APP_NAME}!`)}
 
-<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ola <strong>${nomeUsuario}</strong>,
-</p>
+${greeting(nomeUsuario)}
 
-<p style="margin:0 0 25px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Uma conta foi criada para voce no sistema ${APP_NAME} - Sistema de Gestao de Contratos.
-Abaixo estao suas credenciais de acesso:
-</p>
+${paragraph(`Uma conta foi criada para voce no sistema ${APP_NAME} - Sistema de Gestao de Contratos. Abaixo estao suas credenciais de acesso:`)}
 
 ${credentialsBox([
     { label: 'Usuario', value: nomeUsuario },
     { label: 'Email', value: email },
-    { label: 'Senha temporaria', value: `<span style="background-color:#e2e8f0;padding:4px 12px;font-family:Courier New,monospace;">${senhaTemporaria}</span>` }
+    { label: 'Senha temporaria', value: `<code style="background-color:${NAVY_900};color:${ACCENT};padding:3px 10px;border-radius:4px;font-family:Courier New,monospace;font-size:14px;">${senhaTemporaria}</code>` }
 ])}
 
-<!-- Botao de acesso -->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:30px 0;">
-<tr>
-<td align="center">
-${bulletproofButton(urlLogin, 'Acessar o Sistema', PRIMARY_COLOR)}
-</td>
-</tr>
-</table>
+${buttonBlock(urlLogin, 'Acessar o Sistema')}
 
-${infoBox('#fee2e2', '#ef4444', '#991b1b', '<strong>Seguranca:</strong> Recomendamos que voce altere sua senha apos o primeiro login.')}
+${infoBox('error', '<strong>Seguranca:</strong> Recomendamos que voce altere sua senha apos o primeiro login.')}
 
-<p style="margin:25px 0 0 0;color:#64748b;font-size:14px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Em caso de duvidas, entre em contato com o administrador do sistema.
-</p>
+${footnote('Em caso de duvidas, entre em contato com o administrador do sistema.')}
     `;
-
     return baseLayout(content);
 };
 
@@ -323,48 +516,20 @@ Em caso de duvidas, entre em contato com o administrador do sistema.
  */
 const templateVerificacaoEmail = (nomeUsuario, urlVerificacao) => {
     const content = `
-<h2 style="margin:0 0 20px 0;color:${PRIMARY_COLOR};font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Verifique seu Email
-</h2>
+${sectionHeading('Verifique seu Email', COLOR_SUCCESS)}
 
-<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ola <strong>${nomeUsuario}</strong>,
-</p>
+${greeting(nomeUsuario)}
 
-<p style="margin:0 0 25px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Obrigado por se registrar no ${APP_NAME}! Para ativar sua conta,
-clique no botao abaixo para verificar seu endereco de email:
-</p>
+${paragraph(`Obrigado por se registrar no ${APP_NAME}! Para ativar sua conta, clique no botao abaixo para verificar seu endereco de email:`)}
 
-<!-- Botao de verificacao -->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:30px 0;">
-<tr>
-<td align="center">
-${bulletproofButton(urlVerificacao, 'Verificar Email', '#059669')}
-</td>
-</tr>
-</table>
+${buttonBlock(urlVerificacao, 'Verificar Email', COLOR_SUCCESS)}
 
-<p style="margin:20px 0;color:#64748b;font-size:13px;text-align:center;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ou copie e cole o link abaixo no seu navegador:
-</p>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 25px 0;">
-<tr>
-<td align="center" style="padding:12px 16px;background-color:#f1f5f9;word-break:break-all;">
-<a href="${urlVerificacao}" style="color:#3b82f6;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;text-decoration:none;">
-${urlVerificacao}
-</a>
-</td>
-</tr>
-</table>
+${linkFallback(urlVerificacao)}
 
-${infoBox('#dbeafe', '#3b82f6', '#1e40af', '<strong>Atencao:</strong> Este link expira em <strong>24 horas</strong>.')}
+${infoBox('info', '<strong>Atencao:</strong> Este link expira em <strong>24 horas</strong>.')}
 
-<p style="margin:25px 0 0 0;color:#64748b;font-size:14px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Se voce nao solicitou este registro, ignore este email.
-</p>
+${footnote('Se voce nao solicitou este registro, ignore este email.')}
     `;
-
     return baseLayout(content);
 };
 
@@ -373,40 +538,44 @@ Se voce nao solicitou este registro, ignore este email.
  */
 const templateAlertaLogin = (nomeUsuario, info) => {
     const content = `
-<h2 style="margin:0 0 20px 0;color:#dc2626;font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Novo Login Detectado
-</h2>
+${sectionHeading('Novo Login Detectado', COLOR_ERROR)}
 
-<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ola <strong>${nomeUsuario}</strong>,
-</p>
+${greeting(nomeUsuario)}
 
-<p style="margin:0 0 25px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Detectamos um novo acesso a sua conta no ${APP_NAME}.
-Confira os detalhes abaixo:
-</p>
+${paragraph(`Detectamos um novo acesso a sua conta no ${APP_NAME}. Confira os detalhes abaixo:`)}
 
 <!-- Detalhes do login -->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#fef2f2;border:1px solid #fecaca;margin:25px 0;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:24px 0;">
 <tr>
-<td style="padding:25px;">
+<!--[if !mso]><!-->
+<td style="background-color:#fef2f2;border:1px solid #fecaca;border-radius:12px;border-left:4px solid ${COLOR_ERROR};padding:0;">
+<!--<![endif]-->
+<!--[if mso]>
+<td style="background-color:#fef2f2;border:1px solid #fecaca;border-left:4px solid ${COLOR_ERROR};padding:0;">
+<![endif]-->
 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td style="padding:8px 0;">
-<span style="color:#64748b;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">Endereco IP:</span>
-<strong style="color:#991b1b;font-size:15px;margin-left:10px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${info.ip}</strong>
+<td style="padding:20px 24px;">
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td style="padding:6px 0;">
+<span style="color:${TEXT_MUTED};font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">Endereco IP:</span>
+<strong style="color:#991b1b;font-size:14px;margin-left:8px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${info.ip}</strong>
 </td>
 </tr>
 <tr>
-<td style="padding:8px 0;">
-<span style="color:#64748b;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">Navegador:</span>
-<strong style="color:#991b1b;font-size:15px;margin-left:10px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${info.userAgent}</strong>
+<td style="padding:6px 0;">
+<span style="color:${TEXT_MUTED};font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">Navegador:</span>
+<strong style="color:#991b1b;font-size:14px;margin-left:8px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${info.userAgent}</strong>
 </td>
 </tr>
 <tr>
-<td style="padding:8px 0;">
-<span style="color:#64748b;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">Data/Hora:</span>
-<strong style="color:#991b1b;font-size:15px;margin-left:10px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${info.dataHora}</strong>
+<td style="padding:6px 0;">
+<span style="color:${TEXT_MUTED};font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">Data/Hora:</span>
+<strong style="color:#991b1b;font-size:14px;margin-left:8px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">${info.dataHora}</strong>
+</td>
+</tr>
+</table>
 </td>
 </tr>
 </table>
@@ -414,9 +583,8 @@ Confira os detalhes abaixo:
 </tr>
 </table>
 
-${infoBox('#fee2e2', '#ef4444', '#991b1b', '<strong>Nao foi voce?</strong> Altere sua senha imediatamente e entre em contato com o administrador.')}
+${infoBox('error', '<strong>Nao foi voce?</strong> Altere sua senha imediatamente e entre em contato com o administrador.')}
     `;
-
     return baseLayout(content);
 };
 
@@ -425,49 +593,20 @@ ${infoBox('#fee2e2', '#ef4444', '#991b1b', '<strong>Nao foi voce?</strong> Alter
  */
 const templateResetSenhaLink = (nomeUsuario, urlReset) => {
     const content = `
-<h2 style="margin:0 0 20px 0;color:${PRIMARY_COLOR};font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Redefinicao de Senha
-</h2>
+${sectionHeading('Redefinicao de Senha', COLOR_WARNING)}
 
-<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ola <strong>${nomeUsuario}</strong>,
-</p>
+${greeting(nomeUsuario)}
 
-<p style="margin:0 0 25px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Recebemos uma solicitacao para redefinir a senha da sua conta no ${APP_NAME}.
-Clique no botao abaixo para criar uma nova senha:
-</p>
+${paragraph(`Recebemos uma solicitacao para redefinir a senha da sua conta no ${APP_NAME}. Clique no botao abaixo para criar uma nova senha:`)}
 
-<!-- Botao de reset -->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:30px 0;">
-<tr>
-<td align="center">
-${bulletproofButton(urlReset, 'Redefinir Minha Senha', '#dc2626')}
-</td>
-</tr>
-</table>
+${buttonBlock(urlReset, 'Redefinir Minha Senha', NAVY_600)}
 
-<p style="margin:20px 0;color:#64748b;font-size:13px;text-align:center;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ou copie e cole o link abaixo no seu navegador:
-</p>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#f1f5f9;margin:0 0 25px 0;">
-<tr>
-<td align="center" style="padding:12px 16px;word-break:break-all;">
-<a href="${urlReset}" style="color:#3b82f6;font-size:12px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;text-decoration:none;">
-${urlReset}
-</a>
-</td>
-</tr>
-</table>
+${linkFallback(urlReset)}
 
-${infoBox('#fef3c7', '#f59e0b', '#92400e', '<strong>Importante:</strong> Este link expira em <strong>1 hora</strong>. Apos esse periodo, voce precisara solicitar um novo link.')}
+${infoBox('warning', '<strong>Importante:</strong> Este link expira em <strong>1 hora</strong>. Apos esse periodo, voce precisara solicitar um novo link.')}
 
-<p style="margin:25px 0 0 0;color:#64748b;font-size:14px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Se voce nao solicitou a redefinicao de senha, ignore este email.
-Sua senha permanecera inalterada.
-</p>
+${footnote('Se voce nao solicitou a redefinicao de senha, ignore este email. Sua senha permanecera inalterada.')}
     `;
-
     return baseLayout(content);
 };
 
@@ -476,27 +615,18 @@ Sua senha permanecera inalterada.
  */
 const templateOtpVerificacaoEmail = (nomeUsuario, codigoOtp) => {
     const content = `
-<h2 style="margin:0 0 20px 0;color:#059669;font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Verificacao de Email
-</h2>
+${sectionHeading('Verificacao de Email', COLOR_SUCCESS)}
 
-<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ola <strong>${nomeUsuario}</strong>,
-</p>
+${greeting(nomeUsuario)}
 
-<p style="margin:0 0 25px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Para verificar seu email no ${APP_NAME}, utilize o codigo abaixo:
-</p>
+${paragraph(`Para verificar seu email no ${APP_NAME}, utilize o codigo abaixo:`)}
 
-${otpBox(codigoOtp, '#d1fae5', '#065f46')}
+${otpBox(codigoOtp, 'success')}
 
-${infoBox('#fef3c7', '#f59e0b', '#92400e', '<strong>Importante:</strong> Este codigo expira em <strong>15 minutos</strong>. Nao compartilhe este codigo com ninguem.')}
+${infoBox('warning', '<strong>Importante:</strong> Este codigo expira em <strong>15 minutos</strong>. Nao compartilhe este codigo com ninguem.')}
 
-<p style="margin:25px 0 0 0;color:#64748b;font-size:14px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Apos a verificacao, seu email estara confirmado e voce tera acesso completo ao sistema.
-</p>
+${footnote('Apos a verificacao, seu email estara confirmado e voce tera acesso completo ao sistema.')}
     `;
-
     return baseLayout(content);
 };
 
@@ -505,53 +635,25 @@ Apos a verificacao, seu email estara confirmado e voce tera acesso completo ao s
  */
 const templateAtivacaoConta = (nomeUsuario, email, urlAtivacao) => {
     const content = `
-<h2 style="margin:0 0 20px 0;color:${PRIMARY_COLOR};font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Bem-vindo ao ${APP_NAME}!
-</h2>
+${sectionHeading(`Bem-vindo ao ${APP_NAME}!`)}
 
-<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ola <strong>${nomeUsuario}</strong>,
-</p>
+${greeting(nomeUsuario)}
 
-<p style="margin:0 0 25px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Uma conta foi criada para voce no sistema ${APP_NAME} - Sistema de Gestao de Contratos.
-Para ativar sua conta e comecar a usar o sistema, clique no botao abaixo para definir sua senha:
-</p>
+${paragraph(`Uma conta foi criada para voce no sistema ${APP_NAME} - Sistema de Gestao de Contratos. Para ativar sua conta e comecar a usar o sistema, clique no botao abaixo para definir sua senha:`)}
 
 ${credentialsBox([
     { label: 'Usuario', value: nomeUsuario },
     { label: 'Email', value: email }
 ])}
 
-<!-- Botao de ativacao -->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:30px 0;">
-<tr>
-<td align="center">
-${bulletproofButton(urlAtivacao, 'Definir Minha Senha', '#059669')}
-</td>
-</tr>
-</table>
+${buttonBlock(urlAtivacao, 'Definir Minha Senha', COLOR_SUCCESS)}
 
-<p style="margin:20px 0;color:#64748b;font-size:13px;text-align:center;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ou copie e cole o link abaixo no seu navegador:
-</p>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 25px 0;">
-<tr>
-<td align="center" style="padding:12px 16px;background-color:#f1f5f9;word-break:break-all;">
-<a href="${urlAtivacao}" style="color:#3b82f6;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;text-decoration:none;">
-${urlAtivacao}
-</a>
-</td>
-</tr>
-</table>
+${linkFallback(urlAtivacao)}
 
-${infoBox('#fef3c7', '#f59e0b', '#92400e', '<strong>Importante:</strong> Este link expira em <strong>72 horas</strong>. Apos esse periodo, solicite ao administrador o reenvio do convite.')}
+${infoBox('warning', '<strong>Importante:</strong> Este link expira em <strong>72 horas</strong>. Apos esse periodo, solicite ao administrador o reenvio do convite.')}
 
-<p style="margin:25px 0 0 0;color:#64748b;font-size:14px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Em caso de duvidas, entre em contato com o administrador do sistema.
-</p>
+${footnote('Em caso de duvidas, entre em contato com o administrador do sistema.')}
     `;
-
     return baseLayout(content);
 };
 
@@ -560,24 +662,16 @@ Em caso de duvidas, entre em contato com o administrador do sistema.
  */
 const templateSenhaAlterada = (nomeUsuario) => {
     const content = `
-<h2 style="margin:0 0 20px 0;color:#059669;font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Senha Alterada com Sucesso
-</h2>
+${sectionHeading('Senha Alterada com Sucesso', COLOR_SUCCESS)}
 
-<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ola <strong>${nomeUsuario}</strong>,
-</p>
+${greeting(nomeUsuario)}
 
-<p style="margin:0 0 25px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Sua senha no ${APP_NAME} foi alterada com sucesso em
-<strong>${new Date().toLocaleString('pt-BR')}</strong>.
-</p>
+${paragraph(`Sua senha no ${APP_NAME} foi alterada com sucesso em <strong>${new Date().toLocaleString('pt-BR')}</strong>.`)}
 
-${infoBox('#d1fae5', '#10b981', '#065f46', 'Se voce realizou esta alteracao, nenhuma acao adicional e necessaria.')}
+${infoBox('success', 'Se voce realizou esta alteracao, nenhuma acao adicional e necessaria.')}
 
-${infoBox('#fee2e2', '#ef4444', '#991b1b', '<strong>Nao foi voce?</strong> Entre em contato imediatamente com o administrador do sistema.')}
+${infoBox('error', '<strong>Nao foi voce?</strong> Entre em contato imediatamente com o administrador do sistema.')}
     `;
-
     return baseLayout(content);
 };
 
@@ -586,44 +680,21 @@ ${infoBox('#fee2e2', '#ef4444', '#991b1b', '<strong>Nao foi voce?</strong> Entre
  */
 const templateSolicitacaoCriada = (solicitanteNome, contratoNr, fornecedorNome, urlCompras) => {
     const content = `
-<h2 style="margin:0 0 20px 0;color:${PRIMARY_COLOR};font-size:22px;font-weight:600;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Nova Solicitacao de Atualizacao
-</h2>
+${sectionHeading('Nova Solicitacao de Atualizacao', COLOR_INFO)}
 
-<p style="margin:0 0 20px 0;color:#475569;font-size:15px;line-height:1.6;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-<strong>${solicitanteNome}</strong> enviou uma solicitacao de atualizacao de contrato:
-</p>
+${paragraph(`<strong style="color:${TEXT_PRIMARY};">${solicitanteNome}</strong> enviou uma solicitacao de atualizacao de contrato:`)}
 
 ${credentialsBox([
     { label: 'Contrato', value: contratoNr },
     { label: 'Fornecedor', value: fornecedorNome }
 ])}
 
-<!-- Botao para visualizar -->
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:30px 0;">
-<tr>
-<td align="center">
-${bulletproofButton(urlCompras, 'Visualizar Solicitacao', SECONDARY_COLOR)}
-</td>
-</tr>
-</table>
+${buttonBlock(urlCompras, 'Visualizar Solicitacao', COLOR_INFO)}
 
-<p style="margin:20px 0;color:#64748b;font-size:13px;text-align:center;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;">
-Ou copie e cole o link abaixo no seu navegador:
-</p>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 25px 0;">
-<tr>
-<td align="center" style="padding:12px 16px;background-color:#f1f5f9;word-break:break-all;">
-<a href="${urlCompras}" style="color:#3b82f6;font-size:13px;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;text-decoration:none;">
-${urlCompras}
-</a>
-</td>
-</tr>
-</table>
+${linkFallback(urlCompras)}
 
-${infoBox('#dbeafe', '#3b82f6', '#1e40af', 'Acesse a tela de Compras para avaliar esta solicitacao.')}
+${infoBox('info', 'Acesse a tela de Compras para avaliar esta solicitacao.')}
     `;
-
     return baseLayout(content);
 };
 

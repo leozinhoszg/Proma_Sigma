@@ -186,16 +186,16 @@ export default function Compras() {
       </div>
 
       {/* Cards estatisticas */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger-animate">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 stagger-animate">
         {/* Pendentes */}
         <div className="stat-card-glass warning group" aria-label={`Solicitações pendentes: ${estatisticas.pendentes}`}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-base-content/60 font-medium">Pendentes</p>
-              <p className="text-3xl font-bold text-warning mt-1">{estatisticas.pendentes}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-warning mt-1">{estatisticas.pendentes}</p>
               <p className="text-xs text-base-content/40 mt-0.5">aguardando avaliação</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-warning/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-warning/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -208,10 +208,10 @@ export default function Compras() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-base-content/60 font-medium">Aprovadas</p>
-              <p className="text-3xl font-bold text-success mt-1">{estatisticas.aprovadasMes}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-success mt-1">{estatisticas.aprovadasMes}</p>
               <p className="text-xs text-base-content/40 mt-0.5">neste mês</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-success/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -220,14 +220,14 @@ export default function Compras() {
         </div>
 
         {/* Reprovadas */}
-        <div className="stat-card-glass error group" aria-label={`Reprovadas no mês: ${estatisticas.reprovadasMes}`}>
+        <div className="stat-card-glass error group col-span-2 sm:col-span-1" aria-label={`Reprovadas no mês: ${estatisticas.reprovadasMes}`}>
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-base-content/60 font-medium">Reprovadas</p>
-              <p className="text-3xl font-bold text-error mt-1">{estatisticas.reprovadasMes}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-error mt-1">{estatisticas.reprovadasMes}</p>
               <p className="text-xs text-base-content/40 mt-0.5">neste mês</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-error/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-error/10 flex items-center justify-center icon-hover-float transition-transform group-hover:scale-110">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-error" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -239,8 +239,8 @@ export default function Compras() {
       {/* Tabs + Conteúdo */}
       <div className="glass-card overflow-hidden">
         {/* Tabs dentro do card */}
-        <div className="px-4 pt-4 border-b border-base-200/30">
-          <div role="tablist" className="flex gap-1">
+        <div className="px-3 sm:px-4 pt-4 border-b border-base-200/30 overflow-x-auto">
+          <div role="tablist" className="flex gap-1 flex-nowrap whitespace-nowrap">
             <button
               role="tab"
               className={`px-4 py-2.5 text-sm font-medium rounded-t-lg transition-all duration-200 ${
@@ -285,26 +285,26 @@ export default function Compras() {
               <table className="table table-sm table-glass">
                 <thead>
                   <tr className="text-base-content/50">
-                    <th>Setor</th>
+                    <th className="hidden md:table-cell">Setor</th>
                     <th>Fornecedor</th>
                     <th>N. Contrato</th>
                     <th>Seq.</th>
-                    <th>Valor Atual</th>
+                    <th className="hidden sm:table-cell">Valor Atual</th>
                     <th>Novo Valor</th>
-                    <th>Anexo</th>
+                    <th className="hidden md:table-cell">Anexo</th>
                     <th className="text-right">Acoes</th>
                   </tr>
                 </thead>
                 <tbody>
                   {solicitacoes.map(sol => (
                     <tr key={sol.id} className="hover:bg-base-200/30">
-                      <td>
+                      <td className="hidden md:table-cell">
                         <span className="badge badge-outline badge-sm">{sol.setor?.nome || '-'}</span>
                       </td>
                       <td className="font-medium">{sol.fornecedor?.nome}</td>
                       <td>{sol.contrato?.nr_contrato}</td>
                       <td>{sol.sequencia?.num_seq_item}</td>
-                      <td className="text-base-content/60">{formatCurrency(sol.sequencia?.valor)}</td>
+                      <td className="hidden sm:table-cell text-base-content/60">{formatCurrency(sol.sequencia?.valor)}</td>
                       <td>
                         {sol.novo_valor !== null ? (
                           <span className="font-medium text-primary">{formatCurrency(sol.novo_valor)}</span>
@@ -312,7 +312,7 @@ export default function Compras() {
                           <span className="text-base-content/30">-</span>
                         )}
                       </td>
-                      <td>
+                      <td className="hidden md:table-cell">
                         {sol.anexo_pdf ? (
                           <button
                             className="btn btn-ghost btn-xs text-primary"
@@ -337,7 +337,7 @@ export default function Compras() {
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            Aprovar
+                            <span className="hidden sm:inline">Aprovar</span>
                           </button>
                           <button
                             className="btn btn-error btn-sm btn-outline"
@@ -350,7 +350,7 @@ export default function Compras() {
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                            Reprovar
+                            <span className="hidden sm:inline">Reprovar</span>
                           </button>
                         </div>
                       </td>
@@ -397,10 +397,10 @@ export default function Compras() {
                       <th>Contrato</th>
                       <th>Seq.</th>
                       <th>Status</th>
-                      <th>Solicitante</th>
-                      <th>Avaliador</th>
-                      <th>Data Avaliação</th>
-                      <th>Observação</th>
+                      <th className="hidden sm:table-cell">Solicitante</th>
+                      <th className="hidden md:table-cell">Avaliador</th>
+                      <th className="hidden md:table-cell">Data Avaliação</th>
+                      <th className="hidden lg:table-cell">Observação</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -410,10 +410,10 @@ export default function Compras() {
                         <td>{sol.contrato?.nr_contrato}</td>
                         <td>{sol.sequencia?.num_seq_item}</td>
                         <td>{getStatusBadge(sol.status)}</td>
-                        <td className="text-base-content/60">{sol.solicitante?.nome || sol.solicitante?.usuario}</td>
-                        <td className="text-base-content/60">{sol.avaliador?.nome || sol.avaliador?.usuario || '-'}</td>
-                        <td className="text-base-content/60 text-xs">{sol.data_avaliacao ? formatDate(sol.data_avaliacao) : '-'}</td>
-                        <td className="max-w-xs">
+                        <td className="hidden sm:table-cell text-base-content/60">{sol.solicitante?.nome || sol.solicitante?.usuario}</td>
+                        <td className="hidden md:table-cell text-base-content/60">{sol.avaliador?.nome || sol.avaliador?.usuario || '-'}</td>
+                        <td className="hidden md:table-cell text-base-content/60 text-xs">{sol.data_avaliacao ? formatDate(sol.data_avaliacao) : '-'}</td>
+                        <td className="hidden lg:table-cell max-w-xs">
                           <div className="text-xs text-base-content/60 truncate" title={sol.observacao}>
                             {sol.observacao}
                           </div>

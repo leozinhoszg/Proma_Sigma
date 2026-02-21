@@ -112,6 +112,10 @@ const User = sequelize.define('User', {
         allowNull: false,
         defaultValue: 0
     },
+    primeira_tentativa_falha: {
+        type: DataTypes.DATE,
+        defaultValue: null
+    },
     bloqueado_ate: {
         type: DataTypes.DATE,
         defaultValue: null

@@ -408,7 +408,7 @@ export default function SolicitacaoAtualizacao() {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="btn btn-primary shadow-soft"
+              className="btn btn-primary shadow-soft w-full sm:w-auto"
               disabled={submitting}
             >
               {submitting ? (
@@ -457,9 +457,9 @@ export default function SolicitacaoAtualizacao() {
                   <th>Contrato</th>
                   <th>Seq.</th>
                   <th>Status</th>
-                  <th>Avaliado por</th>
-                  <th>Data</th>
-                  <th>Anexo</th>
+                  <th className="hidden md:table-cell">Avaliado por</th>
+                  <th className="hidden sm:table-cell">Data</th>
+                  <th className="hidden md:table-cell">Anexo</th>
                 </tr>
               </thead>
               <tbody>
@@ -470,11 +470,11 @@ export default function SolicitacaoAtualizacao() {
                     <td>{sol.contrato?.nr_contrato}</td>
                     <td>{sol.sequencia?.num_seq_item}</td>
                     <td>{getStatusBadge(sol.status)}</td>
-                    <td className="text-base-content/60 text-xs">
+                    <td className="hidden md:table-cell text-base-content/60 text-xs">
                       {sol.avaliador ? sol.avaliador.nome : <span className="text-base-content/30">-</span>}
                     </td>
-                    <td className="text-base-content/60 text-xs">{formatDate(sol.created_at)}</td>
-                    <td>
+                    <td className="hidden sm:table-cell text-base-content/60 text-xs">{formatDate(sol.created_at)}</td>
+                    <td className="hidden md:table-cell">
                       {sol.anexo_pdf ? (
                         <button
                           className="btn btn-ghost btn-xs text-primary"

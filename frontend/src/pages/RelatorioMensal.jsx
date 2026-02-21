@@ -386,7 +386,7 @@ export default function RelatorioMensal() {
             <p className="text-xs text-base-content/40 uppercase tracking-wider font-medium mb-1">
               Acompanhamento anual
             </p>
-            <h1 className="text-2xl font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <h1 className="text-xl sm:text-2xl font-bold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
               Relatório{' '}
               <span className="text-gradient">Mensal</span>
             </h1>
@@ -426,7 +426,7 @@ export default function RelatorioMensal() {
       </div>
 
       {/* ═══ Cards de Estatísticas ═══ */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 stagger-animate">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 stagger-animate">
         {/* Total */}
         <div className="stat-card-glass info group">
           <div className="flex items-center justify-between">
@@ -558,7 +558,7 @@ export default function RelatorioMensal() {
         className="glass-card p-4 animate-fadeInUp"
         style={{ animationDelay: '0.15s', animationFillMode: 'both' }}
       >
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
           {/* Filtro de status */}
           <select
             className="select select-bordered select-sm glass-input"
@@ -593,7 +593,7 @@ export default function RelatorioMensal() {
             </button>
           </div>
 
-          <div className="flex gap-2 ml-auto">
+          <div className="flex flex-wrap gap-2 sm:ml-auto">
             <button
               className="btn btn-primary btn-sm shadow-soft gap-1.5"
               onClick={sincronizarSelecionadas}
@@ -792,11 +792,11 @@ export default function RelatorioMensal() {
                       </div>
 
                       {contrato.medicoes?.length > 0 ? (
-                        <div className="overflow-x-auto">
+                        <div className="table-scroll-container overflow-x-auto">
                           <table className="table table-xs table-glass table-pin-rows">
                             <thead>
                               <tr className="text-base-content/50 uppercase text-xs">
-                                <th className="w-8 text-center">
+                                <th className="w-8 text-center sticky left-0 z-10 bg-base-100">
                                   <input
                                     type="checkbox"
                                     className="checkbox checkbox-xs"
@@ -818,13 +818,13 @@ export default function RelatorioMensal() {
                                     onClick={(e) => e.stopPropagation()}
                                   />
                                 </th>
-                                <th>Est.</th>
-                                <th>Seq</th>
-                                <th>Receb.</th>
+                                <th className="hidden md:table-cell">Est.</th>
+                                <th className="sticky left-8 z-10 bg-base-100">Seq</th>
+                                <th className="hidden md:table-cell">Receb.</th>
                                 <th>Custo</th>
                                 <th>Dt.Emis.</th>
-                                <th>Dt.Med.</th>
-                                <th>Resp.</th>
+                                <th className="hidden lg:table-cell">Dt.Med.</th>
+                                <th className="hidden lg:table-cell">Resp.</th>
                                 {MESES.map((mes, idx) => (
                                   <th
                                     key={mes}
@@ -846,7 +846,7 @@ export default function RelatorioMensal() {
                                     opacity: 0
                                   }}
                                 >
-                                  <td className="text-center">
+                                  <td className="text-center sticky left-0 z-10 bg-base-100">
                                     <input
                                       type="checkbox"
                                       className="checkbox checkbox-xs"
@@ -855,11 +855,11 @@ export default function RelatorioMensal() {
                                       onClick={(e) => e.stopPropagation()}
                                     />
                                   </td>
-                                  <td className="text-xs text-base-content/60">{medicao.estabelecimento || '-'}</td>
-                                  <td>
+                                  <td className="text-xs text-base-content/60 hidden md:table-cell">{medicao.estabelecimento || '-'}</td>
+                                  <td className="sticky left-8 z-10 bg-base-100">
                                     <span className="font-semibold text-sm">{medicao.sequencia}</span>
                                   </td>
-                                  <td className="text-xs text-base-content/60">{medicao.recebimento || '-'}</td>
+                                  <td className="text-xs text-base-content/60 hidden md:table-cell">{medicao.recebimento || '-'}</td>
                                   <td className="font-mono text-xs">{medicao.custo ? formatCurrency(medicao.custo) : '-'}</td>
                                   <td className="text-xs">
                                     {medicao.dataEmissao ? (
@@ -868,8 +868,8 @@ export default function RelatorioMensal() {
                                       ) : formatDate(medicao.dataEmissao)
                                     ) : '-'}
                                   </td>
-                                  <td className="text-xs text-base-content/60">{medicao.dataMedicao ? formatDate(medicao.dataMedicao) : '-'}</td>
-                                  <td className="text-xs text-base-content/60">{medicao.responsavel || '-'}</td>
+                                  <td className="text-xs text-base-content/60 hidden lg:table-cell">{medicao.dataMedicao ? formatDate(medicao.dataMedicao) : '-'}</td>
+                                  <td className="text-xs text-base-content/60 hidden lg:table-cell">{medicao.responsavel || '-'}</td>
                                   {MESES.map((mes, idx) => {
                                     const status = getStatusMes(medicao.statusMensal, idx);
                                     const isCurrentMonth = idx === mesAtualIndex;

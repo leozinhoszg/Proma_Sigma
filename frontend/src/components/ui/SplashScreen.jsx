@@ -5,6 +5,15 @@ export default function SplashScreen({ isLoading }) {
   const [fadeOut, setFadeOut] = useState(false);
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
 
+  // Travar/destravar scroll sincronizado com visibilidade
+  useEffect(() => {
+    if (visible) {
+      document.documentElement.classList.add('splash-active');
+    } else {
+      document.documentElement.classList.remove('splash-active');
+    }
+  }, [visible]);
+
   // Tempo minimo de exibicao: 800ms
   useEffect(() => {
     const timer = setTimeout(() => setMinTimeElapsed(true), 800);
@@ -49,10 +58,6 @@ export default function SplashScreen({ isLoading }) {
         <p className="splash-subtitle">Sistema de Controle de Contratos</p>
       </div>
 
-      {/* Progress bar */}
-      <div className="splash-progress-track">
-        <div className="splash-progress-bar"></div>
-      </div>
     </div>
   );
 }

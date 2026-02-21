@@ -246,7 +246,7 @@ export default function Fornecedores() {
 
       {/* ═══ Cards de Estatísticas ═══ */}
       <div
-        className="grid grid-cols-2 md:grid-cols-3 gap-4 stagger-animate animate-fadeInUp"
+        className="grid grid-cols-2 min-[480px]:grid-cols-3 gap-3 sm:gap-4 stagger-animate animate-fadeInUp"
         style={{ animationDelay: '0.15s', animationFillMode: 'both' }}
       >
         <div className="stat-card-glass info group">
@@ -281,7 +281,7 @@ export default function Fornecedores() {
           </div>
         </div>
 
-        <div className="stat-card-glass warning group col-span-2 md:col-span-1">
+        <div className="stat-card-glass warning group col-span-2 min-[480px]:col-span-1">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs text-base-content/50 font-medium">Sem Contratos</p>
@@ -347,9 +347,9 @@ export default function Fornecedores() {
               <table className="table table-sm table-glass">
                 <thead>
                   <tr className="text-base-content/50">
-                    <th scope="col" className="pl-6">Fornecedor</th>
+                    <th scope="col" className="pl-3 sm:pl-6">Fornecedor</th>
                     <th scope="col" className="text-center">Contratos</th>
-                    <th scope="col" className="text-right pr-6">Ações</th>
+                    <th scope="col" className="text-right pr-3 sm:pr-6">Ações</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -365,7 +365,7 @@ export default function Fornecedores() {
                           opacity: 0,
                         }}
                       >
-                        <td className="pl-6">
+                        <td className="pl-3 sm:pl-6">
                           <div className="flex items-center gap-3">
                             <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                               <span className="text-sm font-bold text-primary">
@@ -384,7 +384,7 @@ export default function Fornecedores() {
                             {contratoCount} contrato{contratoCount !== 1 ? 's' : ''}
                           </span>
                         </td>
-                        <td className="pr-6">
+                        <td className="pr-3 sm:pr-6">
                           <div className="flex justify-end gap-1">
                             <button
                               className="btn btn-ghost btn-sm btn-square opacity-60 hover:opacity-100 hover:bg-primary/10 hover:text-primary transition-all"

@@ -43,8 +43,8 @@ const startServer = async () => {
         // Conectar ao MySQL
         await connectDB();
 
-        // Sincronizar modelos (criar tabelas se nao existirem)
-        await sequelize.sync();
+        // Sincronizar modelos (criar tabelas se nao existirem, alter adiciona colunas novas)
+        await sequelize.sync({ alter: true });
         console.log('Tabelas sincronizadas com sucesso');
 
         // Executar seed se banco estiver vazio
@@ -71,22 +71,34 @@ const startServer = async () => {
 
         const protocol = useSSL ? 'https' : 'http';
 
+        // Auto-detectar FRONTEND_URL baseado no IP real da rede
+        const os = require('os');
+        const interfaces = os.networkInterfaces();
+        let networkIP = null;
+        for (const name of Object.keys(interfaces)) {
+            for (const iface of interfaces[name]) {
+                if (iface.family === 'IPv4' && !iface.internal) {
+                    networkIP = iface.address;
+                    break;
+                }
+            }
+            if (networkIP) break;
+        }
+
+        // Definir FRONTEND_URL automaticamente se nao estiver no .env ou se o IP mudou
+        if (networkIP) {
+            const autoUrl = `${protocol}://${networkIP}:${PORT}`;
+            if (!process.env.FRONTEND_URL) {
+                process.env.FRONTEND_URL = autoUrl;
+                console.log(`FRONTEND_URL auto-detectada: ${autoUrl}`);
+            } else if (process.env.FRONTEND_URL !== autoUrl) {
+                console.log(`FRONTEND_URL atualizada: ${process.env.FRONTEND_URL} -> ${autoUrl}`);
+                process.env.FRONTEND_URL = autoUrl;
+            }
+        }
+
         initSocket(server);
         server.listen(PORT, HOST, () => {
-            // Obter IP da rede local
-            const os = require('os');
-            const interfaces = os.networkInterfaces();
-            let networkIP = null;
-            for (const name of Object.keys(interfaces)) {
-                for (const iface of interfaces[name]) {
-                    if (iface.family === 'IPv4' && !iface.internal) {
-                        networkIP = iface.address;
-                        break;
-                    }
-                }
-                if (networkIP) break;
-            }
-
             console.log(`
 ========================================
   Servidor rodando na porta ${PORT} (${useSSL ? 'HTTPS' : 'HTTP'})

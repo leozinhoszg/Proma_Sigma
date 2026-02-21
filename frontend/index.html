@@ -172,22 +172,7 @@
         letter-spacing: 0.05em;
       }
 
-      /* Progress bar */
-      .splash-progress-track {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: rgba(255,255,255,0.1);
-      }
-      .splash-progress-bar {
-        height: 100%;
-        width: 100%;
-        background: linear-gradient(90deg, #0ea5e9, #38bdf8, #0ea5e9);
-        background-size: 200% 100%;
-        animation: splashProgress 2s ease-in-out infinite;
-      }
+
 
       /* Animations */
       @keyframes splashOrbFloat {
@@ -204,22 +189,27 @@
         0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 0 rgba(56,189,248,0); }
         50% { transform: scale(1.03); box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 30px 0 rgba(56,189,248,0.15); }
       }
-      @keyframes splashProgress {
-        0% { background-position: 200% center; }
-        100% { background-position: -200% center; }
-      }
+
 
       @media (prefers-reduced-motion: reduce) {
-        .splash-orb, .splash-logo-box, .splash-progress-bar, .splash-glow {
+        .splash-orb, .splash-logo-box, .splash-glow {
           animation: none !important;
         }
         .splash-orb { opacity: 0.2; }
+      }
+
+      /* Lock scroll while splash is visible */
+      html.splash-active,
+      html.splash-active body {
+        overflow: hidden !important;
+        height: 100% !important;
       }
     </style>
 
     <!-- Set theme before anything renders to prevent flash -->
     <script>
       document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+      document.documentElement.classList.add('splash-active');
     </script>
   </head>
   <body>
@@ -245,9 +235,6 @@
           <p class="splash-subtitle">Sistema de Controle de Contratos</p>
         </div>
 
-        <div class="splash-progress-track">
-          <div class="splash-progress-bar"></div>
-        </div>
       </div>
     </div>
     <script type="module" src="/src/main.jsx"></script>
